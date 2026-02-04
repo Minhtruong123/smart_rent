@@ -1,0 +1,2382 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartRent Host - Quản Lý Cho Thuê Thông Minh</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --accent-light: #fbbf24;
+        --success-color: #10b981;
+        --success-light: #34d399;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --danger-light: #f87171;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --bg-light: #f8fafc;
+        --bg-card: #ffffff;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+        --gradient-danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+        --border-radius: 12px;
+        --border-radius-lg: 16px;
+        --border-radius-xl: 20px;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.7;
+        overflow-x: hidden;
+        background-color: var(--bg-light);
+      }
+
+      /* Header */
+      header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        z-index: 1000;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      nav {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 900;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      .logo i {
+        color: var(--primary-color);
+        -webkit-text-fill-color: var(--primary-color);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .user-menu {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .user-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      }
+
+      .notifications {
+        position: relative;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .notifications:hover {
+        background: var(--gray-100);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        background: var(--danger-color);
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+      }
+
+      /* Main Content */
+      main {
+        margin-top: 80px;
+        padding: 2rem;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 100px;
+      }
+
+      /* Welcome Section */
+      .welcome-section {
+        background: var(--gradient-primary);
+        border-radius: var(--border-radius-xl);
+        padding: 3rem;
+        margin-bottom: 3rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .welcome-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background: radial-gradient(
+          circle at 80% 20%,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 50%
+        );
+      }
+
+      .welcome-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+      }
+
+      .welcome-subtitle {
+        font-size: 1.125rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+      }
+
+      .quick-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+      }
+
+      .btn-white {
+        background: white;
+        color: var(--primary-color);
+        box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
+      }
+
+      .btn-white:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-outline-white {
+        border: 2px solid white;
+        color: white;
+        background: transparent;
+      }
+
+      .btn-outline-white:hover {
+        background: white;
+        color: var(--primary-color);
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--gray-200);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        transition: transform 0.3s ease;
+        transform: scaleX(0);
+      }
+
+      .stat-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .stat-card.revenue::before {
+        background: var(--gradient-success);
+      }
+
+      .stat-card.properties::before {
+        background: var(--gradient-primary);
+      }
+
+      .stat-card.requests::before {
+        background: var(--gradient-warning);
+      }
+
+      .stat-card.contracts::before {
+        background: var(--gradient-danger);
+      }
+
+      .stat-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+      }
+
+      .stat-card.revenue .stat-icon {
+        background: var(--gradient-success);
+      }
+
+      .stat-card.properties .stat-icon {
+        background: var(--gradient-primary);
+      }
+
+      .stat-card.requests .stat-icon {
+        background: var(--gradient-warning);
+      }
+
+      .stat-card.contracts .stat-icon {
+        background: var(--gradient-danger);
+      }
+
+      .stat-title {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      .stat-change {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .stat-change.positive {
+        color: var(--success-color);
+      }
+
+      .stat-change.negative {
+        color: var(--danger-color);
+      }
+
+      /* Dashboard Sections */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .section-card {
+        background: white;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--gray-200);
+        overflow: hidden;
+      }
+
+      .section-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: between;
+        align-items: center;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .section-action {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .section-action:hover {
+        color: var(--primary-dark);
+      }
+
+      .section-content {
+        padding: 1.5rem 2rem;
+      }
+
+      /* Properties Section */
+      .property-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .property-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+      }
+
+      .property-item:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+      }
+
+      .property-image {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .property-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .property-info {
+        flex: 1;
+      }
+
+      .property-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .property-location {
+        color: var(--text-light);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .property-details {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .property-status {
+        margin-left: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+      }
+
+      .property-price {
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+      }
+
+      .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-badge.available {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+      }
+
+      .status-badge.rented {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--primary-color);
+      }
+
+      .status-badge.maintenance {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      /* Requests Section */
+      .request-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .request-item {
+        padding: 1.5rem;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+      }
+
+      .request-item:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+      }
+
+      .request-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+
+      .request-user {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .user-avatar-small {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .request-user-info h4 {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .request-user-info p {
+        color: var(--text-light);
+        font-size: 0.85rem;
+      }
+
+      .request-time {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+      }
+
+      .request-property {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+      }
+
+      .request-actions {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+      }
+
+      .btn-success {
+        background: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: var(--success-light);
+        transform: translateY(-1px);
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: var(--danger-light);
+        transform: translateY(-1px);
+      }
+
+      /* Revenue Chart */
+      .chart-container {
+        height: 300px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        padding: 2rem 1rem 1rem;
+        background: var(--gray-50);
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+        position: relative;
+      }
+
+      .chart-container::before {
+        content: "Doanh thu (triệu VNĐ)";
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        transform: rotate(-90deg);
+        transform-origin: left center;
+      }
+
+      .chart-bar {
+        width: 40px;
+        background: var(--gradient-primary);
+        border-radius: 4px 4px 0 0;
+        position: relative;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .chart-bar:hover {
+        filter: brightness(1.1);
+        transform: scale(1.05);
+      }
+
+      .chart-bar::after {
+        content: attr(data-value);
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      .chart-labels {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      /* Invoice Section */
+      .invoice-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .invoice-stat {
+        text-align: center;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: var(--border-radius);
+      }
+
+      .invoice-stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .invoice-stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .invoice-stat.paid .invoice-stat-number {
+        color: var(--success-color);
+      }
+
+      .invoice-stat.pending .invoice-stat-number {
+        color: var(--warning-color);
+      }
+
+      .invoice-stat.overdue .invoice-stat-number {
+        color: var(--danger-color);
+      }
+
+      /* Recent Activities */
+      .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .activity-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+
+      .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .activity-icon.payment {
+        background: var(--success-color);
+      }
+
+      .activity-icon.contract {
+        background: var(--primary-color);
+      }
+
+      .activity-icon.request {
+        background: var(--warning-color);
+      }
+
+      .activity-icon.maintenance {
+        background: var(--danger-color);
+      }
+
+      .activity-content {
+        flex: 1;
+      }
+
+      .activity-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .activity-description {
+        color: var(--text-light);
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .activity-time {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+      }
+
+      /* Bottom Grid */
+      .bottom-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+      }
+
+      /* Contract Management */
+      .contract-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .contract-item {
+        padding: 1.5rem;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+      }
+
+      .contract-item:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+      }
+
+      .contract-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+
+      .contract-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .contract-tenant {
+        color: var(--text-light);
+        font-size: 0.85rem;
+      }
+
+      .contract-dates {
+        text-align: right;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .contract-amount {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+      }
+
+      .contract-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+      }
+
+      .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius-lg);
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-xl);
+        animation: modalSlideIn 0.3s ease;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.3s ease;
+      }
+
+      .close-modal:hover {
+        color: var(--text-dark);
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--gray-200);
+        border-radius: var(--border-radius);
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .welcome-title {
+          font-size: 2rem;
+        }
+
+        .quick-actions {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        main {
+          padding: 1rem;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .welcome-section {
+          padding: 2rem;
+          text-align: center;
+        }
+
+        .welcome-title {
+          font-size: 1.75rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .bottom-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .property-item {
+          flex-direction: column;
+        }
+
+        .property-status {
+          align-items: flex-start;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .request-header {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .request-actions {
+          justify-content: center;
+        }
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in-up {
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      /* Loading States */
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 0.8s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Utility Classes */
+      .text-success {
+        color: var(--success-color);
+      }
+
+      .text-warning {
+        color: var(--warning-color);
+      }
+
+      .text-danger {
+        color: var(--danger-color);
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .mb-0 {
+        margin-bottom: 0;
+      }
+
+      .mt-1 {
+        margin-top: 1rem;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <nav>
+        <div class="logo">
+          <i class="fas fa-building"></i>
+          SmartRent Host
+        </div>
+        <div class="nav-right">
+          <ul class="nav-links">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#properties">Bất động sản</a></li>
+            <li><a href="#tenants">Người thuê</a></li>
+            <li><a href="#reports">Báo cáo</a></li>
+          </ul>
+          <div class="notifications">
+            <i
+              class="fas fa-bell"
+              style="font-size: 1.2rem; color: var(--text-light)"
+            ></i>
+            <div class="notification-badge">5</div>
+          </div>
+          <div class="user-menu">
+            <div class="user-avatar">TH</div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Welcome Section -->
+      <div class="welcome-section fade-in-up">
+        <div class="welcome-content">
+          <h1 class="welcome-title">Chào mừng trở lại, Trần Hưng!</h1>
+          <p class="welcome-subtitle">
+            Quản lý danh mục bất động sản của bạn một cách thông minh và hiệu
+            quả với SmartRent
+          </p>
+          <div class="quick-actions">
+            <a
+              href="#"
+              class="btn btn-white"
+              onclick="openModal('addPropertyModal')"
+            >
+              <i class="fas fa-plus"></i>
+              Thêm BĐS mới
+            </a>
+            <a
+              href="#"
+              class="btn btn-outline-white"
+              onclick="openModal('createInvoiceModal')"
+            >
+              <i class="fas fa-file-invoice"></i>
+              Tạo hóa đơn
+            </a>
+            <a href="#" class="btn btn-outline-white">
+              <i class="fas fa-chart-bar"></i>
+              Báo cáo
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid fade-in-up">
+        <div class="stat-card revenue">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div>
+              <div class="stat-title">Doanh thu tháng</div>
+              <div class="stat-number">45.2M</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +12.5% so với tháng trước
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card properties">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
+            <div>
+              <div class="stat-title">Tổng BĐS</div>
+              <div class="stat-number">24</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +2 BĐS mới
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card requests">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div>
+              <div class="stat-title">Yêu cầu chờ</div>
+              <div class="stat-number">8</div>
+              <div class="stat-change negative">
+                <i class="fas fa-arrow-down"></i>
+                -3 so với hôm qua
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card contracts">
+          <div class="stat-header">
+            <div class="stat-icon">
+              <i class="fas fa-file-contract"></i>
+            </div>
+            <div>
+              <div class="stat-title">Hợp đồng hoạt động</div>
+              <div class="stat-number">18</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +5 hợp đồng mới
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid fade-in-up">
+        <!-- Properties & Requests -->
+        <div>
+          <!-- Recent Properties -->
+          <div class="section-card" style="margin-bottom: 2rem">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-building"></i>
+                Bất Động Sản Gần Đây
+              </h2>
+              <a href="#" class="section-action">Xem tất cả</a>
+            </div>
+            <div class="section-content">
+              <div class="property-list">
+                <div class="property-item">
+                  <div class="property-image">
+                    <img
+                      src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80"
+                      alt="Property"
+                    />
+                  </div>
+                  <div class="property-info">
+                    <div class="property-title">
+                      Căn hộ Vinhomes Central Park
+                    </div>
+                    <div class="property-location">
+                      <i class="fas fa-map-marker-alt"></i> Quận Bình Thạnh,
+                      TP.HCM
+                    </div>
+                    <div class="property-details">
+                      <span><i class="fas fa-bed"></i> 2 PN</span>
+                      <span><i class="fas fa-bath"></i> 2 PT</span>
+                      <span><i class="fas fa-vector-square"></i> 75m²</span>
+                    </div>
+                  </div>
+                  <div class="property-status">
+                    <div class="property-price">8.5 triệu/tháng</div>
+                    <div class="status-badge rented">Đã thuê</div>
+                  </div>
+                </div>
+
+                <div class="property-item">
+                  <div class="property-image">
+                    <img
+                      src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=200&q=80"
+                      alt="Property"
+                    />
+                  </div>
+                  <div class="property-info">
+                    <div class="property-title">Căn hộ Sunrise City</div>
+                    <div class="property-location">
+                      <i class="fas fa-map-marker-alt"></i> Quận 7, TP.HCM
+                    </div>
+                    <div class="property-details">
+                      <span><i class="fas fa-bed"></i> 1 PN</span>
+                      <span><i class="fas fa-bath"></i> 1 PT</span>
+                      <span><i class="fas fa-vector-square"></i> 55m²</span>
+                    </div>
+                  </div>
+                  <div class="property-status">
+                    <div class="property-price">5.5 triệu/tháng</div>
+                    <div class="status-badge available">Còn trống</div>
+                  </div>
+                </div>
+
+                <div class="property-item">
+                  <div class="property-image">
+                    <img
+                      src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=200&q=80"
+                      alt="Property"
+                    />
+                  </div>
+                  <div class="property-info">
+                    <div class="property-title">Biệt thự The Palm</div>
+                    <div class="property-location">
+                      <i class="fas fa-map-marker-alt"></i> Quận 9, TP.HCM
+                    </div>
+                    <div class="property-details">
+                      <span><i class="fas fa-bed"></i> 4 PN</span>
+                      <span><i class="fas fa-bath"></i> 3 PT</span>
+                      <span><i class="fas fa-vector-square"></i> 200m²</span>
+                    </div>
+                  </div>
+                  <div class="property-status">
+                    <div class="property-price">15 triệu/tháng</div>
+                    <div class="status-badge maintenance">Bảo trì</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pending Requests -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-clock"></i>
+                Yêu Cầu Thuê Chờ Duyệt
+              </h2>
+              <a href="#" class="section-action">Xem tất cả</a>
+            </div>
+            <div class="section-content">
+              <div class="request-list">
+                <div class="request-item">
+                  <div class="request-header">
+                    <div class="request-user">
+                      <div class="user-avatar-small">LH</div>
+                      <div class="request-user-info">
+                        <h4>Lê Thanh Hùng</h4>
+                        <p>lehanhhung@email.com | 0987654321</p>
+                      </div>
+                    </div>
+                    <div class="request-time">2 giờ trước</div>
+                  </div>
+                  <div class="request-property">
+                    <i class="fas fa-home"></i> Căn hộ Vinhomes Central Park -
+                    75m²
+                  </div>
+                  <div class="request-actions">
+                    <button class="btn btn-success btn-sm">
+                      <i class="fas fa-check"></i> Chấp nhận
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                      <i class="fas fa-times"></i> Từ chối
+                    </button>
+                  </div>
+                </div>
+
+                <div class="request-item">
+                  <div class="request-header">
+                    <div class="request-user">
+                      <div class="user-avatar-small">NT</div>
+                      <div class="request-user-info">
+                        <h4>Nguyễn Minh Tâm</h4>
+                        <p>nguyentam@email.com | 0912345678</p>
+                      </div>
+                    </div>
+                    <div class="request-time">5 giờ trước</div>
+                  </div>
+                  <div class="request-property">
+                    <i class="fas fa-home"></i> Căn hộ Sunrise City - 55m²
+                  </div>
+                  <div class="request-actions">
+                    <button class="btn btn-success btn-sm">
+                      <i class="fas fa-check"></i> Chấp nhận
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                      <i class="fas fa-times"></i> Từ chối
+                    </button>
+                  </div>
+                </div>
+
+                <div class="request-item">
+                  <div class="request-header">
+                    <div class="request-user">
+                      <div class="user-avatar-small">PL</div>
+                      <div class="request-user-info">
+                        <h4>Phạm Thị Lan</h4>
+                        <p>phamlan@email.com | 0901234567</p>
+                      </div>
+                    </div>
+                    <div class="request-time">1 ngày trước</div>
+                  </div>
+                  <div class="request-property">
+                    <i class="fas fa-home"></i> Studio Lexington Residence -
+                    35m²
+                  </div>
+                  <div class="request-actions">
+                    <button class="btn btn-success btn-sm">
+                      <i class="fas fa-check"></i> Chấp nhận
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                      <i class="fas fa-times"></i> Từ chối
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Revenue Chart & Activities -->
+        <div>
+          <!-- Revenue Chart -->
+          <div class="section-card" style="margin-bottom: 2rem">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Doanh Thu 6 Tháng Gần Đây
+              </h2>
+              <a href="#" class="section-action">Chi tiết</a>
+            </div>
+            <div class="section-content">
+              <div class="chart-container">
+                <div
+                  class="chart-bar"
+                  style="height: 120px"
+                  data-value="T8"
+                ></div>
+                <div
+                  class="chart-bar"
+                  style="height: 150px"
+                  data-value="T9"
+                ></div>
+                <div
+                  class="chart-bar"
+                  style="height: 90px"
+                  data-value="T10"
+                ></div>
+                <div
+                  class="chart-bar"
+                  style="height: 180px"
+                  data-value="T11"
+                ></div>
+                <div
+                  class="chart-bar"
+                  style="height: 200px"
+                  data-value="T12"
+                ></div>
+                <div
+                  class="chart-bar"
+                  style="height: 250px"
+                  data-value="T1"
+                ></div>
+              </div>
+              <div class="chart-labels">
+                <span>30</span>
+                <span>37</span>
+                <span>25</span>
+                <span>42</span>
+                <span>48</span>
+                <span>55</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Invoice Summary -->
+          <div class="section-card" style="margin-bottom: 2rem">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-file-invoice-dollar"></i>
+                Tổng Quan Hóa Đơn
+              </h2>
+              <a
+                href="#"
+                class="section-action"
+                onclick="openModal('createInvoiceModal')"
+                >Tạo hóa đơn</a
+              >
+            </div>
+            <div class="section-content">
+              <div class="invoice-summary">
+                <div class="invoice-stat paid">
+                  <div class="invoice-stat-number">156</div>
+                  <div class="invoice-stat-label">Đã thanh toán</div>
+                </div>
+                <div class="invoice-stat pending">
+                  <div class="invoice-stat-number">23</div>
+                  <div class="invoice-stat-label">Chờ thanh toán</div>
+                </div>
+                <div class="invoice-stat overdue">
+                  <div class="invoice-stat-number">8</div>
+                  <div class="invoice-stat-label">Quá hạn</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activities -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Hoạt Động Gần Đây
+              </h2>
+            </div>
+            <div class="section-content">
+              <div class="activity-list">
+                <div class="activity-item">
+                  <div class="activity-icon payment">
+                    <i class="fas fa-credit-card"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">Thanh toán tiền thuê</div>
+                    <div class="activity-description">
+                      Nguyễn Minh Tâm đã thanh toán 8.5 triệu cho căn hộ
+                      Vinhomes
+                    </div>
+                    <div class="activity-time">2 giờ trước</div>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-icon contract">
+                    <i class="fas fa-file-contract"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">Ký hợp đồng mới</div>
+                    <div class="activity-description">
+                      Hợp đồng thuê căn hộ Sunrise City với Lê Thanh Hùng
+                    </div>
+                    <div class="activity-time">5 giờ trước</div>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-icon request">
+                    <i class="fas fa-user-plus"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">Yêu cầu thuê mới</div>
+                    <div class="activity-description">
+                      Phạm Thị Lan gửi yêu cầu thuê Studio Lexington
+                    </div>
+                    <div class="activity-time">1 ngày trước</div>
+                  </div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-icon maintenance">
+                    <i class="fas fa-tools"></i>
+                  </div>
+                  <div class="activity-content">
+                    <div class="activity-title">Yêu cầu bảo trì</div>
+                    <div class="activity-description">
+                      Biệt thự The Palm cần sửa chữa hệ thống điện
+                    </div>
+                    <div class="activity-time">2 ngày trước</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contract Management -->
+      <div class="bottom-grid fade-in-up">
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-file-contract"></i>
+              Quản Lý Hợp Đồng
+            </h2>
+            <a href="#" class="section-action">Xem tất cả</a>
+          </div>
+          <div class="section-content">
+            <div class="contract-list">
+              <div class="contract-item">
+                <div class="contract-header">
+                  <div>
+                    <div class="contract-title">HD-2024-001</div>
+                    <div class="contract-tenant">
+                      Nguyễn Minh Tâm - Vinhomes Central Park
+                    </div>
+                  </div>
+                  <div class="contract-dates">
+                    <div>01/01/2024 - 01/01/2025</div>
+                    <div style="color: var(--success-color); font-weight: 600">
+                      Còn 8 tháng
+                    </div>
+                  </div>
+                </div>
+                <div class="contract-amount">8.5 triệu/tháng</div>
+                <div class="contract-actions">
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--primary-color); color: white"
+                  >
+                    <i class="fas fa-eye"></i> Xem
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--warning-color); color: white"
+                  >
+                    <i class="fas fa-edit"></i> Sửa
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--success-color); color: white"
+                    onclick="openModal('createInvoiceModal')"
+                  >
+                    <i class="fas fa-file-invoice"></i> Tạo HĐ
+                  </button>
+                </div>
+              </div>
+
+              <div class="contract-item">
+                <div class="contract-header">
+                  <div>
+                    <div class="contract-title">HD-2024-002</div>
+                    <div class="contract-tenant">
+                      Lê Thanh Hùng - Sunrise City
+                    </div>
+                  </div>
+                  <div class="contract-dates">
+                    <div>15/01/2024 - 15/01/2025</div>
+                    <div style="color: var(--warning-color); font-weight: 600">
+                      Còn 2 tháng
+                    </div>
+                  </div>
+                </div>
+                <div class="contract-amount">5.5 triệu/tháng</div>
+                <div class="contract-actions">
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--primary-color); color: white"
+                  >
+                    <i class="fas fa-eye"></i> Xem
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--warning-color); color: white"
+                  >
+                    <i class="fas fa-edit"></i> Sửa
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--success-color); color: white"
+                    onclick="openModal('createInvoiceModal')"
+                  >
+                    <i class="fas fa-file-invoice"></i> Tạo HĐ
+                  </button>
+                </div>
+              </div>
+
+              <div class="contract-item">
+                <div class="contract-header">
+                  <div>
+                    <div class="contract-title">HD-2024-003</div>
+                    <div class="contract-tenant">
+                      Trần Văn Nam - Masteri Thảo Điền
+                    </div>
+                  </div>
+                  <div class="contract-dates">
+                    <div>01/02/2024 - 01/02/2025</div>
+                    <div style="color: var(--danger-color); font-weight: 600">
+                      Hết hạn sau 15 ngày
+                    </div>
+                  </div>
+                </div>
+                <div class="contract-amount">4.2 triệu/tháng</div>
+                <div class="contract-actions">
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--primary-color); color: white"
+                  >
+                    <i class="fas fa-eye"></i> Xem
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--danger-color); color: white"
+                  >
+                    <i class="fas fa-sync-alt"></i> Gia hạn
+                  </button>
+                  <button
+                    class="btn btn-sm"
+                    style="background: var(--success-color); color: white"
+                    onclick="openModal('createInvoiceModal')"
+                  >
+                    <i class="fas fa-file-invoice"></i> Tạo HĐ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-chart-pie"></i>
+              Phân Tích Doanh Thu
+            </h2>
+            <a href="#" class="section-action">Báo cáo chi tiết</a>
+          </div>
+          <div class="section-content">
+            <div class="invoice-summary" style="margin-bottom: 2rem">
+              <div class="invoice-stat">
+                <div
+                  class="invoice-stat-number"
+                  style="color: var(--primary-color)"
+                >
+                  45.2M
+                </div>
+                <div class="invoice-stat-label">Tổng doanh thu</div>
+              </div>
+              <div class="invoice-stat">
+                <div
+                  class="invoice-stat-number"
+                  style="color: var(--success-color)"
+                >
+                  38.5M
+                </div>
+                <div class="invoice-stat-label">Đã thu</div>
+              </div>
+              <div class="invoice-stat">
+                <div
+                  class="invoice-stat-number"
+                  style="color: var(--warning-color)"
+                >
+                  6.7M
+                </div>
+                <div class="invoice-stat-label">Chưa thu</div>
+              </div>
+            </div>
+
+            <div
+              style="
+                background: var(--gray-50);
+                padding: 1.5rem;
+                border-radius: var(--border-radius);
+                margin-bottom: 1rem;
+              "
+            >
+              <h4 style="margin-bottom: 1rem; color: var(--text-dark)">
+                Tỷ lệ thu
+              </h4>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 1rem;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <div
+                  style="
+                    flex: 1;
+                    background: var(--gray-200);
+                    height: 8px;
+                    border-radius: 4px;
+                    overflow: hidden;
+                  "
+                >
+                  <div
+                    style="
+                      width: 85%;
+                      height: 100%;
+                      background: var(--gradient-success);
+                    "
+                  ></div>
+                </div>
+                <span style="font-weight: 600; color: var(--success-color)"
+                  >85%</span
+                >
+              </div>
+              <p style="color: var(--text-light); font-size: 0.85rem">
+                38.5M / 45.2M đã được thu
+              </p>
+            </div>
+
+            <div class="activity-list">
+              <div class="activity-item" style="padding: 0.75rem 0">
+                <div
+                  class="activity-icon payment"
+                  style="width: 30px; height: 30px; font-size: 0.7rem"
+                >
+                  <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">Thu tiền thuê tháng 1</div>
+                  <div class="activity-description">
+                    8.5M từ Vinhomes Central Park
+                  </div>
+                </div>
+              </div>
+
+              <div class="activity-item" style="padding: 0.75rem 0">
+                <div
+                  class="activity-icon payment"
+                  style="width: 30px; height: 30px; font-size: 0.7rem"
+                >
+                  <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">Thu tiền điện nước</div>
+                  <div class="activity-description">
+                    1.2M phí dịch vụ tháng 1
+                  </div>
+                </div>
+              </div>
+
+              <div class="activity-item" style="padding: 0.75rem 0">
+                <div
+                  class="activity-icon request"
+                  style="
+                    width: 30px;
+                    height: 30px;
+                    font-size: 0.7rem;
+                    background: var(--warning-color);
+                  "
+                >
+                  <i class="fas fa-exclamation"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">Hóa đơn chưa thanh toán</div>
+                  <div class="activity-description">
+                    5.5M từ Sunrise City (Quá hạn 3 ngày)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Add Property Modal -->
+    <div id="addPropertyModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Thêm Bất Động Sản Mới</h2>
+          <button class="close-modal" onclick="closeModal('addPropertyModal')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form>
+          <div class="form-group">
+            <label for="propertyTitle">Tiêu đề bất động sản</label>
+            <input
+              type="text"
+              id="propertyTitle"
+              placeholder="Nhập tiêu đề..."
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="propertyType">Loại hình</label>
+              <select id="propertyType" required>
+                <option value="">Chọn loại hình</option>
+                <option value="apartment">Căn hộ</option>
+                <option value="house">Nhà phố</option>
+                <option value="villa">Biệt thự</option>
+                <option value="studio">Studio</option>
+                <option value="room">Phòng trọ</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="propertyPrice">Giá thuê (VNĐ/tháng)</label>
+              <input
+                type="number"
+                id="propertyPrice"
+                placeholder="8500000"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="propertyAddress">Địa chỉ</label>
+            <input
+              type="text"
+              id="propertyAddress"
+              placeholder="Nhập địa chỉ đầy đủ..."
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bedrooms">Số phòng ngủ</label>
+              <input type="number" id="bedrooms" min="0" placeholder="2" />
+            </div>
+
+            <div class="form-group">
+              <label for="bathrooms">Số phòng tắm</label>
+              <input type="number" id="bathrooms" min="0" placeholder="2" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="area">Diện tích (m²)</label>
+              <input type="number" id="area" min="0" placeholder="75" />
+            </div>
+
+            <div class="form-group">
+              <label for="floor">Tầng</label>
+              <input type="number" id="floor" min="0" placeholder="10" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="amenities">Tiện nghi</label>
+            <textarea
+              id="amenities"
+              rows="3"
+              placeholder="Mô tả các tiện nghi của bất động sản..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Mô tả chi tiết</label>
+            <textarea
+              id="description"
+              rows="4"
+              placeholder="Mô tả chi tiết về bất động sản..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="propertyImages">Hình ảnh</label>
+            <input type="file" id="propertyImages" multiple accept="image/*" />
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 1rem;
+              justify-content: flex-end;
+              margin-top: 2rem;
+            "
+          >
+            <button
+              type="button"
+              class="btn"
+              style="background: var(--gray-200); color: var(--text-dark)"
+              onclick="closeModal('addPropertyModal')"
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              class="btn"
+              style="background: var(--primary-color); color: white"
+            >
+              <i class="fas fa-plus"></i>
+              Thêm bất động sản
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Create Invoice Modal -->
+    <div id="createInvoiceModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Tạo Hóa Đơn Mới</h2>
+          <button
+            class="close-modal"
+            onclick="closeModal('createInvoiceModal')"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="invoiceContract">Hợp đồng</label>
+              <select id="invoiceContract" required>
+                <option value="">Chọn hợp đồng</option>
+                <option value="HD-2024-001">
+                  HD-2024-001 - Nguyễn Minh Tâm (Vinhomes)
+                </option>
+                <option value="HD-2024-002">
+                  HD-2024-002 - Lê Thanh Hùng (Sunrise City)
+                </option>
+                <option value="HD-2024-003">
+                  HD-2024-003 - Trần Văn Nam (Masteri)
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="invoiceMonth">Tháng thanh toán</label>
+              <input type="month" id="invoiceMonth" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="rentAmount">Tiền thuê nhà</label>
+            <input
+              type="number"
+              id="rentAmount"
+              placeholder="8500000"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="electricAmount">Tiền điện</label>
+              <input type="number" id="electricAmount" placeholder="350000" />
+            </div>
+
+            <div class="form-group">
+              <label for="waterAmount">Tiền nước</label>
+              <input type="number" id="waterAmount" placeholder="150000" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="internetAmount">Tiền internet</label>
+              <input type="number" id="internetAmount" placeholder="200000" />
+            </div>
+
+            <div class="form-group">
+              <label for="parkingAmount">Tiền gửi xe</label>
+              <input type="number" id="parkingAmount" placeholder="100000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="otherCharges">Chi phí khác</label>
+            <textarea
+              id="otherCharges"
+              rows="2"
+              placeholder="Mô tả các chi phí khác (nếu có)..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="otherAmount">Số tiền chi phí khác</label>
+            <input type="number" id="otherAmount" placeholder="0" />
+          </div>
+
+          <div class="form-group">
+            <label for="dueDate">Hạn thanh toán</label>
+            <input type="date" id="dueDate" required />
+          </div>
+
+          <div
+            style="
+              background: var(--gray-50);
+              padding: 1rem;
+              border-radius: var(--border-radius);
+              margin: 1rem 0;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <span>Tiền thuê nhà:</span>
+              <span id="displayRentAmount">8,500,000đ</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <span>Tiền điện:</span>
+              <span id="displayElectricAmount">350,000đ</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <span>Tiền nước:</span>
+              <span id="displayWaterAmount">150,000đ</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <span>Tiền internet:</span>
+              <span id="displayInternetAmount">200,000đ</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+              "
+            >
+              <span>Tiền gửi xe:</span>
+              <span id="displayParkingAmount">100,000đ</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                border-bottom: 1px solid var(--gray-300);
+                padding-bottom: 0.5rem;
+              "
+            >
+              <span>Chi phí khác:</span>
+              <span id="displayOtherAmount">0đ</span>
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: var(--primary-color);
+              "
+            >
+              <span>Tổng cộng:</span>
+              <span id="totalAmount">9,300,000đ</span>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 1rem;
+              justify-content: flex-end;
+              margin-top: 2rem;
+            "
+          >
+            <button
+              type="button"
+              class="btn"
+              style="background: var(--gray-200); color: var(--text-dark)"
+              onclick="closeModal('createInvoiceModal')"
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              class="btn"
+              style="background: var(--success-color); color: white"
+            >
+              <i class="fas fa-file-invoice"></i>
+              Tạo hóa đơn
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Modal functions
+      function openModal(modalId) {
+        document.getElementById(modalId).classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove("active");
+        document.body.style.overflow = "auto";
+      }
+
+      // Close modal when clicking outside
+      window.addEventListener("click", function (e) {
+        if (e.target.classList.contains("modal")) {
+          e.target.classList.remove("active");
+          document.body.style.overflow = "auto";
+        }
+      });
+
+      // Animation on scroll
+      function animateOnScroll() {
+        const elements = document.querySelectorAll(".fade-in-up");
+        elements.forEach((element) => {
+          const elementTop = element.getBoundingClientRect().top;
+          const elementVisible = 100;
+
+          if (elementTop < window.innerHeight - elementVisible) {
+            element.style.opacity = "1";
+            element.style.transform = "translateY(0)";
+          }
+        });
+      }
+
+      window.addEventListener("scroll", animateOnScroll);
+      window.addEventListener("load", animateOnScroll);
+
+      // Initialize fade-in-up elements
+      document.querySelectorAll(".fade-in-up").forEach((element) => {
+        element.style.opacity = "0";
+        element.style.transform = "translateY(30px)";
+        element.style.transition = "all 0.6s ease";
+      });
+
+      // Invoice calculator
+      function calculateInvoiceTotal() {
+        const rentAmount =
+          parseFloat(document.getElementById("rentAmount")?.value) || 0;
+        const electricAmount =
+          parseFloat(document.getElementById("electricAmount")?.value) || 0;
+        const waterAmount =
+          parseFloat(document.getElementById("waterAmount")?.value) || 0;
+        const internetAmount =
+          parseFloat(document.getElementById("internetAmount")?.value) || 0;
+        const parkingAmount =
+          parseFloat(document.getElementById("parkingAmount")?.value) || 0;
+        const otherAmount =
+          parseFloat(document.getElementById("otherAmount")?.value) || 0;
+
+        const total =
+          rentAmount +
+          electricAmount +
+          waterAmount +
+          internetAmount +
+          parkingAmount +
+          otherAmount;
+
+        // Format numbers with commas
+        function formatMoney(amount) {
+          return new Intl.NumberFormat("vi-VN").format(amount) + "đ";
+        }
+
+        // Update display elements
+        if (document.getElementById("displayRentAmount")) {
+          document.getElementById("displayRentAmount").textContent =
+            formatMoney(rentAmount);
+          document.getElementById("displayElectricAmount").textContent =
+            formatMoney(electricAmount);
+          document.getElementById("displayWaterAmount").textContent =
+            formatMoney(waterAmount);
+          document.getElementById("displayInternetAmount").textContent =
+            formatMoney(internetAmount);
+          document.getElementById("displayParkingAmount").textContent =
+            formatMoney(parkingAmount);
+          document.getElementById("displayOtherAmount").textContent =
+            formatMoney(otherAmount);
+          document.getElementById("totalAmount").textContent =
+            formatMoney(total);
+        }
+      }
+
+      // Add event listeners for invoice calculator
+      document.addEventListener("DOMContentLoaded", function () {
+        const amountFields = [
+          "rentAmount",
+          "electricAmount",
+          "waterAmount",
+          "internetAmount",
+          "parkingAmount",
+          "otherAmount",
+        ];
+
+        amountFields.forEach((fieldId) => {
+          const field = document.getElementById(fieldId);
+          if (field) {
+            field.addEventListener("input", calculateInvoiceTotal);
+          }
+        });
+
+        // Initial calculation
+        calculateInvoiceTotal();
+      });
+
+      // Interactive chart bars
+      document.querySelectorAll(".chart-bar").forEach((bar) => {
+        bar.addEventListener("mouseenter", function () {
+          this.style.filter = "brightness(1.2)";
+        });
+
+        bar.addEventListener("mouseleave", function () {
+          this.style.filter = "brightness(1)";
+        });
+      });
+
+      // Simulate real-time updates
+      function updateStats() {
+        // This would typically fetch real data from your backend
+        // For demo purposes, we'll just add some visual feedback
+        document.querySelectorAll(".stat-number").forEach((stat) => {
+          stat.style.transform = "scale(1.05)";
+          setTimeout(() => {
+            stat.style.transform = "scale(1)";
+          }, 200);
+        });
+      }
+
+      // Update stats every 30 seconds (in a real app, this would be based on actual data)
+      setInterval(updateStats, 30000);
+
+      // Handle form submissions
+      document.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Show loading state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="loading"></span> Đang xử lý...';
+        submitBtn.disabled = true;
+
+        // Simulate API call
+        setTimeout(() => {
+          // Reset button
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+
+          // Close modal
+          const modal = e.target.closest(".modal");
+          if (modal) {
+            modal.classList.remove("active");
+            document.body.style.overflow = "auto";
+          }
+
+          // Show success message (you would implement a proper notification system)
+          alert("Thao tác đã được thực hiện thành công!");
+        }, 2000);
+      });
+
+      // Handle request actions
+      document.addEventListener("click", function (e) {
+        if (e.target.closest(".btn-success")) {
+          const requestItem = e.target.closest(".request-item");
+          if (requestItem) {
+            requestItem.style.borderColor = "var(--success-color)";
+            requestItem.style.background = "rgba(16, 185, 129, 0.05)";
+
+            // Simulate approval
+            setTimeout(() => {
+              requestItem.style.opacity = "0";
+              setTimeout(() => {
+                requestItem.remove();
+              }, 300);
+            }, 1000);
+          }
+        }
+
+        if (e.target.closest(".btn-danger")) {
+          const requestItem = e.target.closest(".request-item");
+          if (requestItem) {
+            requestItem.style.borderColor = "var(--danger-color)";
+            requestItem.style.background = "rgba(239, 68, 68, 0.05)";
+
+            // Simulate rejection
+            setTimeout(() => {
+              requestItem.style.opacity = "0";
+              setTimeout(() => {
+                requestItem.remove();
+              }, 300);
+            }, 1000);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

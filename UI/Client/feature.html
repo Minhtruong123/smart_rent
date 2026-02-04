@@ -1,0 +1,2257 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartRent - Tính Năng</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --accent-light: #fbbf24;
+        --success-color: #10b981;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --bg-light: #f8fafc;
+        --bg-card: #ffffff;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --gradient-luxury: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-gold: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+        --gradient-sunset: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.7;
+        overflow-x: hidden;
+        background-color: var(--bg-light);
+      }
+
+      /* Header - Modern Glass Design */
+      header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        z-index: 1000;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      header.scrolled {
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+      }
+
+      nav {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.25rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.875rem;
+        font-weight: 900;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.02em;
+        position: relative;
+      }
+
+      .logo i {
+        color: var(--primary-color);
+        -webkit-text-fill-color: var(--primary-color);
+        filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        letter-spacing: -0.01em;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+
+      .nav-links a:hover::after,
+      .nav-links a.active::after {
+        width: 100%;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      .mobile-toggle {
+        display: none;
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        cursor: pointer;
+      }
+
+      .btn {
+        padding: 0.875rem 1.75rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.01em;
+      }
+
+      .btn-primary {
+        background: var(--gradient-primary);
+        color: var(--white);
+        box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px 0 rgba(99, 102, 241, 0.45);
+      }
+
+      .btn-outline {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        background: transparent;
+      }
+
+      .btn-outline:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35);
+      }
+
+      .page-header {
+        background: var(--gradient-primary);
+        padding: 140px 2rem 80px;
+        color: var(--white);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .page-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(
+            circle at 20% 50%,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 50%
+          );
+      }
+
+      .page-header-content {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .page-header h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      .page-header p {
+        font-size: 1.25rem;
+        opacity: 0.95;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      /* Features Overview */
+      .features-overview {
+        padding: 100px 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        letter-spacing: -0.02em;
+      }
+
+      .section-description {
+        color: var(--text-light);
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 5rem;
+        font-size: 1.125rem;
+      }
+
+      .highlight {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Feature Categories */
+      .feature-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 5rem;
+      }
+
+      .feature-category {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .feature-category:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .feature-category-header {
+        background: var(--gradient-primary);
+        padding: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-category-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: radial-gradient(
+          circle at 70% 30%,
+          rgba(255, 255, 255, 0.2) 0%,
+          transparent 70%
+        );
+      }
+
+      .feature-category-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: inline-block;
+      }
+
+      .feature-category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-category-description {
+        opacity: 0.9;
+        font-size: 1rem;
+      }
+
+      .feature-category-content {
+        padding: 2rem;
+      }
+
+      .feature-list {
+        list-style: none;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .feature-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .feature-item i {
+        color: var(--success-color);
+        font-size: 1.25rem;
+        flex-shrink: 0;
+      }
+
+      .feature-item-text {
+        font-size: 1rem;
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      /* Feature Detail Section */
+      .feature-detail {
+        padding: 100px 2rem;
+        background: var(--white);
+      }
+
+      .feature-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .feature-showcase {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: center;
+        margin-bottom: 8rem;
+      }
+
+      .feature-showcase:nth-child(even) {
+        direction: rtl;
+      }
+
+      .feature-showcase:nth-child(even) .feature-text {
+        direction: ltr;
+      }
+
+      .feature-showcase:nth-child(even) .feature-image {
+        direction: ltr;
+      }
+
+      .feature-text {
+        padding: 2rem;
+      }
+
+      .feature-text h3 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+        letter-spacing: -0.02em;
+      }
+
+      .feature-text p {
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        font-size: 1.125rem;
+        line-height: 1.8;
+      }
+
+      .feature-benefits {
+        list-style: none;
+        margin-bottom: 2.5rem;
+      }
+
+      .feature-benefit {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature-benefit-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+      }
+
+      .feature-benefit-text {
+        font-weight: 600;
+      }
+
+      .feature-image {
+        background: var(--bg-light);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow-xl);
+        transform: perspective(1000px) rotateY(-5deg);
+        transition: transform 0.5s ease;
+        position: relative;
+      }
+
+      .feature-image:hover {
+        transform: perspective(1000px) rotateY(0deg) scale(1.02);
+      }
+
+      .feature-image img {
+        width: 100%;
+        border-radius: 20px;
+        border: 1px solid var(--gray-100);
+      }
+
+      .feature-image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(99, 102, 241, 0.1);
+        border-radius: 24px;
+        pointer-events: none;
+      }
+
+      /* Plans Section */
+      .plans-section {
+        padding: 100px 2rem;
+        background: var(--bg-light);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .plans-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="1.5" fill="rgba(99,102,241,0.1)"/></svg>');
+        opacity: 0.4;
+      }
+
+      .plans-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .plan-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 4rem;
+      }
+
+      .plan-card {
+        background: var(--white);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        position: relative;
+      }
+
+      .plan-card.popular {
+        transform: scale(1.05);
+        z-index: 2;
+        border: 2px solid var(--primary-color);
+      }
+
+      .plan-card.popular::before {
+        content: "Phổ biến nhất";
+        position: absolute;
+        top: 1.5rem;
+        right: 0;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+      }
+
+      .plan-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .plan-card.popular:hover {
+        transform: scale(1.05) translateY(-10px);
+      }
+
+      .plan-header {
+        padding: 2.5rem 2rem;
+        text-align: center;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .plan-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+      }
+
+      .plan-price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+      }
+
+      .plan-billing {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .plan-description {
+        color: var(--text-light);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .plan-features {
+        padding: 2.5rem 2rem;
+      }
+
+      .plan-feature {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .plan-feature:last-child {
+        margin-bottom: 0;
+      }
+
+      .plan-feature i {
+        color: var(--success-color);
+      }
+
+      .plan-feature.disabled {
+        color: var(--text-muted);
+        text-decoration: line-through;
+      }
+
+      .plan-feature.disabled i {
+        color: var(--text-muted);
+      }
+
+      .plan-cta {
+        padding: 0 2rem 2.5rem;
+        text-align: center;
+      }
+
+      .plan-cta .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* FAQ Section */
+      .faq-section {
+        padding: 100px 2rem;
+      }
+
+      .faq-container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .faq-list {
+        margin-top: 4rem;
+      }
+
+      .faq-item {
+        border: 1px solid var(--gray-200);
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+      }
+
+      .faq-question {
+        padding: 1.5rem 2rem;
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1.125rem;
+        transition: all 0.3s ease;
+      }
+
+      .faq-question:hover {
+        background: var(--gray-50);
+      }
+
+      .faq-question i {
+        transition: transform 0.3s ease;
+      }
+
+      .faq-question.active {
+        background: var(--gradient-primary);
+        color: white;
+      }
+
+      .faq-question.active i {
+        transform: rotate(180deg);
+      }
+
+      .faq-answer {
+        background: var(--white);
+        padding: 0 2rem;
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.3s ease,
+          padding 0.3s ease;
+      }
+
+      .faq-answer.active {
+        padding: 1.5rem 2rem;
+        max-height: 500px;
+      }
+
+      .faq-answer p {
+        color: var(--text-light);
+        line-height: 1.7;
+      }
+
+      /* CTA Section */
+      .features-cta {
+        padding: 100px 2rem;
+        background: var(--gradient-primary);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .features-cta::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background:
+          radial-gradient(
+            circle at 30% 40%,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 70% 60%,
+            rgba(255, 255, 255, 0.08) 0%,
+            transparent 50%
+          );
+        animation: rotateBg 20s linear infinite;
+      }
+
+      @keyframes rotateBg {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .features-cta-content {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .features-cta h2 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        color: var(--white);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .features-cta p {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .features-cta-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+      }
+
+      /* Form Module */
+      .form-section {
+        padding: 80px 2rem;
+        background: var(--white);
+      }
+
+      .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: var(--white);
+        border-radius: 24px;
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .form-header {
+        background: var(--gradient-primary);
+        padding: 2.5rem;
+        color: white;
+      }
+
+      .form-header h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+
+      .form-header p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+      }
+
+      .form-body {
+        padding: 3rem 2.5rem;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 0.95rem;
+      }
+
+      .form-control {
+        display: block;
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: var(--text-dark);
+        background-color: var(--white);
+        background-clip: padding-box;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        transition:
+          border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .form-control:focus {
+        color: var(--text-dark);
+        background-color: var(--white);
+        border-color: var(--primary-color);
+        outline: 0;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-select {
+        display: block;
+        width: 100%;
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-dark);
+        background: var(--white)
+          url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e")
+          no-repeat right 1rem center/16px 12px;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+
+      .form-select:focus {
+        border-color: var(--primary-color);
+        outline: 0;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-textarea {
+        min-height: 150px;
+      }
+
+      .form-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .form-check-input {
+        width: 18px;
+        height: 18px;
+        margin-top: 0.25rem;
+        border: 2px solid var(--gray-300);
+        border-radius: 4px;
+      }
+
+      .form-check-label {
+        color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2.5rem;
+      }
+
+      /* Footer */
+      footer {
+        background: var(--text-dark);
+        color: var(--white);
+        padding: 80px 2rem 40px;
+      }
+
+      .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 4rem;
+        margin-bottom: 3rem;
+      }
+
+      .footer-logo {
+        font-size: 2rem;
+        font-weight: 900;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      .footer-about {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+        line-height: 1.7;
+        font-size: 1rem;
+      }
+
+      .footer-section h3 {
+        margin-bottom: 2rem;
+        color: var(--white);
+        position: relative;
+        padding-bottom: 0.75rem;
+        font-weight: 700;
+        font-size: 1.125rem;
+        letter-spacing: -0.01em;
+      }
+
+      .footer-section h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 1rem;
+      }
+
+      .footer-section a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      .footer-section a:hover {
+        color: var(--white);
+        padding-left: 0.25rem;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .social-links a {
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+      }
+
+      .social-links a:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 2.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+      }
+
+      .newsletter {
+        margin-top: 2rem;
+      }
+
+      .newsletter p {
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .newsletter-form {
+        display: flex;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .newsletter-form input {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        font-size: 0.9rem;
+        background: var(--white);
+      }
+
+      .newsletter-form input:focus {
+        outline: none;
+      }
+
+      .newsletter-form button {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .newsletter-form button:hover {
+        background: var(--primary-dark);
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes fadeInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .feature-showcase {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+
+        .feature-showcase:nth-child(even) {
+          direction: ltr;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          position: fixed;
+          top: 80px;
+          left: -100%;
+          width: 100%;
+          height: calc(100vh - 80px);
+          background: var(--white);
+          flex-direction: column;
+          padding: 2rem;
+          transition: left 0.3s;
+          box-shadow: var(--shadow-lg);
+          z-index: 1000;
+        }
+
+        .nav-links.active {
+          left: 0;
+        }
+
+        .mobile-toggle {
+          display: block;
+        }
+
+        .page-header h1 {
+          font-size: 2.5rem;
+        }
+
+        .page-header p {
+          font-size: 1.125rem;
+        }
+
+        .section-title {
+          font-size: 2rem;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
+        }
+
+        .features-cta-buttons {
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .page-header {
+          padding: 120px 1.5rem 60px;
+        }
+
+        .page-header h1 {
+          font-size: 2rem;
+        }
+
+        .feature-categories,
+        .plan-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+
+      /* Scroll reveal */
+      .reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <nav>
+        <div class="logo">
+          <i class="fas fa-home"></i>
+          SmartRent
+        </div>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="#properties">Bất động sản</a></li>
+          <li><a href="#features" class="active">Tính năng</a></li>
+          <li><a href="#about">Về chúng tôi</a></li>
+          <li><a href="#contact">Liên hệ</a></li>
+          <li><a href="#" class="btn btn-primary">Đăng nhập</a></li>
+        </ul>
+        <div class="mobile-toggle" id="mobileToggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="page-header-content">
+        <h1>Tính Năng Thông Minh</h1>
+        <p>
+          Khám phá các tính năng hiện đại giúp việc quản lý và thuê nhà trở nên
+          đơn giản, an toàn và hiệu quả
+        </p>
+      </div>
+    </section>
+
+    <!-- Features Overview -->
+    <section class="features-overview">
+      <h2 class="section-title">
+        Các Nhóm <span class="highlight">Tính Năng</span> Chính
+      </h2>
+      <p class="section-description">
+        SmartRent mang đến trải nghiệm toàn diện với hệ sinh thái các tính năng
+        thông minh, từ tìm kiếm cho đến quản lý hợp đồng và thanh toán
+      </p>
+
+      <!-- Feature Categories -->
+      <div class="feature-categories">
+        <div class="feature-category">
+          <div class="feature-category-header">
+            <div class="feature-category-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <h3 class="feature-category-title">Tìm Kiếm Thông Minh</h3>
+            <p class="feature-category-description">
+              Tìm bất động sản phù hợp nhanh chóng
+            </p>
+          </div>
+          <div class="feature-category-content">
+            <ul class="feature-list">
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Tìm kiếm bằng AI theo mô tả tự nhiên</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text">Lọc đa tiêu chí nâng cao</span>
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Gợi ý dựa trên lịch sử tìm kiếm</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Thông báo có BĐS mới phù hợp</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="feature-category">
+          <div
+            class="feature-category-header"
+            style="
+              background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            "
+          >
+            <div class="feature-category-icon">
+              <i class="fas fa-file-contract"></i>
+            </div>
+            <h3 class="feature-category-title">Hợp Đồng Điện Tử</h3>
+            <p class="feature-category-description">
+              Ký kết và quản lý hợp đồng dễ dàng
+            </p>
+          </div>
+          <div class="feature-category-content">
+            <ul class="feature-list">
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Ký kết hợp đồng điện tử có pháp lý</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Quản lý tất cả hợp đồng trong 1 nơi</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Thông báo nhắc hết hạn hợp đồng</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Lịch sử giao dịch chi tiết</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="feature-category">
+          <div
+            class="feature-category-header"
+            style="
+              background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            "
+          >
+            <div class="feature-category-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <h3 class="feature-category-title">Thanh Toán An Toàn</h3>
+            <p class="feature-category-description">
+              Hỗ trợ nhiều phương thức thanh toán
+            </p>
+          </div>
+          <div class="feature-category-content">
+            <ul class="feature-list">
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Thanh toán tiền thuê tự động</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Hỗ trợ nhiều cổng thanh toán</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Theo dõi hóa đơn điện nước</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text">Xuất hóa đơn điện tử VAT</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="feature-category">
+          <div
+            class="feature-category-header"
+            style="
+              background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            "
+          >
+            <div class="feature-category-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="feature-category-title">Bảo Mật & Xác Thực</h3>
+            <p class="feature-category-description">
+              Bảo vệ tối đa thông tin cá nhân
+            </p>
+          </div>
+          <div class="feature-category-content">
+            <ul class="feature-list">
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Xác thực danh tính trực tuyến</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Mã hóa đầu cuối dữ liệu nhạy cảm</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text">Xác thực 2 lớp bảo mật</span>
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Theo dõi hoạt động đáng ngờ</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="feature-category">
+          <div
+            class="feature-category-header"
+            style="
+              background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            "
+          >
+            <div class="feature-category-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3 class="feature-category-title">Trợ Lý Ảo AI</h3>
+            <p class="feature-category-description">
+              Hỗ trợ tư vấn 24/7 không ngừng nghỉ
+            </p>
+          </div>
+          <div class="feature-category-content">
+            <ul class="feature-list">
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Tư vấn tìm BĐS phù hợp nhu cầu</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Giải đáp thắc mắc về hợp đồng</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Hỗ trợ giải quyết sự cố 24/7</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Phân tích khu vực và giá cả</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="feature-category">
+          <div
+            class="feature-category-header"
+            style="
+              background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            "
+          >
+            <div class="feature-category-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3 class="feature-category-title">Báo Cáo & Phân Tích</h3>
+            <p class="feature-category-description">
+              Nắm bắt thông tin tài chính chi tiết
+            </p>
+          </div>
+          <div class="feature-category-content">
+            <ul class="feature-list">
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Dashboard tổng quan tài sản</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Báo cáo thu chi hàng tháng</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text"
+                  >Phân tích hiệu suất đầu tư</span
+                >
+              </li>
+              <li class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span class="feature-item-text">Xuất báo cáo PDF/Excel</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Detail Section -->
+    <section class="feature-detail">
+      <div class="feature-detail-container">
+        <div class="feature-showcase">
+          <div class="feature-text">
+            <h3>Hợp Đồng Điện Tử <span class="highlight">Thông Minh</span></h3>
+            <p>
+              Ký kết và quản lý hợp đồng trở nên đơn giản với hệ thống hợp đồng
+              điện tử của SmartRent. Không cần gặp mặt trực tiếp, tiết kiệm thời
+              gian và chi phí, đồng thời đảm bảo tính pháp lý và bảo mật.
+            </p>
+            <ul class="feature-benefits">
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Ký kết hợp đồng chỉ trong vài phút</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Bảo mật cao với chữ ký số có xác thực</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-bell"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Thông báo tự động khi hợp đồng gần hết hạn</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-history"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Lưu trữ lịch sử và truy cập mọi lúc mọi nơi</span
+                >
+              </li>
+            </ul>
+            <a href="#" class="btn btn-primary"
+              >Xem Demo <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+          <div class="feature-image">
+            <img
+              src="https://images.unsplash.com/photo-1581287053822-fd7bf4f4bfec?w=800&q=80"
+              alt="Hợp đồng điện tử"
+            />
+            <div class="feature-image-overlay"></div>
+          </div>
+        </div>
+
+        <div class="feature-showcase">
+          <div class="feature-text">
+            <h3>
+              Thanh Toán <span class="highlight">Tự Động & Minh Bạch</span>
+            </h3>
+            <p>
+              Quản lý mọi khoản thanh toán chỉ trên một nền tảng duy nhất. Hệ
+              thống thanh toán của SmartRent hỗ trợ đa dạng phương thức, tự động
+              hóa các khoản định kỳ và cung cấp thông tin minh bạch cho cả chủ
+              nhà và người thuê.
+            </p>
+            <ul class="feature-benefits">
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Thanh toán tự động theo lịch định kỳ</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-wallet"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Hỗ trợ đa dạng phương thức thanh toán</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-file-invoice"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Hóa đơn điện tử đầy đủ và chi tiết</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Theo dõi lịch sử giao dịch trực quan</span
+                >
+              </li>
+            </ul>
+            <a href="#" class="btn btn-primary"
+              >Khám Phá <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+          <div class="feature-image">
+            <img
+              src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80"
+              alt="Thanh toán tự động"
+            />
+            <div class="feature-image-overlay"></div>
+          </div>
+        </div>
+
+        <div class="feature-showcase">
+          <div class="feature-text">
+            <h3>Trợ Lý <span class="highlight">AI Thông Minh</span></h3>
+            <p>
+              Trợ lý ảo AI của SmartRent luôn sẵn sàng hỗ trợ 24/7, giúp bạn tìm
+              kiếm bất động sản phù hợp, giải đáp thắc mắc về hợp đồng, và tư
+              vấn về các vấn đề liên quan đến nhà ở một cách nhanh chóng và
+              chính xác.
+            </p>
+            <ul class="feature-benefits">
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-search"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Tìm kiếm thông minh theo ngôn ngữ tự nhiên</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-comment-dots"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Trả lời tức thì mọi thắc mắc</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Phân tích khu vực và tiện ích xung quanh</span
+                >
+              </li>
+              <li class="feature-benefit">
+                <div class="feature-benefit-icon">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <span class="feature-benefit-text"
+                  >Học hỏi từ thói quen để cá nhân hóa đề xuất</span
+                >
+              </li>
+            </ul>
+            <a href="#" class="btn btn-primary"
+              >Trò Chuyện Ngay <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+          <div class="feature-image">
+            <img
+              src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=800&q=80"
+              alt="AI Assistant"
+            />
+            <div class="feature-image-overlay"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section">
+      <div class="form-container">
+        <div class="form-header">
+          <h2>Đăng Ký Trải Nghiệm Tính Năng</h2>
+          <p>
+            Điền thông tin để nhận demo chi tiết về các tính năng của SmartRent
+          </p>
+        </div>
+        <div class="form-body">
+          <form>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Họ và tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Nhập họ và tên của bạn"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Số điện thoại</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  placeholder="Nhập số điện thoại"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Nhập địa chỉ email"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bạn là</label>
+                <select class="form-select">
+                  <option value="" selected disabled>
+                    Chọn vai trò của bạn
+                  </option>
+                  <option value="tenant">Người thuê nhà</option>
+                  <option value="landlord">Chủ nhà</option>
+                  <option value="agent">Môi giới bất động sản</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tính năng bạn quan tâm</label>
+              <select class="form-select">
+                <option value="" selected disabled>Chọn tính năng</option>
+                <option value="contract">Hợp đồng điện tử</option>
+                <option value="payment">Thanh toán tự động</option>
+                <option value="ai">Trợ lý AI</option>
+                <option value="security">Bảo mật & Xác thực</option>
+                <option value="reporting">Báo cáo & Phân tích</option>
+                <option value="all">Tất cả tính năng</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Nội dung cần tư vấn</label>
+              <textarea
+                class="form-control form-textarea"
+                placeholder="Nhập nội dung bạn cần được tư vấn..."
+              ></textarea>
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="terms" />
+              <label class="form-check-label" for="terms"
+                >Tôi đồng ý với
+                <a href="#" style="color: var(--primary-color)"
+                  >điều khoản sử dụng</a
+                >
+                và
+                <a href="#" style="color: var(--primary-color)"
+                  >chính sách bảo mật</a
+                >
+                của SmartRent</label
+              >
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                Gửi Yêu Cầu <i class="fas fa-paper-plane"></i>
+              </button>
+              <button type="reset" class="btn btn-outline">Làm lại</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Plans Section -->
+    <section class="plans-section">
+      <div class="plans-container">
+        <h2 class="section-title">
+          Gói <span class="highlight">Dịch Vụ</span> Của Chúng Tôi
+        </h2>
+        <p class="section-description">
+          Chọn gói dịch vụ phù hợp với nhu cầu của bạn và trải nghiệm đầy đủ các
+          tính năng thông minh của SmartRent
+        </p>
+
+        <div class="plan-cards">
+          <div class="plan-card">
+            <div class="plan-header">
+              <h3 class="plan-name">Cơ Bản</h3>
+              <div class="plan-price">Miễn phí</div>
+              <div class="plan-billing">Không giới hạn thời gian</div>
+              <p class="plan-description">Phù hợp cho người mới tìm hiểu</p>
+            </div>
+            <div class="plan-features">
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Tìm kiếm cơ bản</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Xem bất động sản giới hạn (10/ngày)</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Trợ lý AI (giới hạn 5 câu hỏi/ngày)</span>
+              </div>
+              <div class="plan-feature disabled">
+                <i class="fas fa-times"></i>
+                <span>Ký hợp đồng điện tử</span>
+              </div>
+              <div class="plan-feature disabled">
+                <i class="fas fa-times"></i>
+                <span>Thanh toán tự động</span>
+              </div>
+              <div class="plan-feature disabled">
+                <i class="fas fa-times"></i>
+                <span>Báo cáo và phân tích</span>
+              </div>
+            </div>
+            <div class="plan-cta">
+              <a href="#" class="btn btn-outline">Đăng Ký Ngay</a>
+            </div>
+          </div>
+
+          <div class="plan-card popular">
+            <div class="plan-header">
+              <h3 class="plan-name">Tiêu Chuẩn</h3>
+              <div class="plan-price">199.000đ</div>
+              <div class="plan-billing">Theo tháng</div>
+              <p class="plan-description">
+                Dành cho người thuê nhà thông thường
+              </p>
+            </div>
+            <div class="plan-features">
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Tất cả tính năng Cơ Bản</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Xem bất động sản không giới hạn</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Trợ lý AI không giới hạn</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Ký hợp đồng điện tử (3/tháng)</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Thanh toán tự động</span>
+              </div>
+              <div class="plan-feature disabled">
+                <i class="fas fa-times"></i>
+                <span>Báo cáo và phân tích nâng cao</span>
+              </div>
+            </div>
+            <div class="plan-cta">
+              <a href="#" class="btn btn-primary">Dùng Thử Miễn Phí</a>
+            </div>
+          </div>
+
+          <div class="plan-card">
+            <div class="plan-header">
+              <h3 class="plan-name">Cao Cấp</h3>
+              <div class="plan-price">499.000đ</div>
+              <div class="plan-billing">Theo tháng</div>
+              <p class="plan-description">Lý tưởng cho chủ nhà và nhà đầu tư</p>
+            </div>
+            <div class="plan-features">
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Tất cả tính năng Tiêu Chuẩn</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Ký hợp đồng điện tử không giới hạn</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Quản lý bất động sản đa tài sản</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Báo cáo và phân tích chuyên sâu</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Hỗ trợ ưu tiên 24/7</span>
+              </div>
+              <div class="plan-feature">
+                <i class="fas fa-check"></i>
+                <span>Tích hợp API cho doanh nghiệp</span>
+              </div>
+            </div>
+            <div class="plan-cta">
+              <a href="#" class="btn btn-outline">Đăng Ký Ngay</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+      <div class="faq-container">
+        <h2 class="section-title">
+          Câu Hỏi <span class="highlight">Thường Gặp</span>
+        </h2>
+        <p class="section-description">
+          Giải đáp những thắc mắc phổ biến về các tính năng của SmartRent
+        </p>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Làm thế nào để ký hợp đồng điện tử trên SmartRent?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Để ký hợp đồng điện tử, bạn cần đăng nhập vào tài khoản
+                SmartRent, chọn mục "Hợp đồng" và nhấn "Tạo hợp đồng mới". Hệ
+                thống sẽ hướng dẫn bạn qua các bước: điền thông tin, tải lên tài
+                liệu cần thiết, xác thực danh tính, và thực hiện ký số. Sau khi
+                tất cả các bên hoàn tất ký kết, hợp đồng sẽ được lưu trữ trên hệ
+                thống và gửi bản sao đến email của bạn.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Hệ thống thanh toán tự động hoạt động như thế nào?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Hệ thống thanh toán tự động của SmartRent cho phép bạn thiết lập
+                các khoản thanh toán định kỳ (như tiền thuê nhà hàng tháng) một
+                lần duy nhất. Bạn cần liên kết phương thức thanh toán (thẻ ngân
+                hàng, ví điện tử) với tài khoản và cài đặt lịch thanh toán. Hệ
+                thống sẽ tự động trích tiền vào ngày đã chọn, tạo hóa đơn điện
+                tử và gửi thông báo cho cả người thuê và chủ nhà. Bạn có thể
+                theo dõi lịch sử giao dịch và xuất báo cáo chi tiết bất cứ lúc
+                nào.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Trợ lý AI có thể giúp tôi những gì?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Trợ lý AI của SmartRent có thể hỗ trợ bạn trong nhiều tác vụ:
+                tìm kiếm bất động sản phù hợp với yêu cầu cụ thể (vị trí, diện
+                tích, giá cả), giải đáp thắc mắc về các điều khoản trong hợp
+                đồng, tư vấn về quy trình thuê nhà, cung cấp thông tin về khu
+                vực (tiện ích, an ninh, giá cả thị trường), hỗ trợ lên lịch xem
+                nhà, nhắc nhở các khoản thanh toán sắp đến hạn và giải quyết các
+                vấn đề cơ bản trong quá trình sử dụng ứng dụng.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Làm sao để xuất báo cáo thu chi cho thuê nhà?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Để xuất báo cáo thu chi cho thuê nhà, hãy truy cập vào mục "Báo
+                cáo & Thống kê" trên trang tổng quan. Tại đây, bạn có thể lọc
+                theo thời gian (tháng, quý, năm) và chọn loại báo cáo mong muốn
+                (tổng quan, thu nhập, chi phí, lợi nhuận). Sau khi tùy chỉnh các
+                thông số, nhấn "Tạo báo cáo" và hệ thống sẽ tổng hợp dữ liệu.
+                Bạn có thể xem trực tiếp trên màn hình hoặc xuất ra định dạng
+                PDF, Excel để lưu trữ và in ấn.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Thông tin cá nhân của tôi có được bảo mật không?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                SmartRent cam kết bảo vệ thông tin cá nhân của người dùng với hệ
+                thống bảo mật đa lớp. Chúng tôi sử dụng công nghệ mã hóa đầu
+                cuối cho dữ liệu nhạy cảm, xác thực hai yếu tố cho đăng nhập, và
+                tuân thủ nghiêm ngặt các quy định về bảo vệ dữ liệu cá nhân.
+                Thông tin của bạn chỉ được sử dụng trong phạm vi cần thiết để
+                cung cấp dịch vụ và không bao giờ được chia sẻ với bên thứ ba mà
+                không có sự đồng ý. Bạn có thể xem chi tiết về cách chúng tôi xử
+                lý dữ liệu trong Chính sách Bảo mật.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features CTA Section -->
+    <section class="features-cta">
+      <div class="features-cta-content">
+        <h2>Sẵn Sàng Trải Nghiệm Tất Cả Tính Năng?</h2>
+        <p>
+          Đăng ký ngay hôm nay để khám phá tất cả các tính năng thông minh của
+          SmartRent và biến việc quản lý nhà thuê trở nên dễ dàng hơn bao giờ
+          hết
+        </p>
+        <div class="features-cta-buttons">
+          <a
+            href="#"
+            class="btn btn-primary"
+            style="
+              background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+              box-shadow: 0 8px 25px rgba(255, 216, 155, 0.4);
+            "
+          >
+            <i class="fas fa-user-plus"></i> Đăng Ký Miễn Phí
+          </a>
+          <a
+            href="#"
+            class="btn btn-outline"
+            style="
+              color: white;
+              border-color: white;
+              backdrop-filter: blur(10px);
+            "
+          >
+            <i class="fas fa-calendar"></i> Đặt Lịch Demo
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo"><i class="fas fa-home"></i> SmartRent</div>
+          <p class="footer-about">
+            SmartRent là nền tảng quản lý và cho thuê bất động sản thông minh
+            hàng đầu, ứng dụng công nghệ AI giúp kết nối chủ nhà và người thuê
+            hiệu quả.
+          </p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3>Liên kết nhanh</h3>
+          <ul>
+            <li>
+              <a href="index.html"
+                ><i class="fas fa-chevron-right"></i> Trang chủ</a
+              >
+            </li>
+            <li>
+              <a href="#properties"
+                ><i class="fas fa-chevron-right"></i> Bất động sản</a
+              >
+            </li>
+            <li>
+              <a href="#features"
+                ><i class="fas fa-chevron-right"></i> Tính năng</a
+              >
+            </li>
+            <li>
+              <a href="#about"
+                ><i class="fas fa-chevron-right"></i> Về chúng tôi</a
+              >
+            </li>
+            <li>
+              <a href="#contact"
+                ><i class="fas fa-chevron-right"></i> Liên hệ</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Dịch vụ</h3>
+          <ul>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Thuê nhà</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Cho thuê</a>
+            </li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-chevron-right"></i> Quản lý tài sản</a
+              >
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Tư vấn đầu tư</a>
+            </li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-chevron-right"></i> Ký hợp đồng điện tử</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Liên hệ</h3>
+          <ul>
+            <li>
+              <a href="#"
+                ><i class="fas fa-map-marker-alt"></i> 123 Nguyễn Huệ, Quận 1,
+                TP.HCM</a
+              >
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-phone-alt"></i> (028) 3822 8888</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-envelope"></i> info@smartrent.vn</a>
+            </li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-clock"></i> 8:00 - 17:30, Thứ 2 - Thứ 7</a
+              >
+            </li>
+          </ul>
+
+          <div class="newsletter">
+            <p>Đăng ký nhận tin mới nhất</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Email của bạn" required />
+              <button type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 SmartRent. Tất cả quyền được bảo lưu.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile Menu Toggle
+      const mobileToggle = document.getElementById("mobileToggle");
+      const navLinks = document.getElementById("navLinks");
+
+      mobileToggle.addEventListener("click", function () {
+        navLinks.classList.toggle("active");
+
+        if (navLinks.classList.contains("active")) {
+          mobileToggle.innerHTML = '<i class="fas fa-times"></i>';
+        } else {
+          mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+      });
+
+      // Header scroll effect
+      const header = document.getElementById("header");
+
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+
+      // Scroll reveal
+      function revealOnScroll() {
+        const reveals = document.querySelectorAll(".reveal");
+
+        reveals.forEach((element) => {
+          const windowHeight = window.innerHeight;
+          const elementTop = element.getBoundingClientRect().top;
+          const elementVisible = 150;
+
+          if (elementTop < windowHeight - elementVisible) {
+            element.classList.add("active");
+          }
+        });
+      }
+
+      window.addEventListener("scroll", revealOnScroll);
+      window.addEventListener("load", revealOnScroll);
+
+      // FAQ Toggle
+      function toggleFaq(element) {
+        const answer = element.nextElementSibling;
+        const isActive = element.classList.contains("active");
+
+        // Close all FAQs
+        document.querySelectorAll(".faq-question").forEach((item) => {
+          item.classList.remove("active");
+          item.nextElementSibling.classList.remove("active");
+        });
+
+        // If the clicked FAQ wasn't already active, open it
+        if (!isActive) {
+          element.classList.add("active");
+          answer.classList.add("active");
+        }
+      }
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          if (this.getAttribute("href") !== "#") {
+            e.preventDefault();
+
+            const targetId = this.getAttribute("href");
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+              const headerHeight = header.offsetHeight;
+              const targetPosition =
+                targetElement.getBoundingClientRect().top +
+                window.scrollY -
+                headerHeight;
+
+              window.scrollTo({
+                top: targetPosition,
+                behavior: "smooth",
+              });
+
+              // Close mobile menu if open
+              navLinks.classList.remove("active");
+              mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
