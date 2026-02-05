@@ -1,0 +1,1850 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartRent - Dashboard Người Thuê</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --bg-light: #f8fafc;
+        --bg-card: #ffffff;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        background-color: var(--bg-light);
+      }
+
+      /* Header */
+      .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        z-index: 1000;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      .nav {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.75rem;
+        font-weight: 900;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 500;
+        transition: color 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .nav-links a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--gradient-primary);
+        border-radius: 1px;
+      }
+
+      .user-menu {
+        position: relative;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        padding: 0.5rem 0;
+        min-width: 200px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+
+      .dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .dropdown a {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: var(--text-dark);
+        text-decoration: none;
+        transition: background 0.3s ease;
+      }
+
+      .dropdown a:hover {
+        background: var(--gray-50);
+      }
+
+      /* Main Layout */
+      .main-layout {
+        margin-top: 80px;
+        display: flex;
+        min-height: calc(100vh - 80px);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: white;
+        border-right: 1px solid var(--gray-200);
+        padding: 2rem 0;
+        position: fixed;
+        height: calc(100vh - 80px);
+        overflow-y: auto;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+        padding: 0 1rem;
+      }
+
+      .sidebar-menu li {
+        margin-bottom: 0.5rem;
+      }
+
+      .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        color: var(--text-light);
+        text-decoration: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .sidebar-menu i {
+        width: 20px;
+        font-size: 1.2rem;
+      }
+
+      /* Content */
+      .content {
+        flex: 1;
+        margin-left: 280px;
+        padding: 2rem;
+      }
+
+      .page-header {
+        margin-bottom: 2rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .breadcrumb {
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      /* Cards */
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+        border-left: 4px solid var(--primary-color);
+        transition: transform 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--gradient-primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      /* Search Section */
+      .search-card {
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .search-form {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr auto;
+        gap: 1rem;
+        align-items: end;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 1rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        backdrop-filter: blur(10px);
+      }
+
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .btn {
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        justify-content: center;
+      }
+
+      .btn-primary {
+        background: white;
+        color: var(--primary-color);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-outline {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        background: transparent;
+      }
+
+      .btn-success {
+        background: var(--success-color);
+        color: white;
+      }
+
+      .btn-warning {
+        background: var(--warning-color);
+        color: white;
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: white;
+      }
+
+      /* Property Cards */
+      .properties-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+      }
+
+      .property-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .property-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .property-image {
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .property-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--success-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .property-info {
+        padding: 1.5rem;
+      }
+
+      .property-price {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .property-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .property-location {
+        color: var(--text-light);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .property-features {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      .property-actions {
+        display: flex;
+        gap: 1rem;
+      }
+
+      /* Tables */
+      .table-responsive {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid var(--gray-200);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      th {
+        background: var(--gray-50);
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      .status-approved {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+      }
+
+      .status-rejected {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+      }
+
+      /* Payment Form */
+      .payment-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+
+      .payment-method {
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .payment-method:hover,
+      .payment-method.selected {
+        border-color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.05);
+      }
+
+      .payment-method img {
+        height: 40px;
+        margin-bottom: 1rem;
+      }
+
+      /* Chatbot */
+      .chatbot-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+      }
+
+      .chatbot-toggle {
+        width: 60px;
+        height: 60px;
+        background: var(--gradient-primary);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .chatbot-toggle:hover {
+        transform: scale(1.1);
+      }
+
+      .chatbot-window {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+      }
+
+      .chatbot-window.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .chatbot-header {
+        padding: 1.5rem;
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 16px 16px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .chatbot-messages {
+        height: 300px;
+        padding: 1rem;
+        overflow-y: auto;
+      }
+
+      .message {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .message.user {
+        justify-content: flex-end;
+      }
+
+      .message-content {
+        max-width: 80%;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+      }
+
+      .message.bot .message-content {
+        background: var(--gray-100);
+        color: var(--text-dark);
+      }
+
+      .message.user .message-content {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .chatbot-input {
+        display: flex;
+        padding: 1rem;
+        border-top: 1px solid var(--gray-200);
+      }
+
+      .chatbot-input input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid var(--gray-200);
+        border-radius: 20px;
+        margin-right: 0.5rem;
+      }
+
+      .chatbot-input button {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease;
+        }
+
+        .sidebar.show {
+          transform: translateX(0);
+        }
+
+        .content {
+          margin-left: 0;
+        }
+
+        .search-form {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .content {
+          padding: 1rem;
+        }
+
+        .properties-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .payment-methods {
+          grid-template-columns: 1fr;
+        }
+
+        .chatbot-window {
+          width: 300px;
+        }
+      }
+
+      /* Hidden pages */
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      /* Form styles */
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      /* Contract styles */
+      .contract-card {
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .contract-card:hover {
+        box-shadow: var(--shadow);
+      }
+
+      .contract-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .contract-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .contract-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-light);
+      }
+
+      /* Bill styles */
+      .bill-summary {
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .bill-amount {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+      }
+
+      .bill-items {
+        margin-top: 1.5rem;
+      }
+
+      .bill-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .bill-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      /* Profile styles */
+      .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        font-weight: 700;
+      }
+
+      .profile-info h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .profile-info p {
+        color: var(--text-light);
+        margin-bottom: 0.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <nav class="nav">
+        <div class="logo">
+          <i class="fas fa-home"></i>
+          SmartRent
+        </div>
+        <ul class="nav-links">
+          <li>
+            <a href="#" onclick="showPage('dashboard')" class="active"
+              >Trang chủ</a
+            >
+          </li>
+          <li><a href="#" onclick="showPage('search')">Tìm kiếm</a></li>
+          <li><a href="#" onclick="showPage('requests')">Yêu cầu thuê</a></li>
+          <li><a href="#" onclick="showPage('contracts')">Hợp đồng</a></li>
+          <li><a href="#" onclick="showPage('bills')">Hóa đơn</a></li>
+          <li><a href="#" onclick="showPage('payments')">Thanh toán</a></li>
+          <li><a href="#" onclick="showPage('profile')">Tài khoản</a></li>
+        </ul>
+        <div class="user-menu">
+          <div class="user-avatar" onclick="toggleDropdown()">NV</div>
+          <div class="dropdown" id="userDropdown">
+            <a href="#" onclick="showPage('profile')">
+              <i class="fas fa-user"></i>
+              Thông tin cá nhân
+            </a>
+            <a href="#" onclick="showPage('settings')">
+              <i class="fas fa-cog"></i>
+              Cài đặt
+            </a>
+            <a href="#" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              Đăng xuất
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#" onclick="showPage('dashboard')" class="active">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('search')">
+              <i class="fas fa-search"></i>
+              Tìm kiếm nhà
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('requests')">
+              <i class="fas fa-clipboard-list"></i>
+              Yêu cầu thuê
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('contracts')">
+              <i class="fas fa-file-contract"></i>
+              Hợp đồng thuê
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('bills')">
+              <i class="fas fa-receipt"></i>
+              Hóa đơn & Chi phí
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('payment-history')">
+              <i class="fas fa-history"></i>
+              Lịch sử thanh toán
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('payments')">
+              <i class="fas fa-credit-card"></i>
+              Thanh toán
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('profile')">
+              <i class="fas fa-user-edit"></i>
+              Thông tin cá nhân
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showPage('notifications')">
+              <i class="fas fa-bell"></i>
+              Thông báo
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+          <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="breadcrumb">Trang chủ > Dashboard</p>
+          </div>
+
+          <!-- Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-clipboard-list"></i>
+              </div>
+              <div class="stat-number">3</div>
+              <div class="stat-label">Yêu cầu thuê đang chờ</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-file-contract"></i>
+              </div>
+              <div class="stat-number">2</div>
+              <div class="stat-label">Hợp đồng hiện tại</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-receipt"></i>
+              </div>
+              <div class="stat-number">1</div>
+              <div class="stat-label">Hóa đơn chưa thanh toán</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="stat-number">8.5M</div>
+              <div class="stat-label">Tổng chi phí tháng này</div>
+            </div>
+          </div>
+
+          <!-- Recent Activities -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Hoạt động gần đây</h3>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Thời gian</th>
+                    <th>Hoạt động</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>10/01/2026</td>
+                    <td>Yêu cầu thuê căn hộ Vinhomes Central Park</td>
+                    <td><span class="status status-pending">Đang chờ</span></td>
+                    <td><button class="btn btn-outline">Chi tiết</button></td>
+                  </tr>
+                  <tr>
+                    <td>08/01/2026</td>
+                    <td>Thanh toán tiền thuê tháng 1</td>
+                    <td>
+                      <span class="status status-approved">Thành công</span>
+                    </td>
+                    <td><button class="btn btn-outline">Xem</button></td>
+                  </tr>
+                  <tr>
+                    <td>05/01/2026</td>
+                    <td>Ký hợp đồng thuê căn hộ Masteri Thảo Điền</td>
+                    <td>
+                      <span class="status status-approved">Hoàn thành</span>
+                    </td>
+                    <td><button class="btn btn-outline">Xem</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Page -->
+        <div id="search" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Tìm kiếm nhà</h1>
+            <p class="breadcrumb">Trang chủ > Tìm kiếm</p>
+          </div>
+
+          <!-- Search Form -->
+          <div class="search-card">
+            <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem">
+              Tìm ngôi nhà mơ ước của bạn
+            </h3>
+            <form class="search-form">
+              <div class="form-group">
+                <label>Khu vực</label>
+                <input type="text" placeholder="Nhập địa điểm..." />
+              </div>
+              <div class="form-group">
+                <label>Giá thuê</label>
+                <select>
+                  <option>Tất cả</option>
+                  <option>Dưới 3 triệu</option>
+                  <option>3-5 triệu</option>
+                  <option>5-10 triệu</option>
+                  <option>Trên 10 triệu</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Loại hình</label>
+                <select>
+                  <option>Tất cả</option>
+                  <option>Căn hộ</option>
+                  <option>Nhà phố</option>
+                  <option>Studio</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-search"></i>
+                  Tìm kiếm
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Search Results -->
+          <div class="properties-grid">
+            <div class="property-card">
+              <div class="property-image">
+                <div class="property-badge">Mới</div>
+              </div>
+              <div class="property-info">
+                <div class="property-price">8.5 triệu/tháng</div>
+                <h4 class="property-title">
+                  Căn hộ cao cấp Vinhomes Central Park
+                </h4>
+                <div class="property-location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Quận Bình Thạnh, TP.HCM
+                </div>
+                <div class="property-features">
+                  <div class="feature"><i class="fas fa-bed"></i> 2 phòng</div>
+                  <div class="feature"><i class="fas fa-bath"></i> 2 WC</div>
+                  <div class="feature"><i class="fas fa-expand"></i> 75m²</div>
+                </div>
+                <div class="property-actions">
+                  <button class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i>
+                    Gửi yêu cầu
+                  </button>
+                  <button class="btn btn-outline">
+                    <i class="fas fa-eye"></i>
+                    Xem chi tiết
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="property-card">
+              <div class="property-image">
+                <div class="property-badge">Hot</div>
+              </div>
+              <div class="property-info">
+                <div class="property-price">5.5 triệu/tháng</div>
+                <h4 class="property-title">Căn hộ Sunrise City</h4>
+                <div class="property-location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Quận 7, TP.HCM
+                </div>
+                <div class="property-features">
+                  <div class="feature"><i class="fas fa-bed"></i> 1 phòng</div>
+                  <div class="feature"><i class="fas fa-bath"></i> 1 WC</div>
+                  <div class="feature"><i class="fas fa-expand"></i> 55m²</div>
+                </div>
+                <div class="property-actions">
+                  <button class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i>
+                    Gửi yêu cầu
+                  </button>
+                  <button class="btn btn-outline">
+                    <i class="fas fa-eye"></i>
+                    Xem chi tiết
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Requests Page -->
+        <div id="requests" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Yêu cầu thuê</h1>
+            <p class="breadcrumb">Trang chủ > Yêu cầu thuê</p>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Danh sách yêu cầu</h3>
+              <button class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                Tạo yêu cầu mới
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ngày gửi</th>
+                    <th>Bất động sản</th>
+                    <th>Chủ nhà</th>
+                    <th>Giá thuê</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>10/01/2026</td>
+                    <td>Căn hộ Vinhomes Central Park</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>8.5 triệu/tháng</td>
+                    <td><span class="status status-pending">Đang chờ</span></td>
+                    <td>
+                      <button class="btn btn-outline">Chi tiết</button>
+                      <button class="btn btn-danger">Hủy</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>08/01/2026</td>
+                    <td>Studio Lexington Residence</td>
+                    <td>Trần Thị B</td>
+                    <td>3.5 triệu/tháng</td>
+                    <td>
+                      <span class="status status-approved">Chấp nhận</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-success">Ký hợp đồng</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>05/01/2026</td>
+                    <td>Căn hộ Masteri Thảo Điền</td>
+                    <td>Lê Văn C</td>
+                    <td>4.2 triệu/tháng</td>
+                    <td><span class="status status-rejected">Từ chối</span></td>
+                    <td>
+                      <button class="btn btn-outline">Xem lý do</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contracts Page -->
+        <div id="contracts" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Hợp đồng thuê</h1>
+            <p class="breadcrumb">Trang chủ > Hợp đồng</p>
+          </div>
+
+          <div class="contract-card">
+            <div class="contract-header">
+              <div class="contract-title">
+                Hợp đồng thuê căn hộ Masteri Thảo Điền
+              </div>
+              <span class="status status-approved">Đang hiệu lực</span>
+            </div>
+            <div class="contract-details">
+              <div class="detail-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Từ: 01/01/2026 - 31/12/2026</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-dollar-sign"></i>
+                <span>4.2 triệu/tháng</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-user"></i>
+                <span>Chủ nhà: Lê Văn C</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Quận 2, TP.HCM</span>
+              </div>
+            </div>
+            <div style="margin-top: 1.5rem">
+              <button class="btn btn-primary">
+                <i class="fas fa-download"></i>
+                Tải hợp đồng
+              </button>
+              <button class="btn btn-outline">
+                <i class="fas fa-eye"></i>
+                Xem chi tiết
+              </button>
+            </div>
+          </div>
+
+          <div class="contract-card">
+            <div class="contract-header">
+              <div class="contract-title">Hợp đồng thuê Studio Lexington</div>
+              <span class="status status-warning">Sắp hết hạn</span>
+            </div>
+            <div class="contract-details">
+              <div class="detail-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Từ: 01/06/2025 - 31/05/2026</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-dollar-sign"></i>
+                <span>3.5 triệu/tháng</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-user"></i>
+                <span>Chủ nhà: Trần Thị B</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Quận 2, TP.HCM</span>
+              </div>
+            </div>
+            <div style="margin-top: 1.5rem">
+              <button class="btn btn-warning">
+                <i class="fas fa-sync-alt"></i>
+                Gia hạn
+              </button>
+              <button class="btn btn-outline">
+                <i class="fas fa-eye"></i>
+                Xem chi tiết
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bills Page -->
+        <div id="bills" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Hóa đơn & Chi phí</h1>
+            <p class="breadcrumb">Trang chủ > Hóa đơn</p>
+          </div>
+
+          <div class="bill-summary">
+            <h3>Tổng chi phí tháng 1/2026</h3>
+            <div class="bill-amount">8,560,000 VNĐ</div>
+            <p>Cần thanh toán trước ngày 15/01/2026</p>
+
+            <div class="bill-items">
+              <div class="bill-item">
+                <span>Tiền thuê nhà</span>
+                <strong>4,200,000 VNĐ</strong>
+              </div>
+              <div class="bill-item">
+                <span>Tiền điện (150 kWh × 3,500)</span>
+                <strong>525,000 VNĐ</strong>
+              </div>
+              <div class="bill-item">
+                <span>Tiền nước (25m³ × 28,000)</span>
+                <strong>700,000 VNĐ</strong>
+              </div>
+              <div class="bill-item">
+                <span>Phí quản lý</span>
+                <strong>150,000 VNĐ</strong>
+              </div>
+              <div class="bill-item">
+                <span>Internet</span>
+                <strong>200,000 VNĐ</strong>
+              </div>
+              <div class="bill-item">
+                <span>Phí dịch vụ khác</span>
+                <strong>85,000 VNĐ</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Lịch sử hóa đơn</h3>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tháng</th>
+                    <th>Tổng tiền</th>
+                    <th>Ngày hết hạn</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>01/2026</td>
+                    <td>8,560,000 VNĐ</td>
+                    <td>15/01/2026</td>
+                    <td>
+                      <span class="status status-pending">Chưa thanh toán</span>
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-primary"
+                        onclick="showPage('payments')"
+                      >
+                        Thanh toán
+                      </button>
+                      <button class="btn btn-outline">Chi tiết</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>12/2025</td>
+                    <td>8,320,000 VNĐ</td>
+                    <td>15/12/2025</td>
+                    <td>
+                      <span class="status status-approved">Đã thanh toán</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-outline">Xem hóa đơn</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>11/2025</td>
+                    <td>8,150,000 VNĐ</td>
+                    <td>15/11/2025</td>
+                    <td>
+                      <span class="status status-approved">Đã thanh toán</span>
+                    </td>
+                    <td>
+                      <button class="btn btn-outline">Xem hóa đơn</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment History Page -->
+        <div id="payment-history" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Lịch sử thanh toán</h1>
+            <p class="breadcrumb">Trang chủ > Lịch sử thanh toán</p>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ngày thanh toán</th>
+                    <th>Mã giao dịch</th>
+                    <th>Nội dung</th>
+                    <th>Số tiền</th>
+                    <th>Phương thức</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>15/12/2025</td>
+                    <td>TXN001234</td>
+                    <td>Thanh toán tiền thuê tháng 12/2025</td>
+                    <td>8,320,000 VNĐ</td>
+                    <td>VNPay</td>
+                    <td>
+                      <span class="status status-approved">Thành công</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>15/11/2025</td>
+                    <td>TXN001233</td>
+                    <td>Thanh toán tiền thuê tháng 11/2025</td>
+                    <td>8,150,000 VNĐ</td>
+                    <td>MoMo</td>
+                    <td>
+                      <span class="status status-approved">Thành công</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01/06/2025</td>
+                    <td>TXN001200</td>
+                    <td>Thanh toán tiền đặt cọc</td>
+                    <td>8,400,000 VNĐ</td>
+                    <td>Chuyển khoản</td>
+                    <td>
+                      <span class="status status-approved">Thành công</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payments Page -->
+        <div id="payments" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Thanh toán</h1>
+            <p class="breadcrumb">Trang chủ > Thanh toán</p>
+          </div>
+
+          <div class="payment-section">
+            <h3>Thanh toán hóa đơn tháng 01/2026</h3>
+            <div class="bill-summary" style="margin: 2rem 0">
+              <div class="bill-amount">8,560,000 VNĐ</div>
+              <p>Hạn thanh toán: 15/01/2026</p>
+            </div>
+
+            <h4 style="margin-bottom: 1rem">Chọn phương thức thanh toán:</h4>
+            <div class="payment-methods">
+              <div class="payment-method selected">
+                <img
+                  src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                  alt="VNPay"
+                />
+                <h4>VNPay</h4>
+                <p>Thanh toán qua VNPay QR</p>
+              </div>
+              <div class="payment-method">
+                <img
+                  src="https://developers.momo.vn/v3/assets/images/logo.png"
+                  alt="MoMo"
+                />
+                <h4>MoMo</h4>
+                <p>Ví điện tử MoMo</p>
+              </div>
+              <div class="payment-method">
+                <img
+                  src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay.png"
+                  alt="ZaloPay"
+                />
+                <h4>ZaloPay</h4>
+                <p>Ví điện tử ZaloPay</p>
+              </div>
+              <div class="payment-method">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png"
+                  alt="Bank"
+                />
+                <h4>Chuyển khoản</h4>
+                <p>Chuyển khoản ngân hàng</p>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem">
+              <button
+                class="btn btn-primary"
+                style="font-size: 1.1rem; padding: 1.2rem 3rem"
+              >
+                <i class="fas fa-credit-card"></i>
+                Thanh toán ngay
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Thông tin cá nhân</h1>
+            <p class="breadcrumb">Trang chủ > Thông tin cá nhân</p>
+          </div>
+
+          <div class="profile-header">
+            <div class="profile-avatar">NV</div>
+            <div class="profile-info">
+              <h2>Nguyễn Văn Nam</h2>
+              <p><i class="fas fa-envelope"></i> nguyen.van.nam@email.com</p>
+              <p><i class="fas fa-phone"></i> 0901234567</p>
+              <p><i class="fas fa-calendar-alt"></i> Tham gia từ 01/06/2025</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Cập nhật thông tin</h3>
+            </div>
+            <form>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Họ và tên</label>
+                  <input type="text" value="Nguyễn Văn Nam" />
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" value="nguyen.van.nam@email.com" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Số điện thoại</label>
+                  <input type="tel" value="0901234567" />
+                </div>
+                <div class="form-group">
+                  <label>Ngày sinh</label>
+                  <input type="date" value="1990-01-01" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>CCCD/CMND</label>
+                  <input type="text" value="123456789" />
+                </div>
+                <div class="form-group">
+                  <label>Nghề nghiệp</label>
+                  <input type="text" value="Kỹ sư phần mềm" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Địa chỉ</label>
+                <textarea rows="3">123 Đường ABC, Quận 1, TP.HCM</textarea>
+              </div>
+              <div style="margin-top: 2rem">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i>
+                  Cập nhật thông tin
+                </button>
+                <button type="button" class="btn btn-outline">
+                  <i class="fas fa-key"></i>
+                  Đổi mật khẩu
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Notifications Page -->
+        <div id="notifications" class="page">
+          <div class="page-header">
+            <h1 class="page-title">Thông báo</h1>
+            <p class="breadcrumb">Trang chủ > Thông báo</p>
+          </div>
+
+          <div class="card">
+            <div
+              class="notification-item"
+              style="padding: 1.5rem; border-bottom: 1px solid var(--gray-200)"
+            >
+              <div style="display: flex; gap: 1rem; align-items: flex-start">
+                <div
+                  style="
+                    width: 40px;
+                    height: 40px;
+                    background: var(--success-color);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                  "
+                >
+                  <i class="fas fa-check"></i>
+                </div>
+                <div style="flex: 1">
+                  <h4>Yêu cầu thuê được chấp nhận</h4>
+                  <p style="color: var(--text-light); margin: 0.5rem 0">
+                    Yêu cầu thuê căn hộ Studio Lexington của bạn đã được chủ nhà
+                    chấp nhận. Vui lòng tiến hành ký hợp đồng.
+                  </p>
+                  <small style="color: var(--text-muted)">2 giờ trước</small>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="notification-item"
+              style="padding: 1.5rem; border-bottom: 1px solid var(--gray-200)"
+            >
+              <div style="display: flex; gap: 1rem; align-items: flex-start">
+                <div
+                  style="
+                    width: 40px;
+                    height: 40px;
+                    background: var(--warning-color);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                  "
+                >
+                  <i class="fas fa-exclamation"></i>
+                </div>
+                <div style="flex: 1">
+                  <h4>Nhắc nhở thanh toán</h4>
+                  <p style="color: var(--text-light); margin: 0.5rem 0">
+                    Hóa đơn tháng 01/2026 sẽ đến hạn thanh toán vào ngày
+                    15/01/2026. Vui lòng thanh toán đúng hạn.
+                  </p>
+                  <small style="color: var(--text-muted)">1 ngày trước</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="notification-item" style="padding: 1.5rem">
+              <div style="display: flex; gap: 1rem; align-items: flex-start">
+                <div
+                  style="
+                    width: 40px;
+                    height: 40px;
+                    background: var(--primary-color);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                  "
+                >
+                  <i class="fas fa-info"></i>
+                </div>
+                <div style="flex: 1">
+                  <h4>Cập nhật hệ thống</h4>
+                  <p style="color: var(--text-light); margin: 0.5rem 0">
+                    SmartRent đã cập nhật tính năng thanh toán mới với ZaloPay.
+                    Trải nghiệm thanh toán nhanh chóng và tiện lợi hơn.
+                  </p>
+                  <small style="color: var(--text-muted)">3 ngày trước</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+      <button class="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+      </button>
+      <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+          <div class="chat-avatar">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div>
+            <h4>SmartBot</h4>
+            <small>Trợ lý AI</small>
+          </div>
+        </div>
+        <div class="chatbot-messages" id="chatMessages">
+          <div class="message bot">
+            <div class="message-content">
+              Xin chào! Tôi là SmartBot, trợ lý AI của SmartRent. Tôi có thể
+              giúp bạn tìm nhà, tư vấn thanh toán, hoặc giải đáp thắc mắc về hợp
+              đồng. Bạn cần hỗ trợ gì?
+            </div>
+          </div>
+        </div>
+        <div class="chatbot-input">
+          <input
+            type="text"
+            placeholder="Nhập tin nhắn..."
+            id="chatInput"
+            onkeypress="handleChatKeypress(event)"
+          />
+          <button onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Page navigation
+      function showPage(pageId) {
+        // Hide all pages
+        document.querySelectorAll(".page").forEach((page) => {
+          page.classList.remove("active");
+        });
+
+        // Show selected page
+        document.getElementById(pageId).classList.add("active");
+
+        // Update navigation
+        document
+          .querySelectorAll(".nav-links a, .sidebar-menu a")
+          .forEach((link) => {
+            link.classList.remove("active");
+          });
+
+        document
+          .querySelectorAll(`[onclick="showPage('${pageId}')"]`)
+          .forEach((link) => {
+            link.classList.add("active");
+          });
+      }
+
+      // Dropdown toggle
+      function toggleDropdown() {
+        const dropdown = document.getElementById("userDropdown");
+        dropdown.classList.toggle("show");
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function (event) {
+        const userMenu = document.querySelector(".user-menu");
+        const dropdown = document.getElementById("userDropdown");
+
+        if (!userMenu.contains(event.target)) {
+          dropdown.classList.remove("show");
+        }
+      });
+
+      // Chatbot functionality
+      function toggleChatbot() {
+        const chatWindow = document.getElementById("chatbotWindow");
+        chatWindow.classList.toggle("show");
+      }
+
+      function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const message = input.value.trim();
+
+        if (message) {
+          addMessage(message, "user");
+          input.value = "";
+
+          // Simulate bot response
+          setTimeout(() => {
+            const responses = [
+              "Tôi đã hiểu câu hỏi của bạn. Để tìm được căn hộ phù hợp, bạn có thể sử dụng chức năng 'Tìm kiếm' và lọc theo khu vực, giá thuê mong muốn.",
+              "Về thanh toán, SmartRent hỗ trợ nhiều phương thức như VNPay, MoMo, ZaloPay. Bạn có thể thanh toán trực tuyến một cách an toàn.",
+              "Nếu có thắc mắc về hợp đồng, bạn có thể xem chi tiết trong mục 'Hợp đồng thuê' hoặc liên hệ trực tiếp với chủ nhà.",
+            ];
+            const randomResponse =
+              responses[Math.floor(Math.random() * responses.length)];
+            addMessage(randomResponse, "bot");
+          }, 1000);
+        }
+      }
+
+      function handleChatKeypress(event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      }
+
+      function addMessage(text, sender) {
+        const messagesContainer = document.getElementById("chatMessages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${sender}`;
+        messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      // Payment method selection
+      document.addEventListener("DOMContentLoaded", function () {
+        const paymentMethods = document.querySelectorAll(".payment-method");
+        paymentMethods.forEach((method) => {
+          method.addEventListener("click", function () {
+            paymentMethods.forEach((m) => m.classList.remove("selected"));
+            this.classList.add("selected");
+          });
+        });
+      });
+
+      // Logout function
+      function logout() {
+        if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+          // Redirect to login page or home page
+          window.location.href = "index.html"; // Assuming this redirects to the original homepage
+        }
+      }
+
+      // Mobile responsive
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 1024) {
+          document.querySelector(".sidebar").classList.remove("show");
+        }
+      });
+    </script>
+  </body>
+</html>
