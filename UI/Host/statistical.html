@@ -1,0 +1,1512 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartRent - Thống Kê</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --accent-light: #fbbf24;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --bg-light: #f8fafc;
+        --bg-dark: #1e293b;
+        --bg-card: #ffffff;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        background-color: var(--bg-light);
+        min-height: 100vh;
+      }
+
+      .dashboard {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: var(--white);
+        border-right: 1px solid var(--gray-200);
+        box-shadow: var(--shadow);
+        z-index: 100;
+        transition: all 0.3s ease;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-collapsed {
+        width: 80px;
+      }
+
+      .sidebar-header {
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo i {
+        -webkit-text-fill-color: var(--primary-color);
+        filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));
+      }
+
+      .sidebar-toggle {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 1.25rem;
+        color: var(--gray-500);
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-toggle:hover {
+        color: var(--primary-color);
+        transform: rotate(180deg);
+      }
+
+      .sidebar-menu {
+        padding: 1.5rem 0;
+      }
+
+      .menu-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--gray-500);
+        padding: 0.75rem 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .menu-item {
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .menu-item:hover {
+        background: var(--gray-50);
+        color: var(--primary-color);
+      }
+
+      .menu-item.active {
+        background: var(--gray-50);
+        color: var(--primary-color);
+        border-left: 3px solid var(--primary-color);
+      }
+
+      .menu-item i {
+        font-size: 1.25rem;
+        min-width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-collapsed .logo-text,
+      .sidebar-collapsed .menu-label,
+      .sidebar-collapsed .menu-text {
+        display: none;
+      }
+
+      .sidebar-collapsed .menu-item {
+        justify-content: center;
+        padding: 0.75rem;
+      }
+
+      .sidebar-collapsed .sidebar-toggle {
+        margin-left: 0;
+      }
+
+      .sidebar-footer {
+        border-top: 1px solid var(--gray-200);
+        padding: 1rem 1.5rem;
+        margin-top: auto;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: 600;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+      }
+
+      .user-role {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        transition: all 0.3s ease;
+      }
+
+      .main-content-expanded {
+        margin-left: 80px;
+      }
+
+      .navbar {
+        background: var(--white);
+        padding: 0.875rem 2rem;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow-sm);
+        border-bottom: 1px solid var(--gray-200);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .nav-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .nav-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .nav-action {
+        color: var(--gray-600);
+        font-size: 1.25rem;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-action:hover {
+        color: var(--primary-color);
+      }
+
+      .nav-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--danger-color);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .dashboard-container {
+        padding: 2rem;
+      }
+
+      .page-header {
+        margin-bottom: 2rem;
+      }
+
+      .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .page-subtitle {
+        color: var(--text-light);
+        font-size: 1rem;
+      }
+
+      /* Filter Card */
+      .filter-card {
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--gray-100);
+      }
+
+      .filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .filter-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .filter-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.25rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-label {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+      }
+
+      .form-control {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: var(--white);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-select {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-color: var(--white);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px 12px;
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .filter-actions {
+        display: flex;
+        gap: 1rem;
+        grid-column: 1 / -1;
+        margin-top: 0.5rem;
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: var(--white);
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        border: 1px solid var(--gray-100);
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat-title {
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: var(--white);
+      }
+
+      .stat-icon.primary {
+        background: var(--primary-color);
+      }
+
+      .stat-icon.success {
+        background: var(--success-color);
+      }
+
+      .stat-icon.warning {
+        background: var(--warning-color);
+      }
+
+      .stat-icon.danger {
+        background: var(--danger-color);
+      }
+
+      .stat-icon.info {
+        background: var(--info-color);
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+      }
+
+      .stat-description {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .stat-change {
+        font-weight: 600;
+      }
+
+      .stat-change.positive {
+        color: var(--success-color);
+      }
+
+      .stat-change.negative {
+        color: var(--danger-color);
+      }
+
+      /* Chart Cards */
+      .chart-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .chart-card {
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        border: 1px solid var(--gray-100);
+        transition: all 0.3s ease;
+      }
+
+      .chart-card:hover {
+        box-shadow: var(--shadow-lg);
+      }
+
+      .chart-card.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .chart-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .chart-subtitle {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin-top: 0.25rem;
+      }
+
+      .chart-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .chart-period {
+        padding: 0.5rem 0.75rem;
+        background: var(--gray-100);
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-dark);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+      }
+
+      .chart-period:hover,
+      .chart-period.active {
+        background: var(--primary-color);
+        color: var(--white);
+      }
+
+      .chart-container {
+        height: 350px;
+        position: relative;
+      }
+
+      .chart-container.small {
+        height: 300px;
+      }
+
+      /* Comparison Table */
+      .comparison-table {
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        border: 1px solid var(--gray-100);
+        margin-bottom: 2rem;
+      }
+
+      .table-responsive {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        text-align: left;
+        padding: 1rem 1.25rem;
+        background: var(--gray-50);
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.9rem;
+        border-bottom: 1px solid var(--gray-200);
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 1rem 1.25rem;
+        color: var(--text-dark);
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover td {
+        background: var(--gray-50);
+      }
+
+      .table-property {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .table-property-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .table-property-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .table-property-title {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .table-amount {
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .table-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        display: inline-block;
+      }
+
+      .badge-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+      }
+
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--text-dark);
+        border: 1px solid var(--gray-300);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .btn-outline-primary {
+        background: transparent;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+      }
+
+      .btn-outline-primary:hover {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .chart-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 991px) {
+        .sidebar {
+          width: 80px;
+        }
+
+        .sidebar .logo-text,
+        .sidebar .menu-label,
+        .sidebar .menu-text,
+        .sidebar .user-name,
+        .sidebar .user-role {
+          display: none;
+        }
+
+        .sidebar .menu-item {
+          justify-content: center;
+          padding: 0.75rem;
+        }
+
+        .main-content {
+          margin-left: 80px;
+        }
+
+        .filter-form {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+          width: 280px;
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fas fa-home"></i>
+            <span class="logo-text">SmartRent</span>
+          </div>
+          <div class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-menu">
+          <div class="menu-label">Tổng quan</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+          <a href="#" class="menu-item active">
+            <i class="fas fa-chart-line"></i>
+            <span class="menu-text">Thống kê</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="menu-text">Lịch</span>
+          </a>
+
+          <div class="menu-label">Quản lý BĐS</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-building"></i>
+            <span class="menu-text">Bất động sản</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-plus-circle"></i>
+            <span class="menu-text">Thêm BĐS mới</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-tools"></i>
+            <span class="menu-text">Bảo trì</span>
+          </a>
+
+          <div class="menu-label">Khách thuê</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-user-check"></i>
+            <span class="menu-text">Yêu cầu thuê</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-file-contract"></i>
+            <span class="menu-text">Hợp đồng</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-users"></i>
+            <span class="menu-text">Người thuê</span>
+          </a>
+
+          <div class="menu-label">Tài chính</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span class="menu-text">Hóa đơn</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-money-bill-wave"></i>
+            <span class="menu-text">Giao dịch</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-credit-card"></i>
+            <span class="menu-text">Phương thức thanh toán</span>
+          </a>
+
+          <div class="menu-label">Cài đặt</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-user-circle"></i>
+            <span class="menu-text">Tài khoản</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-cog"></i>
+            <span class="menu-text">Cài đặt</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-headset"></i>
+            <span class="menu-text">Hỗ trợ</span>
+          </a>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar">NT</div>
+            <div>
+              <div class="user-name">Nguyễn Thành</div>
+              <div class="user-role">Chủ nhà</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content" id="mainContent">
+        <!-- Navbar -->
+        <nav class="navbar">
+          <div class="nav-title">Thống kê</div>
+          <div class="nav-actions">
+            <div class="nav-action">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-bell"></i>
+              <span class="nav-badge">3</span>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-envelope"></i>
+              <span class="nav-badge">5</span>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-th-large"></i>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+          <!-- Page Header -->
+          <div class="page-header">
+            <h1 class="page-title">Báo cáo & Thống kê</h1>
+            <p class="page-subtitle">
+              Phân tích chi tiết hoạt động kinh doanh và tài chính
+            </p>
+          </div>
+
+          <!-- Filter Card -->
+          <div class="filter-card">
+            <div class="filter-header">
+              <div class="filter-title">
+                <i class="fas fa-filter"></i>
+                Bộ lọc thống kê
+              </div>
+            </div>
+            <form class="filter-form">
+              <div class="form-group">
+                <label class="form-label">Khoảng thời gian</label>
+                <select class="form-select" id="periodFilter">
+                  <option value="7days">7 ngày qua</option>
+                  <option value="30days" selected>30 ngày qua</option>
+                  <option value="90days">90 ngày qua</option>
+                  <option value="6months">6 tháng qua</option>
+                  <option value="1year">1 năm qua</option>
+                  <option value="custom">Tùy chỉnh</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Từ ngày</label>
+                <input type="date" class="form-control" value="2026-01-05" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Đến ngày</label>
+                <input type="date" class="form-control" value="2026-02-05" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Bất động sản</label>
+                <select class="form-select">
+                  <option value="all">Tất cả BĐS</option>
+                  <option value="bds001">Vinhomes Central Park</option>
+                  <option value="bds002">Sunrise City</option>
+                  <option value="bds003">Biệt thự The Palm</option>
+                  <option value="bds004">Studio Lexington</option>
+                  <option value="bds005">Nhà phố Thảo Điền</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Loại báo cáo</label>
+                <select class="form-select">
+                  <option value="overview">Tổng quan</option>
+                  <option value="revenue">Doanh thu</option>
+                  <option value="occupancy">Công suất</option>
+                  <option value="tenant">Người thuê</option>
+                  <option value="maintenance">Bảo trì</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">So sánh với</label>
+                <select class="form-select">
+                  <option value="none">Không so sánh</option>
+                  <option value="previous">Kỳ trước</option>
+                  <option value="lastyear">Cùng kỳ năm trước</option>
+                  <option value="average">Trung bình</option>
+                </select>
+              </div>
+
+              <div class="filter-actions">
+                <button type="button" class="btn btn-outline">
+                  <i class="fas fa-redo"></i> Đặt lại
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-search"></i> Áp dụng bộ lọc
+                </button>
+                <button type="button" class="btn btn-outline-primary">
+                  <i class="fas fa-download"></i> Xuất báo cáo
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Tổng doanh thu</div>
+                <div class="stat-icon primary">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+              </div>
+              <div class="stat-value">45.2 triệu</div>
+              <div class="stat-description">
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +12.5%
+                </span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Tỷ lệ lấp đầy</div>
+                <div class="stat-icon success">
+                  <i class="fas fa-chart-pie"></i>
+                </div>
+              </div>
+              <div class="stat-value">85%</div>
+              <div class="stat-description">
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +5%
+                </span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Chi phí vận hành</div>
+                <div class="stat-icon warning">
+                  <i class="fas fa-coins"></i>
+                </div>
+              </div>
+              <div class="stat-value">8.7 triệu</div>
+              <div class="stat-description">
+                <span class="stat-change negative">
+                  <i class="fas fa-arrow-down"></i> -3.2%
+                </span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Lợi nhuận ròng</div>
+                <div class="stat-icon success">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+              </div>
+              <div class="stat-value">36.5 triệu</div>
+              <div class="stat-description">
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +15.8%
+                </span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Số hợp đồng mới</div>
+                <div class="stat-icon info">
+                  <i class="fas fa-file-signature"></i>
+                </div>
+              </div>
+              <div class="stat-value">8</div>
+              <div class="stat-description">
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +2
+                </span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Thời gian trống trung bình</div>
+                <div class="stat-icon danger">
+                  <i class="fas fa-clock"></i>
+                </div>
+              </div>
+              <div class="stat-value">15 ngày</div>
+              <div class="stat-description">
+                <span class="stat-change positive">
+                  <i class="fas fa-arrow-down"></i> -5 ngày
+                </span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Charts -->
+          <div class="chart-row">
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Doanh thu theo thời gian</div>
+                  <div class="chart-subtitle">
+                    Biểu đồ theo dõi doanh thu hàng tháng
+                  </div>
+                </div>
+                <div class="chart-actions">
+                  <button class="chart-period">Tuần</button>
+                  <button class="chart-period active">Tháng</button>
+                  <button class="chart-period">Năm</button>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Phân bổ doanh thu</div>
+                  <div class="chart-subtitle">Theo loại bất động sản</div>
+                </div>
+              </div>
+              <div class="chart-container small">
+                <canvas id="revenueDistributionChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Secondary Charts -->
+          <div class="chart-row">
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Tỷ lệ lấp đầy theo tháng</div>
+                  <div class="chart-subtitle">
+                    Theo dõi tỷ lệ công suất sử dụng
+                  </div>
+                </div>
+              </div>
+              <div class="chart-container small">
+                <canvas id="occupancyChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Chi phí hoạt động</div>
+                  <div class="chart-subtitle">Phân tích chi phí vận hành</div>
+                </div>
+              </div>
+              <div class="chart-container small">
+                <canvas id="expenseChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Full Width Chart -->
+          <div class="chart-card full-width">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">So sánh hiệu suất bất động sản</div>
+                <div class="chart-subtitle">
+                  Doanh thu và chi phí theo từng BĐS
+                </div>
+              </div>
+              <div class="chart-actions">
+                <button class="chart-period active">Doanh thu</button>
+                <button class="chart-period">Chi phí</button>
+                <button class="chart-period">Lợi nhuận</button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="propertyComparisonChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Property Performance Table -->
+          <div class="comparison-table">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Hiệu suất chi tiết từng BĐS</div>
+                <div class="chart-subtitle">
+                  Bảng so sánh các chỉ số quan trọng
+                </div>
+              </div>
+              <button class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-download"></i> Xuất Excel
+              </button>
+            </div>
+
+            <div class="table-responsive" style="margin-top: 1.5rem">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Bất động sản</th>
+                    <th>Doanh thu</th>
+                    <th>Chi phí</th>
+                    <th>Lợi nhuận</th>
+                    <th>Tỷ lệ lấp đầy</th>
+                    <th>Hiệu suất</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="table-property">
+                        <div class="table-property-image">
+                          <img
+                            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                            alt="Property"
+                          />
+                        </div>
+                        <div class="table-property-title">
+                          Vinhomes Central Park
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table-amount">8.5 triệu</td>
+                    <td>1.2 triệu</td>
+                    <td class="table-amount">7.3 triệu</td>
+                    <td>100%</td>
+                    <td>
+                      <span class="table-badge badge-success">Xuất sắc</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-property">
+                        <div class="table-property-image">
+                          <img
+                            src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80"
+                            alt="Property"
+                          />
+                        </div>
+                        <div class="table-property-title">Sunrise City</div>
+                      </div>
+                    </td>
+                    <td class="table-amount">5.5 triệu</td>
+                    <td>800 nghìn</td>
+                    <td class="table-amount">4.7 triệu</td>
+                    <td>100%</td>
+                    <td>
+                      <span class="table-badge badge-success">Tốt</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-property">
+                        <div class="table-property-image">
+                          <img
+                            src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=80"
+                            alt="Property"
+                          />
+                        </div>
+                        <div class="table-property-title">
+                          Biệt thự The Palm
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table-amount">0 đồng</td>
+                    <td>1.5 triệu</td>
+                    <td class="table-amount">-1.5 triệu</td>
+                    <td>0%</td>
+                    <td>
+                      <span class="table-badge badge-warning">Bảo trì</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-property">
+                        <div class="table-property-image">
+                          <img
+                            src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&q=80"
+                            alt="Property"
+                          />
+                        </div>
+                        <div class="table-property-title">Studio Lexington</div>
+                      </div>
+                    </td>
+                    <td class="table-amount">3.5 triệu</td>
+                    <td>600 nghìn</td>
+                    <td class="table-amount">2.9 triệu</td>
+                    <td>100%</td>
+                    <td>
+                      <span class="table-badge badge-success">Tốt</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table-property">
+                        <div class="table-property-image">
+                          <img
+                            src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=800&q=80"
+                            alt="Property"
+                          />
+                        </div>
+                        <div class="table-property-title">
+                          Nhà phố Thảo Điền
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table-amount">12 triệu</td>
+                    <td>2.1 triệu</td>
+                    <td class="table-amount">9.9 triệu</td>
+                    <td>100%</td>
+                    <td>
+                      <span class="table-badge badge-success">Xuất sắc</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sidebar Toggle
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const sidebar = document.getElementById("sidebar");
+      const mainContent = document.getElementById("mainContent");
+
+      sidebarToggle.addEventListener("click", function () {
+        sidebar.classList.toggle("sidebar-collapsed");
+        mainContent.classList.toggle("main-content-expanded");
+      });
+
+      // Chart Periods
+      const chartPeriods = document.querySelectorAll(".chart-period");
+      chartPeriods.forEach((period) => {
+        period.addEventListener("click", function () {
+          const siblings = Array.from(this.parentElement.children);
+          siblings.forEach((s) => s.classList.remove("active"));
+          this.classList.add("active");
+        });
+      });
+
+      // Revenue Chart
+      const revenueCtx = document
+        .getElementById("revenueChart")
+        .getContext("2d");
+      new Chart(revenueCtx, {
+        type: "line",
+        data: {
+          labels: [
+            "T8/25",
+            "T9/25",
+            "T10/25",
+            "T11/25",
+            "T12/25",
+            "T1/26",
+            "T2/26",
+          ],
+          datasets: [
+            {
+              label: "Doanh thu",
+              data: [38, 40, 42, 39, 43, 41, 45.2],
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99, 102, 241, 0.1)",
+              tension: 0.4,
+              fill: true,
+            },
+            {
+              label: "Chi phí",
+              data: [10, 9.5, 11, 9, 10.5, 9.2, 8.7],
+              borderColor: "#f59e0b",
+              backgroundColor: "rgba(245, 158, 11, 0.1)",
+              tension: 0.4,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: "top",
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function (value) {
+                  return value + " tr";
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Revenue Distribution Chart
+      const revenueDistCtx = document
+        .getElementById("revenueDistributionChart")
+        .getContext("2d");
+      new Chart(revenueDistCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["Căn hộ", "Studio", "Nhà phố", "Biệt thự", "Phòng trọ"],
+          datasets: [
+            {
+              data: [45, 20, 18, 12, 5],
+              backgroundColor: [
+                "#6366f1",
+                "#3b82f6",
+                "#10b981",
+                "#f59e0b",
+                "#ef4444",
+              ],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+          },
+        },
+      });
+
+      // Occupancy Chart
+      const occupancyCtx = document
+        .getElementById("occupancyChart")
+        .getContext("2d");
+      new Chart(occupancyCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "T8/25",
+            "T9/25",
+            "T10/25",
+            "T11/25",
+            "T12/25",
+            "T1/26",
+            "T2/26",
+          ],
+          datasets: [
+            {
+              label: "Tỷ lệ lấp đầy (%)",
+              data: [75, 78, 82, 80, 85, 83, 85],
+              backgroundColor: "#10b981",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: function (value) {
+                  return value + "%";
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Expense Chart
+      const expenseCtx = document
+        .getElementById("expenseChart")
+        .getContext("2d");
+      new Chart(expenseCtx, {
+        type: "pie",
+        data: {
+          labels: ["Bảo trì", "Điện nước", "Quản lý", "Thuế", "Khác"],
+          datasets: [
+            {
+              data: [35, 25, 20, 15, 5],
+              backgroundColor: [
+                "#ef4444",
+                "#f59e0b",
+                "#6366f1",
+                "#3b82f6",
+                "#94a3b8",
+              ],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+          },
+        },
+      });
+
+      // Property Comparison Chart
+      const propertyCompCtx = document
+        .getElementById("propertyComparisonChart")
+        .getContext("2d");
+      new Chart(propertyCompCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "Vinhomes CP",
+            "Sunrise City",
+            "The Palm",
+            "Lexington",
+            "Thảo Điền",
+          ],
+          datasets: [
+            {
+              label: "Doanh thu (triệu)",
+              data: [8.5, 5.5, 0, 3.5, 12],
+              backgroundColor: "#6366f1",
+            },
+            {
+              label: "Chi phí (triệu)",
+              data: [1.2, 0.8, 1.5, 0.6, 2.1],
+              backgroundColor: "#f59e0b",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: "top",
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
