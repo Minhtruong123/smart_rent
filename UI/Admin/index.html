@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang chủ - SmartRent Admin</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .sidebar-gradient {
+        background: linear-gradient(180deg, #1a1f36 0%, #0f1419 100%);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(102, 126, 234, 0.6);
+      }
+
+      .card-modern {
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+      }
+
+      .card-modern:hover {
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        transform: translateY(-5px);
+      }
+
+      .sidebar-link {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar-link::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-link:hover::before,
+      .sidebar-link.active::before {
+        transform: scaleY(1);
+      }
+
+      .sidebar-link:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(5px);
+      }
+
+      .sidebar-link.active {
+        background: rgba(102, 126, 234, 0.15);
+      }
+
+      .stat-card {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--gradient-from) 0%,
+          var(--gradient-to) 100%
+        );
+      }
+
+      .stat-card-blue::before {
+        --gradient-from: #667eea;
+        --gradient-to: #764ba2;
+      }
+
+      .stat-card-green::before {
+        --gradient-from: #10b981;
+        --gradient-to: #059669;
+      }
+
+      .stat-card-orange::before {
+        --gradient-from: #f59e0b;
+        --gradient-to: #d97706;
+      }
+
+      .stat-card-red::before {
+        --gradient-from: #ef4444;
+        --gradient-to: #dc2626;
+      }
+
+      .avatar-ring {
+        border: 2px solid transparent;
+        background:
+          linear-gradient(white, white) padding-box,
+          linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease-out;
+        }
+
+        .mobile-sidebar.show {
+          transform: translateX(0);
+        }
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+      }
+
+      .activity-item {
+        border-left: 3px solid transparent;
+        background:
+          linear-gradient(white, white) padding-box,
+          linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+        transition: all 0.3s ease;
+      }
+
+      .activity-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.15);
+      }
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+      }
+
+      .progress-bar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: width 1s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex h-screen">
+      <!-- Sidebar - Desktop -->
+      <div
+        class="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 sidebar-gradient text-white"
+      >
+        <div
+          class="flex items-center justify-center h-20 border-b border-gray-700"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-lg"></i>
+            </div>
+            <span
+              class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+              >SmartRent</span
+            >
+          </div>
+        </div>
+
+        <div class="flex flex-col flex-1 overflow-y-auto py-6 px-3">
+          <nav class="space-y-2">
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-4 border-t border-gray-700">
+          <div
+            class="flex items-center space-x-3 bg-gray-800 bg-opacity-50 rounded-xl p-3"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=40&h=40&fit=crop&crop=faces"
+              alt="Admin"
+              class="w-10 h-10 rounded-full object-cover avatar-ring"
+            />
+            <div class="flex-1">
+              <p class="font-semibold text-sm">Lê Văn Cường</p>
+              <p class="text-xs text-gray-400">Administrator</p>
+            </div>
+
+            <button class="text-gray-400 hover:text-white transition-colors">
+              <i class="fas fa-sign-out-alt w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Header -->
+      <div
+        class="md:hidden fixed top-0 left-0 right-0 z-50 sidebar-gradient text-white"
+      >
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-sm"></i>
+            </div>
+            <span class="text-lg font-bold">SmartRent</span>
+          </div>
+          <button
+            id="mobile-menu-button"
+            class="text-gray-300 hover:text-white transition-colors"
+          >
+            <i class="fas fa-bars w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Sidebar -->
+      <div
+        id="mobile-sidebar"
+        class="fixed inset-0 z-40 md:hidden"
+        style="display: none"
+      >
+        <div
+          id="mobile-sidebar-backdrop"
+          class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        ></div>
+
+        <div
+          class="fixed inset-y-0 left-0 z-40 w-64 sidebar-gradient text-white mobile-sidebar"
+        >
+          <div
+            class="flex items-center justify-between h-16 border-b border-gray-700 px-4"
+          >
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+              >
+                <i class="fas fa-home text-white text-sm"></i>
+              </div>
+              <span class="text-lg font-bold">SmartRent</span>
+            </div>
+            <button
+              id="close-mobile-sidebar"
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              <i class="fas fa-times w-6 h-6"></i>
+            </button>
+          </div>
+
+          <nav class="flex-1 px-3 py-6 space-y-2">
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="flex-1 md:ml-64 px-4 py-8 md:py-6 mt-16 md:mt-0">
+        <div class="max-w-7xl mx-auto">
+          <!-- Page Header -->
+          <div class="mb-8">
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h1
+                    class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+                  >
+                    Trang chủ Dashboard
+                  </h1>
+                  <p class="mt-2 text-gray-600 font-medium">
+                    Tổng quan hệ thống SmartRent - Chào mừng trở lại, Lê Văn
+                    Cường!
+                  </p>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                  <div class="text-right">
+                    <p class="text-sm text-gray-600">Hôm nay</p>
+                    <p class="text-lg font-bold" id="current-date"></p>
+                  </div>
+                  <div class="relative">
+                    <i class="fas fa-bell text-2xl text-indigo-600"></i>
+                    <div class="notification-badge">3</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Cards -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <!-- Total Users -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-blue"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">
+                    Tổng người dùng
+                  </p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">1,234</p>
+                  <div class="flex items-center mt-2">
+                    <i class="fas fa-arrow-up text-green-500 text-xs mr-1"></i>
+                    <span class="text-green-500 text-xs font-semibold"
+                      >+12%</span
+                    >
+                    <span class="text-gray-500 text-xs ml-1"
+                      >so với tháng trước</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-users text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Properties -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-green"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">
+                    BĐS đang hoạt động
+                  </p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">856</p>
+                  <div class="flex items-center mt-2">
+                    <i class="fas fa-arrow-up text-green-500 text-xs mr-1"></i>
+                    <span class="text-green-500 text-xs font-semibold"
+                      >+8%</span
+                    >
+                    <span class="text-gray-500 text-xs ml-1"
+                      >so với tháng trước</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-home text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Monthly Revenue -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-orange"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">
+                    Doanh thu tháng
+                  </p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">₫2.4M</p>
+                  <div class="flex items-center mt-2">
+                    <i class="fas fa-arrow-up text-green-500 text-xs mr-1"></i>
+                    <span class="text-green-500 text-xs font-semibold"
+                      >+15%</span
+                    >
+                    <span class="text-gray-500 text-xs ml-1"
+                      >so với tháng trước</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-coins text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Issues -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-red"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">
+                    Sự cố đang xử lý
+                  </p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">23</p>
+                  <div class="flex items-center mt-2">
+                    <i class="fas fa-arrow-down text-red-500 text-xs mr-1"></i>
+                    <span class="text-red-500 text-xs font-semibold">-5%</span>
+                    <span class="text-gray-500 text-xs ml-1"
+                      >so với tháng trước</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Revenue Chart -->
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">
+                  Doanh thu theo tháng
+                </h3>
+                <select
+                  class="border-2 border-gray-200 rounded-lg px-3 py-2 text-sm"
+                >
+                  <option>2026</option>
+                  <option>2025</option>
+                </select>
+              </div>
+              <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+              </div>
+            </div>
+
+            <!-- User Growth Chart -->
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">
+                  Tăng trưởng người dùng
+                </h3>
+                <select
+                  class="border-2 border-gray-200 rounded-lg px-3 py-2 text-sm"
+                >
+                  <option>6 tháng</option>
+                  <option>1 năm</option>
+                </select>
+              </div>
+              <div class="chart-container">
+                <canvas id="userGrowthChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Recent Activities -->
+            <div class="lg:col-span-2 glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">
+                  Hoạt động gần đây
+                </h3>
+                <a
+                  href="#"
+                  class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm"
+                >
+                  Xem tất cả
+                </a>
+              </div>
+              <div class="space-y-4">
+                <div class="activity-item p-4 rounded-xl bg-white border-l-4">
+                  <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                      <div
+                        class="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-200 rounded-full flex items-center justify-center"
+                      >
+                        <i class="fas fa-user-plus text-green-600"></i>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold text-gray-900">
+                        Người dùng mới đăng ký
+                      </p>
+                      <p class="text-xs text-gray-600 mt-1">
+                        Nguyễn Văn An đã đăng ký tài khoản chủ nhà
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">2 phút trước</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="activity-item p-4 rounded-xl bg-white border-l-4">
+                  <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                      <div
+                        class="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-full flex items-center justify-center"
+                      >
+                        <i class="fas fa-home text-blue-600"></i>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold text-gray-900">
+                        BĐS mới được đăng
+                      </p>
+                      <p class="text-xs text-gray-600 mt-1">
+                        Căn hộ Vinhomes Central Park - 2PN
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">15 phút trước</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="activity-item p-4 rounded-xl bg-white border-l-4">
+                  <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                      <div
+                        class="w-10 h-10 bg-gradient-to-br from-red-100 to-pink-200 rounded-full flex items-center justify-center"
+                      >
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold text-gray-900">
+                        Báo cáo sự cố
+                      </p>
+                      <p class="text-xs text-gray-600 mt-1">
+                        Sự cố điện nước tại căn hộ A-1205
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">30 phút trước</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="activity-item p-4 rounded-xl bg-white border-l-4">
+                  <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                      <div
+                        class="w-10 h-10 bg-gradient-to-br from-yellow-100 to-orange-200 rounded-full flex items-center justify-center"
+                      >
+                        <i class="fas fa-credit-card text-yellow-600"></i>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold text-gray-900">
+                        Thanh toán thành công
+                      </p>
+                      <p class="text-xs text-gray-600 mt-1">
+                        Trần Thị Bình đã thanh toán tiền thuê tháng 2
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">1 giờ trước</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="activity-item p-4 rounded-xl bg-white border-l-4">
+                  <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                      <div
+                        class="w-10 h-10 bg-gradient-to-br from-purple-100 to-indigo-200 rounded-full flex items-center justify-center"
+                      >
+                        <i class="fas fa-star text-purple-600"></i>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <p class="text-sm font-semibold text-gray-900">
+                        Đánh giá mới
+                      </p>
+                      <p class="text-xs text-gray-600 mt-1">
+                        Căn hộ Landmark 81 nhận được đánh giá 5 sao
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">2 giờ trước</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Stats & Actions -->
+            <div class="space-y-6">
+              <!-- System Status -->
+              <div class="glass-effect rounded-2xl p-6 card-modern">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">
+                  Trạng thái hệ thống
+                </h3>
+                <div class="space-y-4">
+                  <div>
+                    <div class="flex items-center justify-between text-sm mb-2">
+                      <span class="font-medium text-gray-700">CPU Usage</span>
+                      <span class="font-bold text-indigo-600">45%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        class="progress-bar h-2 rounded-full"
+                        style="width: 45%"
+                      ></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between text-sm mb-2">
+                      <span class="font-medium text-gray-700">Memory</span>
+                      <span class="font-bold text-indigo-600">67%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        class="progress-bar h-2 rounded-full"
+                        style="width: 67%"
+                      ></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between text-sm mb-2">
+                      <span class="font-medium text-gray-700">Storage</span>
+                      <span class="font-bold text-indigo-600">23%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        class="progress-bar h-2 rounded-full"
+                        style="width: 23%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="glass-effect rounded-2xl p-6 card-modern">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">
+                  Thao tác nhanh
+                </h3>
+                <div class="space-y-3">
+                  <button
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                  >
+                    <i class="fas fa-user-plus"></i>
+                    <span>Thêm người dùng</span>
+                  </button>
+                  <button
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                  >
+                    <i class="fas fa-home"></i>
+                    <span>Đăng BĐS mới</span>
+                  </button>
+                  <button
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                  >
+                    <i class="fas fa-chart-line"></i>
+                    <span>Xem báo cáo</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Mobile Sidebar Toggle
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileSidebar = document.getElementById("mobile-sidebar");
+        const closeMobileSidebar = document.getElementById(
+          "close-mobile-sidebar",
+        );
+        const mobileSidebarBackdrop = document.getElementById(
+          "mobile-sidebar-backdrop",
+        );
+
+        mobileMenuButton.addEventListener("click", function () {
+          mobileSidebar.style.display = "block";
+          setTimeout(() => {
+            document
+              .querySelector("#mobile-sidebar .mobile-sidebar")
+              .classList.add("show");
+          }, 50);
+        });
+
+        function closeMobileSidebarHandler() {
+          document
+            .querySelector("#mobile-sidebar .mobile-sidebar")
+            .classList.remove("show");
+          setTimeout(() => {
+            mobileSidebar.style.display = "none";
+          }, 300);
+        }
+
+        closeMobileSidebar.addEventListener("click", closeMobileSidebarHandler);
+        mobileSidebarBackdrop.addEventListener(
+          "click",
+          closeMobileSidebarHandler,
+        );
+
+        // Set current date
+        const currentDateElement = document.getElementById("current-date");
+        const today = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        currentDateElement.textContent = today.toLocaleDateString(
+          "vi-VN",
+          options,
+        );
+
+        // Initialize Charts
+        initializeCharts();
+
+        // Animate progress bars
+        setTimeout(() => {
+          const progressBars = document.querySelectorAll(".progress-bar");
+          progressBars.forEach((bar) => {
+            const width = bar.style.width;
+            bar.style.width = "0%";
+            setTimeout(() => {
+              bar.style.width = width;
+            }, 500);
+          });
+        }, 1000);
+      });
+
+      function initializeCharts() {
+        // Revenue Chart
+        const revenueCtx = document
+          .getElementById("revenueChart")
+          .getContext("2d");
+        const revenueChart = new Chart(revenueCtx, {
+          type: "line",
+          data: {
+            labels: [
+              "Tháng 8",
+              "Tháng 9",
+              "Tháng 10",
+              "Tháng 11",
+              "Tháng 12",
+              "Tháng 1",
+              "Tháng 2",
+            ],
+            datasets: [
+              {
+                label: "Doanh thu (triệu VND)",
+                data: [1.8, 2.1, 2.3, 2.0, 2.5, 2.2, 2.4],
+                borderColor: "rgba(102, 126, 234, 1)",
+                backgroundColor: "rgba(102, 126, 234, 0.1)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "rgba(102, 126, 234, 1)",
+                pointBorderColor: "#fff",
+                pointBorderWidth: 2,
+                pointRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: "rgba(0, 0, 0, 0.1)",
+                },
+              },
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+            },
+          },
+        });
+
+        // User Growth Chart
+        const userGrowthCtx = document
+          .getElementById("userGrowthChart")
+          .getContext("2d");
+        const userGrowthChart = new Chart(userGrowthCtx, {
+          type: "bar",
+          data: {
+            labels: [
+              "Tháng 8",
+              "Tháng 9",
+              "Tháng 10",
+              "Tháng 11",
+              "Tháng 12",
+              "Tháng 1",
+              "Tháng 2",
+            ],
+            datasets: [
+              {
+                label: "Người dùng mới",
+                data: [45, 52, 48, 61, 55, 67, 73],
+                backgroundColor: "rgba(16, 185, 129, 0.8)",
+                borderColor: "rgba(16, 185, 129, 1)",
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: "rgba(0, 0, 0, 0.1)",
+                },
+              },
+              x: {
+                grid: {
+                  display: false,
+                },
+              },
+            },
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

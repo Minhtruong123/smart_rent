@@ -1,0 +1,2125 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý bất động sản - SmartRent Admin</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .sidebar-gradient {
+        background: linear-gradient(180deg, #1a1f36 0%, #0f1419 100%);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(102, 126, 234, 0.6);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        box-shadow: 0 4px 15px 0 rgba(245, 87, 108, 0.4);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(245, 87, 108, 0.6);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #4a5568;
+        box-shadow: 0 4px 15px 0 rgba(168, 237, 234, 0.3);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(168, 237, 234, 0.5);
+      }
+
+      .input-modern {
+        border: 2px solid #e2e8f0;
+        transition: all 0.3s ease;
+      }
+
+      .input-modern:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .badge-modern {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-modern {
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+      }
+
+      .card-modern:hover {
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+      }
+
+      .sidebar-link {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar-link::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-link:hover::before,
+      .sidebar-link.active::before {
+        transform: scaleY(1);
+      }
+
+      .sidebar-link:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(5px);
+      }
+
+      .sidebar-link.active {
+        background: rgba(102, 126, 234, 0.15);
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background: white;
+        min-width: 180px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        z-index: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .dropdown-content.show {
+        display: block;
+        animation: dropdownSlide 0.3s ease;
+      }
+
+      @keyframes dropdownSlide {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .dropdown-content a,
+      .dropdown-content button {
+        transition: all 0.2s ease;
+      }
+
+      .dropdown-content a:hover,
+      .dropdown-content button:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+      }
+
+      .spinner {
+        border: 4px solid rgba(102, 126, 234, 0.2);
+        border-radius: 50%;
+        border-top: 4px solid #667eea;
+        width: 4rem;
+        height: 4rem;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        overflow-y: auto;
+        backdrop-filter: blur(5px);
+      }
+
+      .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: modalFadeIn 0.3s ease;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 20px;
+        max-width: 48rem;
+        width: 100%;
+        transform: translateY(-50px);
+        transition: transform 0.3s ease-out;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal.show .modal-content {
+        transform: translateY(0);
+        animation: modalSlideUp 0.3s ease;
+      }
+
+      @keyframes modalSlideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .table-row {
+        transition: all 0.2s ease;
+      }
+
+      .table-row:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(102, 126, 234, 0.05) 0%,
+          rgba(118, 75, 162, 0.05) 100%
+        );
+        transform: scale(1.01);
+      }
+
+      .avatar-ring {
+        border: 2px solid transparent;
+        background:
+          linear-gradient(white, white) padding-box,
+          linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+      }
+
+      .search-box {
+        position: relative;
+      }
+
+      .search-box::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .search-box:focus-within::after {
+        transform: scaleX(1);
+      }
+
+      .page-number {
+        transition: all 0.3s ease;
+      }
+
+      .page-number:hover {
+        transform: scale(1.1);
+      }
+
+      .page-number.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .header-gradient {
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.1) 0%,
+          rgba(118, 75, 162, 0.1) 100%
+        );
+        backdrop-filter: blur(10px);
+      }
+
+      @media (max-width: 768px) {
+        .mobile-sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease-out;
+        }
+
+        .mobile-sidebar.show {
+          transform: translateX(0);
+        }
+      }
+
+      .checkbox-modern {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #d1d5db;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .checkbox-modern:checked {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+      }
+
+      .checkbox-modern:checked::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .property-image {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .image-preview {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex h-screen">
+      <!-- Sidebar - Desktop -->
+      <div
+        class="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 sidebar-gradient text-white"
+      >
+        <div
+          class="flex items-center justify-center h-20 border-b border-gray-700"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-lg"></i>
+            </div>
+            <span
+              class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+              >SmartRent</span
+            >
+          </div>
+        </div>
+
+        <div class="flex flex-col flex-1 overflow-y-auto py-6 px-3">
+          <nav class="space-y-2">
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-4 border-t border-gray-700">
+          <div
+            class="flex items-center space-x-3 bg-gray-800 bg-opacity-50 rounded-xl p-3"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=40&h=40&fit=crop&crop=faces"
+              alt="Admin"
+              class="w-10 h-10 rounded-full object-cover avatar-ring"
+            />
+            <div class="flex-1">
+              <p class="font-semibold text-sm">Lê Văn Cường</p>
+              <p class="text-xs text-gray-400">Administrator</p>
+            </div>
+
+            <button class="text-gray-400 hover:text-white transition-colors">
+              <i class="fas fa-sign-out-alt w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Header -->
+      <div
+        class="md:hidden fixed top-0 left-0 right-0 z-50 sidebar-gradient text-white"
+      >
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-sm"></i>
+            </div>
+            <span class="text-lg font-bold">SmartRent</span>
+          </div>
+          <button
+            id="mobile-menu-button"
+            class="text-gray-300 hover:text-white transition-colors"
+          >
+            <i class="fas fa-bars w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Sidebar -->
+      <div
+        id="mobile-sidebar"
+        class="fixed inset-0 z-40 md:hidden"
+        style="display: none"
+      >
+        <div
+          id="mobile-sidebar-backdrop"
+          class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        ></div>
+
+        <div
+          class="fixed inset-y-0 left-0 z-40 w-64 sidebar-gradient text-white mobile-sidebar"
+        >
+          <div
+            class="flex items-center justify-between h-16 border-b border-gray-700 px-4"
+          >
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+              >
+                <i class="fas fa-home text-white text-sm"></i>
+              </div>
+              <span class="text-lg font-bold">SmartRent</span>
+            </div>
+            <button
+              id="close-mobile-sidebar"
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              <i class="fas fa-times w-6 h-6"></i>
+            </button>
+          </div>
+
+          <nav class="flex-1 px-3 py-6 space-y-2">
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="flex-1 md:ml-64 px-4 py-8 md:py-6 mt-16 md:mt-0">
+        <div class="max-w-7xl mx-auto">
+          <!-- Page Header -->
+          <div class="mb-8">
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <h1
+                class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+              >
+                Quản lý bất động sản
+              </h1>
+              <p class="mt-2 text-gray-600 font-medium">
+                Quản lý và giám sát tất cả bất động sản trong hệ thống.
+              </p>
+            </div>
+          </div>
+
+          <!-- Action Bar -->
+          <div class="glass-effect rounded-2xl card-modern mb-6">
+            <div class="p-5 flex flex-wrap items-center justify-between gap-4">
+              <!-- Search -->
+              <div class="relative flex-1 min-w-[240px] search-box">
+                <input
+                  type="text"
+                  id="search-input"
+                  placeholder="Tìm kiếm theo tên, địa chỉ, chủ nhà..."
+                  class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-transparent input-modern"
+                />
+                <i
+                  class="fas fa-search absolute left-4 top-4 h-5 w-5 text-gray-400"
+                ></i>
+              </div>
+
+              <!-- Filters -->
+              <div class="flex flex-wrap items-center gap-3">
+                <!-- Filter by Type -->
+                <div>
+                  <select
+                    id="type-filter"
+                    class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 bg-white input-modern font-medium"
+                  >
+                    <option value="">Tất cả loại</option>
+                    <option value="apartment">Chung cư</option>
+                    <option value="house">Nhà riêng</option>
+                    <option value="villa">Biệt thự</option>
+                    <option value="room">Phòng trọ</option>
+                  </select>
+                </div>
+
+                <!-- Filter by Status -->
+                <div>
+                  <select
+                    id="status-filter"
+                    class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 bg-white input-modern font-medium"
+                  >
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="available">Có sẵn</option>
+                    <option value="rented">Đã cho thuê</option>
+                    <option value="pending">Chờ duyệt</option>
+                    <option value="suspended">Tạm khóa</option>
+                  </select>
+                </div>
+
+                <!-- Filter by Price -->
+                <div>
+                  <select
+                    id="price-filter"
+                    class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 bg-white input-modern font-medium"
+                  >
+                    <option value="">Tất cả giá</option>
+                    <option value="0-5">Dưới 5 triệu</option>
+                    <option value="5-10">5 - 10 triệu</option>
+                    <option value="10-20">10 - 20 triệu</option>
+                    <option value="20">Trên 20 triệu</option>
+                  </select>
+                </div>
+
+                <!-- Reset Filters -->
+                <button
+                  id="reset-filters"
+                  class="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors"
+                >
+                  <i class="fas fa-redo mr-1"></i>
+                  Đặt lại
+                </button>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-3">
+                <button
+                  id="delete-selected-button"
+                  class="hidden items-center gap-2 px-5 py-3 text-white rounded-xl font-semibold btn-danger"
+                >
+                  <i class="fas fa-trash"></i>
+                  <span>Xóa (<span id="selected-count">0</span>)</span>
+                </button>
+
+                <button
+                  id="add-property-button"
+                  class="flex items-center gap-2 px-5 py-3 text-white rounded-xl font-semibold btn-primary"
+                >
+                  <i class="fas fa-plus"></i>
+                  <span>Thêm BĐS</span>
+                </button>
+
+                <div class="dropdown">
+                  <button
+                    class="flex items-center justify-center w-11 h-11 border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition-colors bg-white"
+                  >
+                    <i class="fas fa-ellipsis-v text-gray-600"></i>
+                  </button>
+
+                  <div class="dropdown-content">
+                    <div class="py-1">
+                      <a
+                        href="#"
+                        class="flex items-center px-4 py-3 text-sm text-gray-700 font-medium"
+                      >
+                        <i class="fas fa-download w-4 h-4 mr-3"></i>
+                        Xuất danh sách
+                      </a>
+                      <a
+                        href="#"
+                        class="flex items-center px-4 py-3 text-sm text-gray-700 font-medium"
+                      >
+                        <i class="fas fa-upload w-4 h-4 mr-3"></i>
+                        Nhập từ Excel
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Properties Table -->
+          <div class="glass-effect rounded-2xl overflow-hidden card-modern">
+            <div id="loading-indicator" class="p-12 text-center">
+              <div class="inline-block spinner"></div>
+              <p class="mt-4 text-gray-600 font-medium">
+                Đang tải dữ liệu bất động sản...
+              </p>
+            </div>
+
+            <div
+              id="empty-results"
+              class="p-12 text-center"
+              style="display: none"
+            >
+              <div
+                class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 mb-4"
+              >
+                <i class="fas fa-exclamation-circle text-3xl"></i>
+              </div>
+              <p class="text-xl font-bold text-gray-900 mb-2">
+                Không tìm thấy bất động sản
+              </p>
+              <p class="text-gray-600 mb-6">
+                Không có bất động sản nào phù hợp với điều kiện tìm kiếm.
+              </p>
+              <button
+                id="reset-filters-btn"
+                class="px-6 py-3 text-white rounded-xl font-semibold btn-primary"
+              >
+                Đặt lại bộ lọc
+              </button>
+            </div>
+
+            <div
+              id="properties-table-container"
+              class="overflow-x-auto"
+              style="display: none"
+            >
+              <table class="min-w-full">
+                <thead class="header-gradient">
+                  <tr>
+                    <th class="px-5 py-4 w-10">
+                      <input
+                        type="checkbox"
+                        id="select-all"
+                        class="checkbox-modern"
+                      />
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer"
+                      data-sort="id"
+                    >
+                      <div class="flex items-center">
+                        <span>ID</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer"
+                      data-sort="title"
+                    >
+                      <div class="flex items-center">
+                        <span>Bất động sản</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hidden lg:table-cell"
+                      data-sort="address"
+                    >
+                      <div class="flex items-center">
+                        <span>Địa chỉ</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer"
+                      data-sort="type"
+                    >
+                      <div class="flex items-center">
+                        <span>Loại</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer"
+                      data-sort="price"
+                    >
+                      <div class="flex items-center">
+                        <span>Giá thuê</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider hidden md:table-cell"
+                      data-sort="host"
+                    >
+                      <div class="flex items-center">
+                        <span>Chủ nhà</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer"
+                      data-sort="status"
+                    >
+                      <div class="flex items-center">
+                        <span>Trạng thái</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hidden lg:table-cell"
+                      data-sort="createdAt"
+                    >
+                      <div class="flex items-center">
+                        <span>Ngày đăng</span>
+                        <span class="sort-indicator ml-2"></span>
+                      </div>
+                    </th>
+                    <th
+                      class="px-5 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider w-20"
+                    >
+                      Thao tác
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="properties-table-body" class="bg-white">
+                  <!-- Property rows will be inserted here by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div
+              id="pagination"
+              class="px-6 py-4 flex items-center justify-between border-t border-gray-200"
+              style="display: none"
+            >
+              <div class="flex-1 flex justify-between sm:hidden">
+                <button
+                  id="prev-page-mobile"
+                  class="relative inline-flex items-center px-4 py-2 border-2 border-gray-300 text-sm font-semibold rounded-xl bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  Trước
+                </button>
+                <button
+                  id="next-page-mobile"
+                  class="relative inline-flex items-center px-4 py-2 border-2 border-gray-300 text-sm font-semibold rounded-xl bg-white text-gray-700 hover:bg-gray-50"
+                >
+                  Sau
+                </button>
+              </div>
+              <div
+                class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
+              >
+                <div>
+                  <p class="text-sm text-gray-700 font-medium">
+                    Hiển thị
+                    <span id="from-item" class="font-bold text-indigo-600"
+                      >1</span
+                    >
+                    đến
+                    <span id="to-item" class="font-bold text-indigo-600"
+                      >10</span
+                    >
+                    trong số
+                    <span id="total-items" class="font-bold text-indigo-600"
+                      >0</span
+                    >
+                    bất động sản
+                  </p>
+                </div>
+                <div>
+                  <nav
+                    class="relative z-0 inline-flex rounded-xl shadow-sm -space-x-px"
+                    aria-label="Pagination"
+                  >
+                    <button
+                      id="prev-page"
+                      class="relative inline-flex items-center px-3 py-2 rounded-l-xl border-2 border-gray-300 bg-white text-sm font-semibold text-gray-500 hover:bg-gray-50"
+                    >
+                      <span class="sr-only">Trước</span>
+                      <i class="fas fa-chevron-left h-5 w-5"></i>
+                    </button>
+
+                    <div id="pagination-numbers" class="flex">
+                      <!-- Page numbers will be inserted here by JavaScript -->
+                    </div>
+
+                    <button
+                      id="next-page"
+                      class="relative inline-flex items-center px-3 py-2 rounded-r-xl border-2 border-gray-300 bg-white text-sm font-semibold text-gray-500 hover:bg-gray-50"
+                    >
+                      <span class="sr-only">Sau</span>
+                      <i class="fas fa-chevron-right h-5 w-5"></i>
+                    </button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add/Edit Property Modal -->
+    <div id="property-modal" class="modal">
+      <div
+        class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"
+      >
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div
+            id="modal-backdrop"
+            class="absolute inset-0 bg-gray-900 opacity-75"
+          ></div>
+        </div>
+
+        <span
+          class="hidden sm:inline-block sm:align-middle sm:h-screen"
+          aria-hidden="true"
+          >&#8203;</span
+        >
+
+        <div
+          class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full modal-content"
+        >
+          <form id="property-form">
+            <div
+              class="bg-gradient-to-br from-indigo-50 to-purple-50 px-6 py-6"
+            >
+              <div class="text-center">
+                <div
+                  class="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4"
+                >
+                  <i class="fas fa-building text-white text-2xl"></i>
+                </div>
+                <h3
+                  id="modal-title"
+                  class="text-2xl leading-6 font-bold text-gray-900"
+                >
+                  Thêm bất động sản mới
+                </h3>
+                <p
+                  id="modal-subtitle"
+                  class="mt-2 text-sm text-gray-600 font-medium"
+                >
+                  Nhập thông tin bất động sản
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white px-6 py-6 space-y-5">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="md:col-span-2">
+                  <label
+                    for="title"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Tiêu đề <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  />
+                </div>
+
+                <div class="md:col-span-2">
+                  <label
+                    for="address"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Địa chỉ <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="type"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Loại bất động sản <span class="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="type"
+                    name="type"
+                    class="block w-full bg-white border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  >
+                    <option value="apartment">Chung cư</option>
+                    <option value="house">Nhà riêng</option>
+                    <option value="villa">Biệt thự</option>
+                    <option value="room">Phòng trọ</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    for="price"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Giá thuê (triệu/tháng) <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    min="0"
+                    step="0.1"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="area"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Diện tích (m²) <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="area"
+                    name="area"
+                    min="0"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="bedrooms"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Số phòng ngủ <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="bedrooms"
+                    name="bedrooms"
+                    min="0"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="bathrooms"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Số phòng tắm <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="bathrooms"
+                    name="bathrooms"
+                    min="0"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="host"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Chủ nhà <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="host"
+                    name="host"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="status"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Trạng thái <span class="text-red-500">*</span>
+                  </label>
+                  <select
+                    id="status"
+                    name="status"
+                    class="block w-full bg-white border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                    required
+                  >
+                    <option value="available">Có sẵn</option>
+                    <option value="rented">Đã cho thuê</option>
+                    <option value="pending">Chờ duyệt</option>
+                    <option value="suspended">Tạm khóa</option>
+                  </select>
+                </div>
+
+                <div class="md:col-span-2">
+                  <label
+                    for="description"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    Mô tả
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows="4"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                  ></textarea>
+                </div>
+
+                <div class="md:col-span-2">
+                  <label
+                    for="imageUrl"
+                    class="block text-sm font-bold text-gray-700 mb-2"
+                  >
+                    URL hình ảnh
+                  </label>
+                  <input
+                    type="url"
+                    id="imageUrl"
+                    name="imageUrl"
+                    placeholder="https://example.com/image.jpg"
+                    class="block w-full border-2 border-gray-200 rounded-xl shadow-sm py-3 px-4 focus:outline-none focus:border-transparent input-modern"
+                  />
+                  <p class="mt-2 text-sm text-gray-500">
+                    Nhập URL hình ảnh từ Unsplash hoặc nguồn khác
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gray-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end gap-3"
+            >
+              <button
+                type="button"
+                id="cancel-modal"
+                class="w-full sm:w-auto inline-flex justify-center rounded-xl border-2 border-gray-300 shadow-sm px-6 py-3 bg-white text-base font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none transition-all"
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                class="w-full sm:w-auto inline-flex justify-center rounded-xl shadow-sm px-6 py-3 text-base font-semibold text-white focus:outline-none btn-primary"
+                id="submit-property-btn"
+              >
+                Thêm bất động sản
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // ----- Variables -----
+        let properties = [];
+        let filteredProperties = [];
+        let selectedProperties = [];
+        let currentPage = 1;
+        const propertiesPerPage = 8;
+        let sortConfig = { key: "createdAt", direction: "desc" };
+        let modalMode = "add";
+        let currentProperty = null;
+
+        // ----- DOM Elements -----
+        const loadingIndicator = document.getElementById("loading-indicator");
+        const propertiesTableContainer = document.getElementById(
+          "properties-table-container",
+        );
+        const propertiesTableBody = document.getElementById(
+          "properties-table-body",
+        );
+        const emptyResults = document.getElementById("empty-results");
+        const pagination = document.getElementById("pagination");
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileSidebar = document.getElementById("mobile-sidebar");
+        const closeMobileSidebar = document.getElementById(
+          "close-mobile-sidebar",
+        );
+        const mobileSidebarBackdrop = document.getElementById(
+          "mobile-sidebar-backdrop",
+        );
+        const searchInput = document.getElementById("search-input");
+        const typeFilter = document.getElementById("type-filter");
+        const statusFilter = document.getElementById("status-filter");
+        const priceFilter = document.getElementById("price-filter");
+        const resetFiltersBtn = document.getElementById("reset-filters");
+        const resetFiltersBtnEmpty =
+          document.getElementById("reset-filters-btn");
+        const deleteSelectedButton = document.getElementById(
+          "delete-selected-button",
+        );
+        const selectedCountSpan = document.getElementById("selected-count");
+        const selectAllCheckbox = document.getElementById("select-all");
+        const addPropertyButton = document.getElementById(
+          "add-property-button",
+        );
+        const propertyModal = document.getElementById("property-modal");
+        const propertyForm = document.getElementById("property-form");
+        const cancelModal = document.getElementById("cancel-modal");
+        const modalBackdrop = document.getElementById("modal-backdrop");
+        const modalTitle = document.getElementById("modal-title");
+        const modalSubtitle = document.getElementById("modal-subtitle");
+        const submitPropertyBtn = document.getElementById(
+          "submit-property-btn",
+        );
+        const prevPage = document.getElementById("prev-page");
+        const nextPage = document.getElementById("next-page");
+        const prevPageMobile = document.getElementById("prev-page-mobile");
+        const nextPageMobile = document.getElementById("next-page-mobile");
+        const paginationNumbers = document.getElementById("pagination-numbers");
+        const fromItem = document.getElementById("from-item");
+        const toItem = document.getElementById("to-item");
+        const totalItems = document.getElementById("total-items");
+
+        // ----- Event Listeners -----
+
+        // Mobile Sidebar Toggle
+        mobileMenuButton.addEventListener("click", function () {
+          mobileSidebar.style.display = "block";
+          setTimeout(() => {
+            document
+              .querySelector("#mobile-sidebar .mobile-sidebar")
+              .classList.add("show");
+          }, 50);
+        });
+
+        function closeMobileSidebarHandler() {
+          document
+            .querySelector("#mobile-sidebar .mobile-sidebar")
+            .classList.remove("show");
+          setTimeout(() => {
+            mobileSidebar.style.display = "none";
+          }, 300);
+        }
+
+        closeMobileSidebar.addEventListener("click", closeMobileSidebarHandler);
+        mobileSidebarBackdrop.addEventListener(
+          "click",
+          closeMobileSidebarHandler,
+        );
+
+        // Dropdown Toggle
+        document.querySelectorAll(".dropdown button").forEach((button) => {
+          button.addEventListener("click", function () {
+            const dropdown =
+              this.parentElement.querySelector(".dropdown-content");
+            dropdown.classList.toggle("show");
+          });
+        });
+
+        // Close dropdowns when clicking outside
+        window.addEventListener("click", function (e) {
+          if (
+            !e.target.matches(".dropdown button") &&
+            !e.target.closest(".dropdown button")
+          ) {
+            document
+              .querySelectorAll(".dropdown-content")
+              .forEach((dropdown) => {
+                if (dropdown.classList.contains("show")) {
+                  dropdown.classList.remove("show");
+                }
+              });
+          }
+        });
+
+        // Search and Filters
+        searchInput.addEventListener("input", applyFilters);
+        typeFilter.addEventListener("change", applyFilters);
+        statusFilter.addEventListener("change", applyFilters);
+        priceFilter.addEventListener("change", applyFilters);
+
+        // Reset Filters
+        resetFiltersBtn.addEventListener("click", resetFilters);
+        resetFiltersBtnEmpty.addEventListener("click", resetFilters);
+
+        // Add Property
+        addPropertyButton.addEventListener("click", function () {
+          showModal("add");
+        });
+
+        // Cancel Modal
+        cancelModal.addEventListener("click", hideModal);
+        modalBackdrop.addEventListener("click", hideModal);
+
+        // Submit Property Form
+        propertyForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          handleSubmitForm();
+        });
+
+        // Select All Checkbox
+        selectAllCheckbox.addEventListener("change", handleSelectAll);
+
+        // Delete Selected Properties
+        deleteSelectedButton.addEventListener("click", handleDeleteSelected);
+
+        // Sort Table Headers
+        document.querySelectorAll("th[data-sort]").forEach((header) => {
+          header.addEventListener("click", function () {
+            const key = this.getAttribute("data-sort");
+            requestSort(key);
+          });
+        });
+
+        // Pagination
+        prevPage.addEventListener("click", function () {
+          if (currentPage > 1) {
+            goToPage(currentPage - 1);
+          }
+        });
+
+        nextPage.addEventListener("click", function () {
+          const totalPages = Math.ceil(
+            filteredProperties.length / propertiesPerPage,
+          );
+          if (currentPage < totalPages) {
+            goToPage(currentPage + 1);
+          }
+        });
+
+        prevPageMobile.addEventListener("click", function () {
+          if (currentPage > 1) {
+            goToPage(currentPage - 1);
+          }
+        });
+
+        nextPageMobile.addEventListener("click", function () {
+          const totalPages = Math.ceil(
+            filteredProperties.length / propertiesPerPage,
+          );
+          if (currentPage < totalPages) {
+            goToPage(currentPage + 1);
+          }
+        });
+
+        // ----- Functions -----
+
+        // Fetch Properties Data
+        function fetchProperties() {
+          // Mock API Request
+          setTimeout(() => {
+            const mockProperties = [
+              {
+                id: 1,
+                title: "Căn hộ cao cấp Vinhomes Central Park",
+                address: "208 Nguyễn Hữu Cảnh, Bình Thạnh, TP.HCM",
+                type: "apartment",
+                price: 15.5,
+                area: 85,
+                bedrooms: 2,
+                bathrooms: 2,
+                host: "Trần Thị Bình",
+                status: "available",
+                createdAt: "2026-01-15",
+                description: "Căn hộ 2PN view sông, full nội thất cao cấp",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=300&h=200&fit=crop",
+              },
+              {
+                id: 2,
+                title: "Nhà riêng 3 tầng phố Trần Duy Hưng",
+                address: "Trần Duy Hưng, Cầu Giấy, Hà Nội",
+                type: "house",
+                price: 25.0,
+                area: 120,
+                bedrooms: 4,
+                bathrooms: 3,
+                host: "Đặng Thị Lan",
+                status: "rented",
+                createdAt: "2026-01-10",
+                description: "Nhà mặt phố kinh doanh, vị trí đẹp",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=300&h=200&fit=crop",
+              },
+              {
+                id: 3,
+                title: "Biệt thự Ecopark Grand",
+                address: "Ecopark, Văn Giang, Hưng Yên",
+                type: "villa",
+                price: 45.0,
+                area: 250,
+                bedrooms: 5,
+                bathrooms: 4,
+                host: "Trần Thị Bình",
+                status: "available",
+                createdAt: "2026-01-05",
+                description: "Biệt thự sang trọng, khu compound an ninh",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=300&h=200&fit=crop",
+              },
+              {
+                id: 4,
+                title: "Phòng trọ giá rẻ gần ĐH Bách Khoa",
+                address: "Tạ Quang Bửu, Hai Bà Trưng, Hà Nội",
+                type: "room",
+                price: 2.5,
+                area: 20,
+                bedrooms: 1,
+                bathrooms: 1,
+                host: "Đặng Thị Lan",
+                status: "available",
+                createdAt: "2026-01-20",
+                description: "Phòng sạch sẽ, đầy đủ tiện nghi",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=300&h=200&fit=crop",
+              },
+              {
+                id: 5,
+                title: "Chung cư The Garden Hill",
+                address: "99 Trần Bình, Nam Từ Liêm, Hà Nội",
+                type: "apartment",
+                price: 12.0,
+                area: 75,
+                bedrooms: 2,
+                bathrooms: 2,
+                host: "Trần Thị Bình",
+                status: "pending",
+                createdAt: "2026-01-25",
+                description: "Căn góc 3 mặt thoáng, view hồ điều hòa",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300&h=200&fit=crop",
+              },
+              {
+                id: 6,
+                title: "Nhà phố Cityland Park Hills",
+                address: "Phan Văn Trị, Gò Vấp, TP.HCM",
+                type: "house",
+                price: 30.0,
+                area: 150,
+                bedrooms: 4,
+                bathrooms: 3,
+                host: "Đặng Thị Lan",
+                status: "available",
+                createdAt: "2026-01-12",
+                description: "Nhà phố liền kề, khu an ninh 24/7",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?w=300&h=200&fit=crop",
+              },
+              {
+                id: 7,
+                title: "Căn hộ studio Masteri Thảo Điền",
+                address: "Xa lộ Hà Nội, Thủ Đức, TP.HCM",
+                type: "apartment",
+                price: 8.5,
+                area: 45,
+                bedrooms: 1,
+                bathrooms: 1,
+                host: "Trần Thị Bình",
+                status: "available",
+                createdAt: "2025-12-28",
+                description: "Studio hiện đại, view thành phố",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&h=200&fit=crop",
+              },
+              {
+                id: 8,
+                title: "Phòng trọ cao cấp Quận 1",
+                address: "Nguyễn Thị Minh Khai, Quận 1, TP.HCM",
+                type: "room",
+                price: 4.5,
+                area: 25,
+                bedrooms: 1,
+                bathrooms: 1,
+                host: "Đặng Thị Lan",
+                status: "suspended",
+                createdAt: "2026-01-08",
+                description: "Phòng trung tâm, gần các tiện ích",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300&h=200&fit=crop",
+              },
+              {
+                id: 9,
+                title: "Villa Riviera Point",
+                address: "215 Nguyễn Văn Tường, Quận 1, TP.HCM",
+                type: "villa",
+                price: 60.0,
+                area: 300,
+                bedrooms: 6,
+                bathrooms: 5,
+                host: "Trần Thị Bình",
+                status: "available",
+                createdAt: "2025-12-15",
+                description: "Biệt thự mặt sông, sang trọng bậc nhất",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=300&h=200&fit=crop",
+              },
+              {
+                id: 10,
+                title: "Căn hộ Saigon Pearl",
+                address: "92 Nguyễn Hữu Cảnh, Bình Thạnh, TP.HCM",
+                type: "apartment",
+                price: 18.0,
+                area: 95,
+                bedrooms: 3,
+                bathrooms: 2,
+                host: "Đặng Thị Lan",
+                status: "rented",
+                createdAt: "2025-12-20",
+                description: "Căn 3PN view sông Sài Gòn tuyệt đẹp",
+                imageUrl:
+                  "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=300&h=200&fit=crop",
+              },
+            ];
+
+            properties = mockProperties;
+            filteredProperties = [...properties];
+
+            // Apply initial sort
+            applySort();
+
+            // Hide loading indicator
+            loadingIndicator.style.display = "none";
+
+            // Show table
+            updateTable();
+          }, 1000);
+        }
+
+        // Apply Filters
+        function applyFilters() {
+          const searchTerm = searchInput.value.toLowerCase();
+          const type = typeFilter.value;
+          const status = statusFilter.value;
+          const priceRange = priceFilter.value;
+
+          filteredProperties = properties.filter((property) => {
+            // Search filter
+            const matchesSearch =
+              searchTerm === "" ||
+              property.title.toLowerCase().includes(searchTerm) ||
+              property.address.toLowerCase().includes(searchTerm) ||
+              property.host.toLowerCase().includes(searchTerm);
+
+            // Type filter
+            const matchesType = type === "" || property.type === type;
+
+            // Status filter
+            const matchesStatus = status === "" || property.status === status;
+
+            // Price filter
+            let matchesPrice = true;
+            if (priceRange === "0-5") {
+              matchesPrice = property.price < 5;
+            } else if (priceRange === "5-10") {
+              matchesPrice = property.price >= 5 && property.price < 10;
+            } else if (priceRange === "10-20") {
+              matchesPrice = property.price >= 10 && property.price < 20;
+            } else if (priceRange === "20") {
+              matchesPrice = property.price >= 20;
+            }
+
+            return (
+              matchesSearch && matchesType && matchesStatus && matchesPrice
+            );
+          });
+
+          // Apply sort
+          applySort();
+
+          // Reset to first page
+          currentPage = 1;
+
+          // Update table
+          updateTable();
+        }
+
+        // Reset Filters
+        function resetFilters() {
+          searchInput.value = "";
+          typeFilter.value = "";
+          statusFilter.value = "";
+          priceFilter.value = "";
+
+          applyFilters();
+        }
+
+        // Show Modal
+        function showModal(mode, property = null) {
+          modalMode = mode;
+          currentProperty = property;
+
+          // Update modal title and button text
+          if (mode === "add") {
+            modalTitle.textContent = "Thêm bất động sản mới";
+            modalSubtitle.textContent = "Nhập thông tin bất động sản";
+            submitPropertyBtn.textContent = "Thêm bất động sản";
+
+            // Reset form
+            propertyForm.reset();
+            document.getElementById("type").value = "apartment";
+            document.getElementById("status").value = "available";
+          } else {
+            modalTitle.textContent = "Chỉnh sửa bất động sản";
+            modalSubtitle.textContent = "Cập nhật thông tin bất động sản";
+            submitPropertyBtn.textContent = "Lưu thay đổi";
+
+            // Fill form with property data
+            document.getElementById("title").value = property.title;
+            document.getElementById("address").value = property.address;
+            document.getElementById("type").value = property.type;
+            document.getElementById("price").value = property.price;
+            document.getElementById("area").value = property.area;
+            document.getElementById("bedrooms").value = property.bedrooms;
+            document.getElementById("bathrooms").value = property.bathrooms;
+            document.getElementById("host").value = property.host;
+            document.getElementById("status").value = property.status;
+            document.getElementById("description").value =
+              property.description || "";
+            document.getElementById("imageUrl").value = property.imageUrl || "";
+          }
+
+          // Show modal
+          propertyModal.classList.add("show");
+        }
+
+        // Hide Modal
+        function hideModal() {
+          propertyModal.classList.remove("show");
+        }
+
+        // Handle Form Submission
+        function handleSubmitForm() {
+          const title = document.getElementById("title").value;
+          const address = document.getElementById("address").value;
+          const type = document.getElementById("type").value;
+          const price = parseFloat(document.getElementById("price").value);
+          const area = parseInt(document.getElementById("area").value);
+          const bedrooms = parseInt(document.getElementById("bedrooms").value);
+          const bathrooms = parseInt(
+            document.getElementById("bathrooms").value,
+          );
+          const host = document.getElementById("host").value;
+          const status = document.getElementById("status").value;
+          const description = document.getElementById("description").value;
+          const imageUrl = document.getElementById("imageUrl").value;
+
+          if (modalMode === "add") {
+            // Add new property
+            const newProperty = {
+              id: properties.length + 1,
+              title,
+              address,
+              type,
+              price,
+              area,
+              bedrooms,
+              bathrooms,
+              host,
+              status,
+              description,
+              imageUrl:
+                imageUrl ||
+                "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300&h=200&fit=crop",
+              createdAt: new Date().toISOString().split("T")[0],
+            };
+
+            properties.push(newProperty);
+          } else {
+            // Update existing property
+            const updatedProperties = properties.map((property) =>
+              property.id === currentProperty.id
+                ? {
+                    ...property,
+                    title,
+                    address,
+                    type,
+                    price,
+                    area,
+                    bedrooms,
+                    bathrooms,
+                    host,
+                    status,
+                    description,
+                    imageUrl,
+                  }
+                : property,
+            );
+
+            properties = updatedProperties;
+          }
+
+          // Apply filters to update filtered properties
+          applyFilters();
+
+          // Hide modal
+          hideModal();
+        }
+
+        // Handle Select All
+        function handleSelectAll(e) {
+          const isChecked = e.target.checked;
+
+          // Get current page properties
+          const startIndex = (currentPage - 1) * propertiesPerPage;
+          const endIndex = Math.min(
+            startIndex + propertiesPerPage,
+            filteredProperties.length,
+          );
+          const currentPageProperties = filteredProperties.slice(
+            startIndex,
+            endIndex,
+          );
+
+          if (isChecked) {
+            // Add all current page properties to selected
+            currentPageProperties.forEach((property) => {
+              if (!selectedProperties.includes(property.id)) {
+                selectedProperties.push(property.id);
+              }
+            });
+          } else {
+            // Remove all current page properties from selected
+            selectedProperties = selectedProperties.filter(
+              (id) =>
+                !currentPageProperties.some((property) => property.id === id),
+            );
+          }
+
+          // Update UI
+          updateSelectedUI();
+          renderTable();
+        }
+
+        // Handle Delete Selected
+        function handleDeleteSelected() {
+          if (selectedProperties.length === 0) return;
+
+          if (
+            confirm(
+              `Bạn có chắc chắn muốn xóa ${selectedProperties.length} bất động sản đã chọn?`,
+            )
+          ) {
+            // Delete selected properties
+            properties = properties.filter(
+              (property) => !selectedProperties.includes(property.id),
+            );
+
+            // Reset selected
+            selectedProperties = [];
+
+            // Update table
+            applyFilters();
+          }
+        }
+
+        // Update Selected UI
+        function updateSelectedUI() {
+          if (selectedProperties.length > 0) {
+            deleteSelectedButton.style.display = "flex";
+            selectedCountSpan.textContent = selectedProperties.length;
+          } else {
+            deleteSelectedButton.style.display = "none";
+          }
+        }
+
+        // Handle Delete Property
+        function handleDeleteProperty(propertyId) {
+          if (confirm("Bạn có chắc chắn muốn xóa bất động sản này?")) {
+            // Delete property
+            properties = properties.filter(
+              (property) => property.id !== propertyId,
+            );
+
+            // Remove from selected if needed
+            selectedProperties = selectedProperties.filter(
+              (id) => id !== propertyId,
+            );
+
+            // Update table
+            applyFilters();
+          }
+        }
+
+        // Handle Edit Property
+        function handleEditProperty(propertyId) {
+          const property = properties.find(
+            (property) => property.id === propertyId,
+          );
+          showModal("edit", property);
+        }
+
+        // Request Sort
+        function requestSort(key) {
+          let direction = "asc";
+          if (sortConfig.key === key && sortConfig.direction === "asc") {
+            direction = "desc";
+          }
+
+          sortConfig = { key, direction };
+          applySort();
+          renderTable();
+        }
+
+        // Apply Sort
+        function applySort() {
+          if (sortConfig.key) {
+            filteredProperties.sort((a, b) => {
+              if (a[sortConfig.key] < b[sortConfig.key]) {
+                return sortConfig.direction === "asc" ? -1 : 1;
+              }
+              if (a[sortConfig.key] > b[sortConfig.key]) {
+                return sortConfig.direction === "asc" ? 1 : -1;
+              }
+              return 0;
+            });
+          }
+
+          // Update sort indicators
+          document.querySelectorAll(".sort-indicator").forEach((indicator) => {
+            indicator.textContent = "";
+          });
+
+          const currentSortHeader = document.querySelector(
+            `th[data-sort="${sortConfig.key}"] .sort-indicator`,
+          );
+          if (currentSortHeader) {
+            currentSortHeader.textContent =
+              sortConfig.direction === "asc" ? "▲" : "▼";
+          }
+        }
+
+        // Go To Page
+        function goToPage(page) {
+          currentPage = page;
+          renderTable();
+          updatePagination();
+        }
+
+        // Update Table
+        function updateTable() {
+          if (filteredProperties.length === 0) {
+            propertiesTableContainer.style.display = "none";
+            pagination.style.display = "none";
+            emptyResults.style.display = "block";
+          } else {
+            propertiesTableContainer.style.display = "block";
+            pagination.style.display = "flex";
+            emptyResults.style.display = "none";
+
+            renderTable();
+            updatePagination();
+          }
+
+          // Update selected UI
+          updateSelectedUI();
+        }
+
+        // Render Table
+        function renderTable() {
+          // Calculate pagination
+          const startIndex = (currentPage - 1) * propertiesPerPage;
+          const endIndex = Math.min(
+            startIndex + propertiesPerPage,
+            filteredProperties.length,
+          );
+          const currentPageProperties = filteredProperties.slice(
+            startIndex,
+            endIndex,
+          );
+
+          // Clear table body
+          propertiesTableBody.innerHTML = "";
+
+          // Update pagination info
+          fromItem.textContent =
+            filteredProperties.length > 0 ? startIndex + 1 : 0;
+          toItem.textContent = endIndex;
+          totalItems.textContent = filteredProperties.length;
+
+          // Check if all current page properties are selected
+          const areAllSelected =
+            currentPageProperties.length > 0 &&
+            currentPageProperties.every((property) =>
+              selectedProperties.includes(property.id),
+            );
+          selectAllCheckbox.checked = areAllSelected;
+
+          // Render rows
+          currentPageProperties.forEach((property) => {
+            const row = document.createElement("tr");
+            row.className = "table-row border-b border-gray-100";
+
+            // Format property data for display
+            const typeLabel =
+              property.type === "apartment"
+                ? "Chung cư"
+                : property.type === "house"
+                  ? "Nhà riêng"
+                  : property.type === "villa"
+                    ? "Biệt thự"
+                    : "Phòng trọ";
+
+            const typeClass =
+              property.type === "apartment"
+                ? "bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800"
+                : property.type === "house"
+                  ? "bg-gradient-to-r from-green-100 to-green-200 text-green-800"
+                  : property.type === "villa"
+                    ? "bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800"
+                    : "bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800";
+
+            const statusLabel =
+              property.status === "available"
+                ? "Có sẵn"
+                : property.status === "rented"
+                  ? "Đã cho thuê"
+                  : property.status === "pending"
+                    ? "Chờ duyệt"
+                    : "Tạm khóa";
+
+            const statusClass =
+              property.status === "available"
+                ? "bg-gradient-to-r from-green-100 to-emerald-200 text-green-800"
+                : property.status === "rented"
+                  ? "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800"
+                  : property.status === "pending"
+                    ? "bg-gradient-to-r from-yellow-100 to-amber-200 text-yellow-800"
+                    : "bg-gradient-to-r from-red-100 to-red-200 text-red-800";
+
+            const isSelected = selectedProperties.includes(property.id);
+
+            row.innerHTML = `
+                        <td class="px-5 py-4">
+                            <input 
+                                type="checkbox" 
+                                data-property-id="${property.id}"
+                                class="property-checkbox checkbox-modern"
+                                ${isSelected ? "checked" : ""}
+                            />
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">
+                            #${property.id}
+                        </td>
+                        <td class="px-5 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <img class="property-image" src="${property.imageUrl}" alt="" />
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-bold text-gray-900">${property.title}</div>
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        <i class="fas fa-bed mr-1"></i>${property.bedrooms} PN · 
+                                        <i class="fas fa-bath mr-1"></i>${property.bathrooms} PT · 
+                                        <i class="fas fa-ruler-combined mr-1"></i>${property.area}m²
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 text-sm text-gray-600 font-medium hidden lg:table-cell">
+                            <div class="flex items-start">
+                                <i class="fas fa-map-marker-alt text-indigo-600 mt-1 mr-2"></i>
+                                <span class="line-clamp-2">${property.address}</span>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap">
+                            <span class="badge-modern ${typeClass}">
+                                ${typeLabel}
+                            </span>
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="text-sm font-bold text-indigo-600">${property.price} tr/tháng</div>
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600 font-medium hidden md:table-cell">
+                            ${property.host}
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap">
+                            <span class="badge-modern ${statusClass}">
+                                ${statusLabel}
+                            </span>
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-600 font-medium hidden lg:table-cell">
+                            ${property.createdAt}
+                        </td>
+                        <td class="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="dropdown">
+                                <button class="text-gray-500 hover:text-indigo-600 transition-colors">
+                                    <i class="fas fa-ellipsis-v h-5 w-5"></i>
+                                </button>
+                                
+                                <div class="dropdown-content">
+                                    <div class="py-1">
+                                        <button
+                                            data-edit-id="${property.id}"
+                                            class="edit-property-btn flex items-center w-full px-4 py-3 text-sm text-gray-700 font-medium"
+                                        >
+                                            <i class="fas fa-edit w-4 h-4 mr-3"></i>
+                                            Chỉnh sửa
+                                        </button>
+                                        <button
+                                            data-delete-id="${property.id}"
+                                            class="delete-property-btn flex items-center w-full px-4 py-3 text-sm text-red-600 font-medium"
+                                        >
+                                            <i class="fas fa-trash w-4 h-4 mr-3"></i>
+                                            Xóa
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    `;
+
+            propertiesTableBody.appendChild(row);
+          });
+
+          // Add event listeners to checkboxes
+          document
+            .querySelectorAll(".property-checkbox")
+            .forEach((checkbox) => {
+              checkbox.addEventListener("change", function () {
+                const propertyId = parseInt(
+                  this.getAttribute("data-property-id"),
+                );
+
+                if (this.checked) {
+                  if (!selectedProperties.includes(propertyId)) {
+                    selectedProperties.push(propertyId);
+                  }
+                } else {
+                  selectedProperties = selectedProperties.filter(
+                    (id) => id !== propertyId,
+                  );
+                }
+
+                updateSelectedUI();
+              });
+            });
+
+          // Add event listeners to edit buttons
+          document.querySelectorAll(".edit-property-btn").forEach((button) => {
+            button.addEventListener("click", function () {
+              const propertyId = parseInt(this.getAttribute("data-edit-id"));
+              handleEditProperty(propertyId);
+            });
+          });
+
+          // Add event listeners to delete buttons
+          document
+            .querySelectorAll(".delete-property-btn")
+            .forEach((button) => {
+              button.addEventListener("click", function () {
+                const propertyId = parseInt(
+                  this.getAttribute("data-delete-id"),
+                );
+                handleDeleteProperty(propertyId);
+              });
+            });
+        }
+
+        // Update Pagination
+        function updatePagination() {
+          const totalPages = Math.ceil(
+            filteredProperties.length / propertiesPerPage,
+          );
+
+          // Update buttons state
+          prevPage.disabled = currentPage === 1;
+          nextPage.disabled = currentPage === totalPages;
+          prevPageMobile.disabled = currentPage === 1;
+          nextPageMobile.disabled = currentPage === totalPages;
+
+          // Add visual indicator for disabled buttons
+          if (currentPage === 1) {
+            prevPage.classList.add("text-gray-300", "cursor-not-allowed");
+            prevPageMobile.classList.add("text-gray-300", "cursor-not-allowed");
+          } else {
+            prevPage.classList.remove("text-gray-300", "cursor-not-allowed");
+            prevPageMobile.classList.remove(
+              "text-gray-300",
+              "cursor-not-allowed",
+            );
+          }
+
+          if (currentPage === totalPages) {
+            nextPage.classList.add("text-gray-300", "cursor-not-allowed");
+            nextPageMobile.classList.add("text-gray-300", "cursor-not-allowed");
+          } else {
+            nextPage.classList.remove("text-gray-300", "cursor-not-allowed");
+            nextPageMobile.classList.remove(
+              "text-gray-300",
+              "cursor-not-allowed",
+            );
+          }
+
+          // Generate page numbers
+          paginationNumbers.innerHTML = "";
+
+          for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement("button");
+            pageButton.textContent = i;
+            pageButton.classList.add(
+              "page-number",
+              "relative",
+              "inline-flex",
+              "items-center",
+              "px-4",
+              "py-2",
+              "border-2",
+              "text-sm",
+              "font-bold",
+            );
+
+            if (i === currentPage) {
+              pageButton.classList.add("active");
+            } else {
+              pageButton.classList.add(
+                "bg-white",
+                "border-gray-300",
+                "text-gray-700",
+                "hover:bg-gray-50",
+              );
+            }
+
+            pageButton.addEventListener("click", function () {
+              goToPage(i);
+            });
+
+            paginationNumbers.appendChild(pageButton);
+          }
+        }
+
+        // Initialize the page
+        fetchProperties();
+      });
+    </script>
+  </body>
+</html>
