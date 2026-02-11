@@ -1,0 +1,1410 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thống kê báo cáo - SmartRent Admin</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .sidebar-gradient {
+        background: linear-gradient(180deg, #1a1f36 0%, #0f1419 100%);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(102, 126, 234, 0.6);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        box-shadow: 0 4px 15px 0 rgba(245, 87, 108, 0.4);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(245, 87, 108, 0.6);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #4a5568;
+        box-shadow: 0 4px 15px 0 rgba(168, 237, 234, 0.3);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(168, 237, 234, 0.5);
+      }
+
+      .input-modern {
+        border: 2px solid #e2e8f0;
+        transition: all 0.3s ease;
+      }
+
+      .input-modern:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      .badge-modern {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-modern {
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+      }
+
+      .card-modern:hover {
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+      }
+
+      .sidebar-link {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar-link::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-link:hover::before,
+      .sidebar-link.active::before {
+        transform: scaleY(1);
+      }
+
+      .sidebar-link:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(5px);
+      }
+
+      .sidebar-link.active {
+        background: rgba(102, 126, 234, 0.15);
+      }
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background: white;
+        min-width: 180px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        z-index: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .dropdown-content.show {
+        display: block;
+        animation: dropdownSlide 0.3s ease;
+      }
+
+      @keyframes dropdownSlide {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .dropdown-content a,
+      .dropdown-content button {
+        transition: all 0.2s ease;
+      }
+
+      .dropdown-content a:hover,
+      .dropdown-content button:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+      }
+
+      .spinner {
+        border: 4px solid rgba(102, 126, 234, 0.2);
+        border-radius: 50%;
+        border-top: 4px solid #667eea;
+        width: 4rem;
+        height: 4rem;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .header-gradient {
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.1) 0%,
+          rgba(118, 75, 162, 0.1) 100%
+        );
+        backdrop-filter: blur(10px);
+      }
+
+      .stat-card {
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+      }
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+      }
+
+      .date-picker {
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        background-color: white;
+        transition: all 0.3s ease;
+      }
+
+      .date-picker:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease-out;
+        }
+
+        .mobile-sidebar.show {
+          transform: translateX(0);
+        }
+        
+        .chart-container {
+          height: 250px;
+        }
+      }
+
+      .tab-button {
+        position: relative;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .tab-button.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .tab-button:not(.active):hover {
+        background-color: rgba(102, 126, 234, 0.1);
+      }
+
+      .property-item {
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .property-item:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      .progress-bar {
+        height: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-value {
+        height: 100%;
+        border-radius: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .avatar-ring {
+        border: 2px solid transparent;
+        background:
+          linear-gradient(white, white) padding-box,
+          linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex h-screen">
+      <!-- Sidebar - Desktop -->
+      <div
+        class="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 sidebar-gradient text-white"
+      >
+        <div
+          class="flex items-center justify-center h-20 border-b border-gray-700"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-lg"></i>
+            </div>
+            <span
+              class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+              >SmartRent</span
+            >
+          </div>
+        </div>
+
+        <div class="flex flex-col flex-1 overflow-y-auto py-6 px-3">
+          <nav class="space-y-2">
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-4 border-t border-gray-700">
+          <div
+            class="flex items-center space-x-3 bg-gray-800 bg-opacity-50 rounded-xl p-3"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=40&h=40&fit=crop&crop=faces"
+              alt="Admin"
+              class="w-10 h-10 rounded-full object-cover avatar-ring"
+            />
+            <div class="flex-1">
+              <p class="font-semibold text-sm">Lê Văn Cường</p>
+              <p class="text-xs text-gray-400">Administrator</p>
+            </div>
+
+            <button class="text-gray-400 hover:text-white transition-colors">
+              <i class="fas fa-sign-out-alt w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Header -->
+      <div
+        class="md:hidden fixed top-0 left-0 right-0 z-50 sidebar-gradient text-white"
+      >
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-sm"></i>
+            </div>
+            <span class="text-lg font-bold">SmartRent</span>
+          </div>
+          <button
+            id="mobile-menu-button"
+            class="text-gray-300 hover:text-white transition-colors"
+          >
+            <i class="fas fa-bars w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Sidebar -->
+      <div
+        id="mobile-sidebar"
+        class="fixed inset-0 z-40 md:hidden"
+        style="display: none"
+      >
+        <div
+          id="mobile-sidebar-backdrop"
+          class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        ></div>
+
+        <div
+          class="fixed inset-y-0 left-0 z-40 w-64 sidebar-gradient text-white mobile-sidebar"
+        >
+          <div
+            class="flex items-center justify-between h-16 border-b border-gray-700 px-4"
+          >
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+              >
+                <i class="fas fa-home text-white text-sm"></i>
+              </div>
+              <span class="text-lg font-bold">SmartRent</span>
+            </div>
+            <button
+              id="close-mobile-sidebar"
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              <i class="fas fa-times w-6 h-6"></i>
+            </button>
+          </div>
+
+          <nav class="flex-1 px-3 py-6 space-y-2">
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="flex-1 md:ml-64 px-4 py-8 md:py-6 mt-16 md:mt-0">
+        <div class="max-w-7xl mx-auto">
+          <!-- Page Header -->
+          <div class="mb-8">
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <h1
+                class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+              >
+                Thống kê báo cáo
+              </h1>
+              <p class="mt-2 text-gray-600 font-medium">
+                Phân tích dữ liệu và thống kê hoạt động của hệ thống.
+              </p>
+            </div>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="glass-effect rounded-2xl card-modern mb-6">
+            <div class="p-5 flex flex-wrap items-center justify-between gap-4">
+              <!-- Date Range -->
+              <div class="flex flex-wrap items-center gap-3">
+                <label for="start-date" class="font-medium text-gray-700">Từ:</label>
+                <input
+                  type="date"
+                  id="start-date"
+                  class="date-picker"
+                  value="2026-01-01"
+                />
+                
+                <label for="end-date" class="font-medium text-gray-700 ml-2">Đến:</label>
+                <input
+                  type="date"
+                  id="end-date"
+                  class="date-picker"
+                  value="2026-02-11"
+                />
+              </div>
+
+              <!-- Filter Options -->
+              <div class="flex flex-wrap items-center gap-3">
+                <select
+                  id="property-filter"
+                  class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 bg-white input-modern font-medium"
+                >
+                  <option value="">Tất cả bất động sản</option>
+                  <option value="apartment">Căn hộ</option>
+                  <option value="house">Nhà riêng</option>
+                  <option value="villa">Biệt thự</option>
+                </select>
+
+                <select
+                  id="time-period"
+                  class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 bg-white input-modern font-medium"
+                >
+                  <option value="daily">Theo ngày</option>
+                  <option value="weekly">Theo tuần</option>
+                  <option value="monthly" selected>Theo tháng</option>
+                  <option value="yearly">Theo năm</option>
+                </select>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-3">
+                <button
+                  id="apply-filters-btn"
+                  class="flex items-center gap-2 px-5 py-3 text-white rounded-xl font-semibold btn-primary"
+                >
+                  <i class="fas fa-sync-alt"></i>
+                  <span>Cập nhật</span>
+                </button>
+
+                <div class="dropdown">
+                  <button
+                    class="flex items-center justify-center w-11 h-11 border-2 border-gray-200 rounded-xl hover:border-indigo-500 transition-colors bg-white"
+                  >
+                    <i class="fas fa-ellipsis-v text-gray-600"></i>
+                  </button>
+
+                  <div class="dropdown-content">
+                    <div class="py-1">
+                      <a
+                        href="#"
+                        class="flex items-center px-4 py-3 text-sm text-gray-700 font-medium"
+                      >
+                        <i class="fas fa-download w-4 h-4 mr-3"></i>
+                        Xuất báo cáo PDF
+                      </a>
+                      <a
+                        href="#"
+                        class="flex items-center px-4 py-3 text-sm text-gray-700 font-medium"
+                      >
+                        <i class="fas fa-file-excel w-4 h-4 mr-3"></i>
+                        Xuất báo cáo Excel
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Revenue -->
+            <div class="glass-effect rounded-2xl overflow-hidden stat-card">
+              <div class="p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                  <span class="text-sm text-gray-500 font-medium">Tổng doanh thu</span>
+                  <div class="p-2 bg-green-100 rounded-lg">
+                    <i class="fas fa-dollar-sign text-green-600"></i>
+                  </div>
+                </div>
+                <div class="flex items-end">
+                  <h3 class="text-2xl font-bold text-gray-900">12,85 tỷ</h3>
+                  <span class="ml-2 text-sm text-green-600 font-medium">+8,3%</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">So với tháng trước</div>
+                <div class="mt-4 flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-600 h-2 rounded-full" style="width: 83%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Properties -->
+            <div class="glass-effect rounded-2xl overflow-hidden stat-card">
+              <div class="p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                  <span class="text-sm text-gray-500 font-medium">Tổng bất động sản</span>
+                  <div class="p-2 bg-blue-100 rounded-lg">
+                    <i class="fas fa-building text-blue-600"></i>
+                  </div>
+                </div>
+                <div class="flex items-end">
+                  <h3 class="text-2xl font-bold text-gray-900">245</h3>
+                  <span class="ml-2 text-sm text-blue-600 font-medium">+12,4%</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">So với tháng trước</div>
+                <div class="mt-4 flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-blue-600 h-2 rounded-full" style="width: 68%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Occupancy Rate -->
+            <div class="glass-effect rounded-2xl overflow-hidden stat-card">
+              <div class="p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                  <span class="text-sm text-gray-500 font-medium">Tỷ lệ lấp đầy</span>
+                  <div class="p-2 bg-purple-100 rounded-lg">
+                    <i class="fas fa-percentage text-purple-600"></i>
+                  </div>
+                </div>
+                <div class="flex items-end">
+                  <h3 class="text-2xl font-bold text-gray-900">78,6%</h3>
+                  <span class="ml-2 text-sm text-purple-600 font-medium">+5,2%</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">So với tháng trước</div>
+                <div class="mt-4 flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-purple-600 h-2 rounded-full" style="width: 78%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- New Users -->
+            <div class="glass-effect rounded-2xl overflow-hidden stat-card">
+              <div class="p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                  <span class="text-sm text-gray-500 font-medium">Người dùng mới</span>
+                  <div class="p-2 bg-orange-100 rounded-lg">
+                    <i class="fas fa-users text-orange-600"></i>
+                  </div>
+                </div>
+                <div class="flex items-end">
+                  <h3 class="text-2xl font-bold text-gray-900">156</h3>
+                  <span class="ml-2 text-sm text-orange-600 font-medium">+23,5%</span>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">So với tháng trước</div>
+                <div class="mt-4 flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-orange-600 h-2 rounded-full" style="width: 92%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="glass-effect rounded-2xl card-modern p-6 mb-8">
+            <div class="flex flex-col space-y-6">
+              <!-- Tabs -->
+              <div class="flex justify-center sm:justify-start overflow-x-auto py-2">
+                <div class="flex space-x-2">
+                  <button class="tab-button active" data-tab="revenue">Doanh thu</button>
+                  <button class="tab-button" data-tab="users">Người dùng</button>
+                  <button class="tab-button" data-tab="properties">Bất động sản</button>
+                  <button class="tab-button" data-tab="transactions">Giao dịch</button>
+                </div>
+              </div>
+
+              <!-- Chart Title -->
+              <div class="flex flex-wrap justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-900" id="chart-title">Biểu đồ doanh thu theo tháng</h2>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block mr-1"></span>
+                    <span class="text-sm text-gray-600">Doanh thu</span>
+                  </div>
+                  <div class="flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-purple-500 inline-block mr-1"></span>
+                    <span class="text-sm text-gray-600">Chi phí</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chart -->
+              <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+              </div>
+
+              <!-- Chart Description -->
+              <div class="bg-indigo-50 p-4 rounded-lg">
+                <p class="text-gray-700 text-sm">
+                  <i class="fas fa-info-circle text-indigo-600 mr-2"></i>
+                  <span id="chart-description">Doanh thu đang tăng trưởng ổn định với mức tăng 8,3% so với tháng trước. Quý I/2026 có doanh thu cao nhất trong 6 tháng qua.</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-chart Section -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Property Types Distribution -->
+            <div class="glass-effect rounded-2xl card-modern p-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-4">Phân bổ loại bất động sản</h3>
+              <div class="chart-container">
+                <canvas id="propertyTypesChart"></canvas>
+              </div>
+              <div class="grid grid-cols-2 mt-4 gap-4">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block mr-2"></span>
+                  <span class="text-sm text-gray-600">Căn hộ (45%)</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-purple-500 inline-block mr-2"></span>
+                  <span class="text-sm text-gray-600">Nhà riêng (30%)</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-blue-500 inline-block mr-2"></span>
+                  <span class="text-sm text-gray-600">Biệt thự (15%)</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-pink-500 inline-block mr-2"></span>
+                  <span class="text-sm text-gray-600">Khác (10%)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- User Growth -->
+            <div class="glass-effect rounded-2xl card-modern p-6">
+              <h3 class="text-lg font-bold text-gray-900 mb-4">Tăng trưởng người dùng</h3>
+              <div class="chart-container">
+                <canvas id="userGrowthChart"></canvas>
+              </div>
+              <div class="grid grid-cols-3 mt-4 gap-2">
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-green-500 inline-block mr-2"></span>
+                  <span class="text-sm text-gray-600">Chủ nhà</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-blue-500 inline-block mr-2"></span>
+                  <span class="text-sm text-gray-600">Người thuê</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-full bg-gray-500 inline-block mr-2"></span>
+                  <span class="text-sm text-gray-600">Admin</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Performing Properties -->
+          <div class="glass-effect rounded-2xl card-modern p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-xl font-bold text-gray-900">Bất động sản hoạt động tốt nhất</h2>
+              <a href="#" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">
+                Xem tất cả
+                <i class="fas fa-arrow-right ml-1"></i>
+              </a>
+            </div>
+
+            <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              <!-- Property 1 -->
+              <div class="property-item bg-white rounded-xl p-4 shadow-sm">
+                <div class="relative h-40 mb-4 overflow-hidden rounded-lg">
+                  <img
+                    src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=500&h=300&fit=crop"
+                    alt="Property"
+                    class="w-full h-full object-cover"
+                  />
+                  <div class="absolute bottom-2 left-2 badge-modern bg-gradient-to-r from-green-100 to-green-200 text-green-800">
+                    Tỷ lệ lấp đầy 100%
+                  </div>
+                </div>
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-bold text-gray-900">The Iris Apartment</h3>
+                  <span class="text-sm text-indigo-600 font-semibold">156tr/tháng</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Quận 2, TP. Hồ Chí Minh</p>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="flex items-center">
+                      <span class="text-sm text-gray-700 font-medium mr-2">Hiệu suất:</span>
+                      <span class="text-sm text-green-600 font-semibold">97.8%</span>
+                    </div>
+                    <div class="mt-1 w-full bg-gray-200 rounded-full h-2 progress-bar">
+                      <div class="progress-value" style="width: 97.8%"></div>
+                    </div>
+                  </div>
+                  <button class="text-gray-400 hover:text-indigo-600">
+                    <i class="fas fa-external-link-alt"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Property 2 -->
+              <div class="property-item bg-white rounded-xl p-4 shadow-sm">
+                <div class="relative h-40 mb-4 overflow-hidden rounded-lg">
+                  <img
+                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500&h=300&fit=crop"
+                    alt="Property"
+                    class="w-full h-full object-cover"
+                  />
+                  <div class="absolute bottom-2 left-2 badge-modern bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800">
+                    Tỷ lệ lấp đầy 95%
+                  </div>
+                </div>
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-bold text-gray-900">Vista Verde Villa</h3>
+                  <span class="text-sm text-indigo-600 font-semibold">230tr/tháng</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Thảo Điền, TP. Hồ Chí Minh</p>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="flex items-center">
+                      <span class="text-sm text-gray-700 font-medium mr-2">Hiệu suất:</span>
+                      <span class="text-sm text-green-600 font-semibold">94.2%</span>
+                    </div>
+                    <div class="mt-1 w-full bg-gray-200 rounded-full h-2 progress-bar">
+                      <div class="progress-value" style="width: 94.2%"></div>
+                    </div>
+                  </div>
+                  <button class="text-gray-400 hover:text-indigo-600">
+                    <i class="fas fa-external-link-alt"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Property 3 -->
+              <div class="property-item bg-white rounded-xl p-4 shadow-sm">
+                <div class="relative h-40 mb-4 overflow-hidden rounded-lg">
+                  <img
+                    src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500&h=300&fit=crop"
+                    alt="Property"
+                    class="w-full h-full object-cover"
+                  />
+                  <div class="absolute bottom-2 left-2 badge-modern bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-800">
+                    Tỷ lệ lấp đầy 92%
+                  </div>
+                </div>
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-bold text-gray-900">Diamond Complex</h3>
+                  <span class="text-sm text-indigo-600 font-semibold">185tr/tháng</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Quận 7, TP. Hồ Chí Minh</p>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="flex items-center">
+                      <span class="text-sm text-gray-700 font-medium mr-2">Hiệu suất:</span>
+                      <span class="text-sm text-green-600 font-semibold">90.5%</span>
+                    </div>
+                    <div class="mt-1 w-full bg-gray-200 rounded-full h-2 progress-bar">
+                      <div class="progress-value" style="width: 90.5%"></div>
+                    </div>
+                  </div>
+                  <button class="text-gray-400 hover:text-indigo-600">
+                    <i class="fas fa-external-link-alt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity and Issues -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Recent Transactions -->
+            <div class="glass-effect rounded-2xl card-modern p-6">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-900">Giao dịch gần đây</h2>
+                <a href="#" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">
+                  Xem tất cả
+                </a>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Transaction 1 -->
+                <div class="flex items-center p-3 bg-white rounded-xl shadow-sm">
+                  <div class="p-2 rounded-lg bg-green-100 mr-4">
+                    <i class="fas fa-arrow-down text-green-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                      <div>
+                        <p class="font-semibold text-gray-900">Thanh toán tiền thuê</p>
+                        <p class="text-xs text-gray-500">The Iris Apartment #1204</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="font-semibold text-green-600">+15.000.000 đ</p>
+                        <p class="text-xs text-gray-500">10/02/2026</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Transaction 2 -->
+                <div class="flex items-center p-3 bg-white rounded-xl shadow-sm">
+                  <div class="p-2 rounded-lg bg-red-100 mr-4">
+                    <i class="fas fa-arrow-up text-red-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                      <div>
+                        <p class="font-semibold text-gray-900">Chi phí bảo trì</p>
+                        <p class="text-xs text-gray-500">Vista Verde Villa #A02</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="font-semibold text-red-600">-2.500.000 đ</p>
+                        <p class="text-xs text-gray-500">08/02/2026</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Transaction 3 -->
+                <div class="flex items-center p-3 bg-white rounded-xl shadow-sm">
+                  <div class="p-2 rounded-lg bg-green-100 mr-4">
+                    <i class="fas fa-arrow-down text-green-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                      <div>
+                        <p class="font-semibold text-gray-900">Thanh toán tiền thuê</p>
+                        <p class="text-xs text-gray-500">Diamond Complex #B305</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="font-semibold text-green-600">+12.000.000 đ</p>
+                        <p class="text-xs text-gray-500">05/02/2026</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Transaction 4 -->
+                <div class="flex items-center p-3 bg-white rounded-xl shadow-sm">
+                  <div class="p-2 rounded-lg bg-green-100 mr-4">
+                    <i class="fas fa-arrow-down text-green-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-center">
+                      <div>
+                        <p class="font-semibold text-gray-900">Thanh toán tiền thuê</p>
+                        <p class="text-xs text-gray-500">The Iris Apartment #802</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="font-semibold text-green-600">+18.500.000 đ</p>
+                        <p class="text-xs text-gray-500">03/02/2026</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Recent Issues -->
+            <div class="glass-effect rounded-2xl card-modern p-6">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-900">Sự cố gần đây</h2>
+                <a href="#" class="text-indigo-600 hover:text-indigo-800 font-semibold text-sm">
+                  Xem tất cả
+                </a>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Issue 1 -->
+                <div class="flex items-start p-3 bg-white rounded-xl shadow-sm">
+                  <div class="p-2 rounded-lg bg-red-100 mr-4 mt-1">
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-semibold text-gray-900">Hệ thống điện bị trục trặc</p>
+                        <p class="text-xs text-gray-500 mb-1">Diamond Complex #B305</p>
+                        <div class="badge-modern bg-red-100 text-red-800 inline-flex items-center">
+                          <span>Ưu tiên cao</span>
+                        </div>
+                      </div>
+                      <p class="text-xs text-gray-500">09/02/2026</p>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Cần thợ điện kiểm tra và sửa chữa hệ thống điện căn hộ.</p>
+                  </div>
+                </div>
+                
+                <!-- Issue 2 -->
+                <div class="flex items-start p-3 bg-white rounded-xl shadow-sm">
+                  <div class="p-2 rounded-lg bg-yellow-100 mr-4 mt-1">
+                    <i class="fas fa-tools text-yellow-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-semibold text-gray-900">Vấn đề ống nước</p>
+                        <p class="text-xs text-gray-500 mb-1">Vista Verde Villa #A02</p>
+                        <div class="badge-modern bg-yellow-100 text-yellow-800 inline-flex items-center">
+                          <span>Ưu tiên trung bình</span>
+                        </div>
+                      </div>
+                      <p class="text-xs text-gray-500">07/02/2026</p>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Ống nước bị rò rỉ nhẹ tại khu vực phòng tắm.</p>
+                  </div>
+                </div>
+                
+                <!-- Issue 3 -->
+                <div class="flex items-start p-3 bg-white rounded-xl shadow-sm">
+                  <div class="p-2 rounded-lg bg-green-100 mr-4 mt-1">
+                    <i class="fas fa-check-circle text-green-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <p class="font-semibold text-gray-900">Sửa chữa máy lạnh</p>
+                        <p class="text-xs text-gray-500 mb-1">The Iris Apartment #1204</p>
+                        <div class="badge-modern bg-green-100 text-green-800 inline-flex items-center">
+                          <span>Đã giải quyết</span>
+                        </div>
+                      </div>
+                      <p class="text-xs text-gray-500">05/02/2026</p>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Máy lạnh đã được sửa chữa và hoạt động bình thường.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // ----- Mobile Sidebar Toggle -----
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileSidebar = document.getElementById("mobile-sidebar");
+        const closeMobileSidebar = document.getElementById("close-mobile-sidebar");
+        const mobileSidebarBackdrop = document.getElementById("mobile-sidebar-backdrop");
+
+        mobileMenuButton.addEventListener("click", function () {
+          mobileSidebar.style.display = "block";
+          setTimeout(() => {
+            document.querySelector("#mobile-sidebar .mobile-sidebar").classList.add("show");
+          }, 50);
+        });
+
+        function closeMobileSidebarHandler() {
+          document.querySelector("#mobile-sidebar .mobile-sidebar").classList.remove("show");
+          setTimeout(() => {
+            mobileSidebar.style.display = "none";
+          }, 300);
+        }
+
+        closeMobileSidebar.addEventListener("click", closeMobileSidebarHandler);
+        mobileSidebarBackdrop.addEventListener("click", closeMobileSidebarHandler);
+
+        // ----- Dropdown Toggle -----
+        document.querySelectorAll(".dropdown button").forEach((button) => {
+          button.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const dropdown = this.parentElement.querySelector(".dropdown-content");
+            dropdown.classList.toggle("show");
+          });
+        });
+
+        // Close dropdowns when clicking outside
+        window.addEventListener("click", function (e) {
+          if (!e.target.matches(".dropdown button") && !e.target.closest(".dropdown button")) {
+            document.querySelectorAll(".dropdown-content").forEach((dropdown) => {
+              if (dropdown.classList.contains("show")) {
+                dropdown.classList.remove("show");
+              }
+            });
+          }
+        });
+
+        // ----- Tab Switching -----
+        const tabButtons = document.querySelectorAll(".tab-button");
+        const chartTitle = document.getElementById("chart-title");
+        const chartDescription = document.getElementById("chart-description");
+
+        tabButtons.forEach(button => {
+          button.addEventListener("click", function() {
+            // Remove active class from all tabs
+            tabButtons.forEach(btn => btn.classList.remove("active"));
+            
+            // Add active class to clicked tab
+            this.classList.add("active");
+            
+            const tabId = this.getAttribute("data-tab");
+            
+            // Update chart title and description based on tab
+            switch(tabId) {
+              case "revenue":
+                chartTitle.textContent = "Biểu đồ doanh thu theo tháng";
+                chartDescription.textContent = "Doanh thu đang tăng trưởng ổn định với mức tăng 8,3% so với tháng trước. Quý I/2026 có doanh thu cao nhất trong 6 tháng qua.";
+                updateMainChart("revenue");
+                break;
+              case "users":
+                chartTitle.textContent = "Biểu đồ người dùng theo tháng";
+                chartDescription.textContent = "Số lượng người dùng tăng đều qua các tháng với tốc độ tăng trưởng 23,5%. Người thuê chiếm tỷ lệ cao nhất trong cơ cấu người dùng.";
+                updateMainChart("users");
+                break;
+              case "properties":
+                chartTitle.textContent = "Biểu đồ bất động sản theo tháng";
+                chartDescription.textContent = "Số lượng bất động sản mới tăng 12,4% so với tháng trước. Căn hộ là loại hình chiếm tỷ trọng lớn nhất trong hệ thống.";
+                updateMainChart("properties");
+                break;
+              case "transactions":
+                chartTitle.textContent = "Biểu đồ giao dịch theo tháng";
+                chartDescription.textContent = "Số lượng giao dịch tăng 15,2% so với tháng trước. Tháng 1/2026 có số lượng giao dịch cao nhất trong 6 tháng qua.";
+                updateMainChart("transactions");
+                break;
+            }
+          });
+        });
+
+        // ----- Charts Initialization -----
+        
+        // Revenue Chart Data
+        const revenueData = {
+          labels: ["T9/2025", "T10/2025", "T11/2025", "T12/2025", "T1/2026", "T2/2026"],
+          datasets: [
+            {
+              label: "Doanh thu (tỷ đồng)",
+              data: [8.5, 9.2, 10.1, 10.8, 11.9, 12.85],
+              borderColor: "#667eea",
+              backgroundColor: "rgba(102, 126, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: "Chi phí (tỷ đồng)",
+              data: [3.2, 3.5, 3.8, 4.1, 4.5, 4.8],
+              borderColor: "#9f7aea",
+              backgroundColor: "rgba(159, 122, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            }
+          ]
+        };
+
+        // Users Chart Data
+        const usersData = {
+          labels: ["T9/2025", "T10/2025", "T11/2025", "T12/2025", "T1/2026", "T2/2026"],
+          datasets: [
+            {
+              label: "Người dùng mới",
+              data: [65, 82, 98, 110, 126, 156],
+              borderColor: "#667eea",
+              backgroundColor: "rgba(102, 126, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: "Người dùng hoạt động",
+              data: [320, 350, 380, 410, 450, 520],
+              borderColor: "#9f7aea",
+              backgroundColor: "rgba(159, 122, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            }
+          ]
+        };
+
+        // Properties Chart Data
+        const propertiesData = {
+          labels: ["T9/2025", "T10/2025", "T11/2025", "T12/2025", "T1/2026", "T2/2026"],
+          datasets: [
+            {
+              label: "Bất động sản mới",
+              data: [18, 25, 30, 35, 42, 48],
+              borderColor: "#667eea",
+              backgroundColor: "rgba(102, 126, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: "Tổng số BĐS",
+              data: [150, 175, 195, 205, 218, 245],
+              borderColor: "#9f7aea",
+              backgroundColor: "rgba(159, 122, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            }
+          ]
+        };
+
+        // Transactions Chart Data
+        const transactionsData = {
+          labels: ["T9/2025", "T10/2025", "T11/2025", "T12/2025", "T1/2026", "T2/2026"],
+          datasets: [
+            {
+              label: "Số giao dịch",
+              data: [320, 350, 380, 410, 480, 520],
+              borderColor: "#667eea",
+              backgroundColor: "rgba(102, 126, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: "Giá trị giao dịch (tỷ đồng)",
+              data: [6.4, 7.0, 7.6, 8.2, 9.6, 10.4],
+              borderColor: "#9f7aea",
+              backgroundColor: "rgba(159, 122, 234, 0.2)",
+              tension: 0.4,
+              fill: true
+            }
+          ]
+        };
+
+        // Initialize main chart with revenue data by default
+        const mainChartCtx = document.getElementById("mainChart").getContext("2d");
+        let mainChart = new Chart(mainChartCtx, {
+          type: "line",
+          data: revenueData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                mode: "index",
+                intersect: false
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  drawBorder: false,
+                  color: "rgba(0, 0, 0, 0.05)"
+                }
+              },
+              x: {
+                grid: {
+                  drawBorder: false,
+                  display: false
+                }
+              }
+            }
+          }
+        });
+
+        // Function to update the main chart based on tab selection
+        function updateMainChart(type) {
+          mainChart.destroy(); // Destroy current chart
+          
+          let chartData;
+          switch(type) {
+            case "revenue":
+              chartData = revenueData;
+              break;
+            case "users":
+              chartData = usersData;
+              break;
+            case "properties":
+              chartData = propertiesData;
+              break;
+            case "transactions":
+              chartData = transactionsData;
+              break;
+          }
+          
+          mainChart = new Chart(mainChartCtx, {
+            type: "line",
+            data: chartData,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  mode: "index",
+                  intersect: false
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    drawBorder: false,
+                    color: "rgba(0, 0, 0, 0.05)"
+                  }
+                },
+                x: {
+                  grid: {
+                    drawBorder: false,
+                    display: false
+                  }
+                }
+              }
+            }
+          });
+        }
+
+        // Property Types Pie Chart
+        const propertyTypesCtx = document.getElementById("propertyTypesChart").getContext("2d");
+        new Chart(propertyTypesCtx, {
+          type: "doughnut",
+          data: {
+            labels: ["Căn hộ", "Nhà riêng", "Biệt thự", "Khác"],
+            datasets: [
+              {
+                data: [45, 30, 15, 10],
+                backgroundColor: [
+                  "rgba(102, 126, 234, 0.8)",
+                  "rgba(159, 122, 234, 0.8)",
+                  "rgba(66, 153, 225, 0.8)",
+                  "rgba(236, 72, 153, 0.8)"
+                ],
+                borderColor: "white",
+                borderWidth: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            cutout: "65%"
+          }
+        });
+
+        // User Growth Chart
+        const userGrowthCtx = document.getElementById("userGrowthChart").getContext("2d");
+        new Chart(userGrowthCtx, {
+          type: "bar",
+          data: {
+            labels: ["T9/2025", "T10/2025", "T11/2025", "T12/2025", "T1/2026", "T2/2026"],
+            datasets: [
+              {
+                label: "Chủ nhà",
+                data: [15, 18, 20, 22, 25, 28],
+                backgroundColor: "rgba(34, 197, 94, 0.8)"
+              },
+              {
+                label: "Người thuê",
+                data: [45, 58, 70, 80, 95, 120],
+                backgroundColor: "rgba(59, 130, 246, 0.8)"
+              },
+              {
+                label: "Admin",
+                data: [5, 6, 8, 8, 6, 8],
+                backgroundColor: "rgba(156, 163, 175, 0.8)"
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              x: {
+                stacked: true,
+                grid: {
+                  display: false
+                }
+              },
+              y: {
+                stacked: true,
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)"
+                },
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
+        // Date Range Filtering Logic
+        const applyFiltersBtn = document.getElementById("apply-filters-btn");
+        applyFiltersBtn.addEventListener("click", function() {
+          const startDate = document.getElementById("start-date").value;
+          const endDate = document.getElementById("end-date").value;
+          const propertyFilter = document.getElementById("property-filter").value;
+          const timePeriod = document.getElementById("time-period").value;
+          
+          // Here you would normally make an API call to update the charts
+          // For demo purposes, we'll just show an alert
+          alert(`Đang áp dụng bộ lọc:\nThời gian: ${startDate} đến ${endDate}\nLoại bất động sản: ${propertyFilter || 'Tất cả'}\nKỳ báo cáo: ${timePeriod}`);
+          
+          // In a real application, you would update the charts with new data here
+        });
+      });
+    </script>
+  </body>
+</html>

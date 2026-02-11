@@ -1,0 +1,2305 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi Tiết Căn Hộ - Vinhomes Central Park | SmartRent</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --accent-light: #fbbf24;
+        --success-color: #10b981;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --bg-light: #f8fafc;
+        --bg-card: #ffffff;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --gradient-luxury: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-gold: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+        --gradient-sunset: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.7;
+        overflow-x: hidden;
+        background-color: var(--bg-light);
+      }
+
+      /* Header - Modern Glass Design */
+      header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px) saturate(180%);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        z-index: 1000;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      header.scrolled {
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+      }
+
+      nav {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.25rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 1.875rem;
+        font-weight: 900;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.02em;
+        position: relative;
+      }
+
+      .logo i {
+        color: var(--primary-color);
+        -webkit-text-fill-color: var(--primary-color);
+        filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+        align-items: center;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        letter-spacing: -0.01em;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateX(-50%);
+        border-radius: 2px;
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      .btn {
+        padding: 0.875rem 1.75rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        letter-spacing: -0.01em;
+      }
+
+      .btn-primary {
+        background: var(--gradient-primary);
+        color: var(--white);
+        box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px 0 rgba(99, 102, 241, 0.45);
+      }
+
+      .btn-outline {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        background: transparent;
+      }
+
+      .btn-outline:hover {
+        background: var(--primary-color);
+        color: var(--white);
+        box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.35);
+      }
+
+      .mobile-toggle {
+        display: none;
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        cursor: pointer;
+      }
+
+      /* Property Details Page */
+      .property-details {
+        padding-top: 100px;
+        margin-bottom: 4rem;
+      }
+
+      .property-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      /* Breadcrumbs */
+      .breadcrumbs {
+        padding: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-light);
+        font-size: 0.9rem;
+      }
+
+      .breadcrumbs a {
+        text-decoration: none;
+        color: var(--text-light);
+        transition: color 0.3s ease;
+      }
+
+      .breadcrumbs a:hover {
+        color: var(--primary-color);
+      }
+
+      .breadcrumbs .separator {
+        font-size: 0.75rem;
+        margin: 0 0.5rem;
+      }
+
+      /* Property Gallery */
+      .property-gallery {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-gap: 1rem;
+        margin-bottom: 2rem;
+        border-radius: 24px;
+        overflow: hidden;
+      }
+
+      .gallery-main {
+        height: 550px;
+      }
+
+      .gallery-main img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 24px 0 0 24px;
+      }
+
+      .gallery-thumbnails {
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .gallery-thumbnail {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .gallery-thumbnail:first-child img {
+        border-radius: 0 24px 0 0;
+      }
+
+      .gallery-thumbnail:last-child img {
+        border-radius: 0 0 24px 0;
+      }
+
+      .gallery-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .gallery-thumbnail:hover img {
+        transform: scale(1.05);
+      }
+
+      .view-all-photos {
+        position: absolute;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        color: var(--text-dark);
+      }
+
+      .view-all-photos:hover {
+        background: var(--white);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Main Content */
+      .property-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+      }
+
+      /* Property Info */
+      .property-info {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .property-header {
+        margin-bottom: 1.5rem;
+      }
+
+      .property-badge {
+        display: inline-block;
+        background: var(--gradient-sunset);
+        color: var(--white);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 14px rgba(250, 112, 154, 0.4);
+        margin-bottom: 1rem;
+      }
+
+      .property-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+        letter-spacing: -0.02em;
+      }
+
+      .property-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+      }
+
+      .property-price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+      }
+
+      .property-price-note {
+        font-size: 0.95rem;
+        color: var(--text-light);
+        margin-top: -1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Property Features */
+      .property-features {
+        display: flex;
+        gap: 2rem;
+        padding: 1.5rem 0;
+        border-top: 1px solid var(--gray-100);
+        border-bottom: 1px solid var(--gray-100);
+        margin-bottom: 2rem;
+      }
+
+      .property-feature {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .feature-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--gray-50);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .property-feature:hover .feature-icon {
+        background: var(--primary-color);
+        color: var(--white);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+      }
+
+      .feature-text {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .feature-value {
+        font-size: 0.95rem;
+        color: var(--text-light);
+      }
+
+      /* Property Description */
+      .property-description h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+        color: var(--text-dark);
+        font-weight: 700;
+      }
+
+      .property-description p {
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+        line-height: 1.8;
+      }
+
+      .read-more {
+        color: var(--primary-color);
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .read-more:hover {
+        color: var(--primary-dark);
+      }
+
+      /* Amenities Section */
+      .property-amenities {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .property-amenities h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+        font-weight: 700;
+      }
+
+      .amenities-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+      }
+
+      .amenity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .amenity-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--gray-50);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-size: 1.25rem;
+        flex-shrink: 0;
+      }
+
+      .amenity-text {
+        font-weight: 500;
+        color: var(--text-light);
+      }
+
+      /* Location Section */
+      .property-location-info {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .property-location-info h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+        font-weight: 700;
+      }
+
+      .map-container {
+        height: 300px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        background-color: #e5e7eb;
+        position: relative;
+      }
+
+      .map-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+
+      .map-placeholder i {
+        font-size: 3rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+      }
+
+      .map-placeholder p {
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      .nearby-places h4 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+        font-weight: 600;
+      }
+
+      .nearby-places-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      .nearby-place {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .nearby-place i {
+        color: var(--primary-color);
+      }
+
+      .nearby-place-text {
+        font-weight: 500;
+        color: var(--text-light);
+      }
+
+      .nearby-place-distance {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      /* Contact and Booking */
+      .property-sidebar {
+        position: sticky;
+        top: 120px;
+      }
+
+      .contact-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .contact-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .contact-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .contact-name {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--text-dark);
+      }
+
+      .contact-role {
+        font-size: 0.9rem;
+        color: var(--text-light);
+      }
+
+      .contact-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--accent-color);
+        margin-top: 0.25rem;
+      }
+
+      .contact-rating-score {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .contact-form {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.25rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-dark);
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.9rem 1.1rem;
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: var(--gray-50);
+        color: var(--text-dark);
+        font-size: 0.95rem;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        background: var(--white);
+      }
+
+      .form-group textarea {
+        height: 120px;
+        resize: none;
+      }
+
+      .contact-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .contact-actions .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 1.1rem;
+      }
+
+      .contact-actions .btn-outline {
+        color: var(--primary-color);
+      }
+
+      .contact-info {
+        margin-top: 1.5rem;
+      }
+
+      .contact-info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      .contact-info-item i {
+        color: var(--primary-color);
+      }
+
+      /* Booking Widget */
+      .booking-widget {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .booking-widget h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+        font-weight: 700;
+      }
+
+      .booking-details {
+        margin-bottom: 2rem;
+      }
+
+      .booking-detail {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .booking-detail-label {
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      .booking-detail-value {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .booking-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 1.25rem 0;
+        border-top: 2px solid var(--gray-200);
+        margin-top: 1rem;
+      }
+
+      .booking-total-label {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-dark);
+      }
+
+      .booking-total-value {
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--primary-color);
+      }
+
+      /* Similar Properties Section */
+      .similar-properties {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+      }
+
+      .similar-properties h3 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        color: var(--text-dark);
+        font-weight: 700;
+      }
+
+      .similar-properties-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .similar-property-card {
+        background: var(--bg-light);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .similar-property-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .similar-property-image {
+        height: 180px;
+        overflow: hidden;
+      }
+
+      .similar-property-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .similar-property-card:hover .similar-property-image img {
+        transform: scale(1.08);
+      }
+
+      .similar-property-info {
+        padding: 1.25rem;
+      }
+
+      .similar-property-price {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .similar-property-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      .similar-property-location {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .similar-property-features {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .similar-property-feature {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      /* Action Bar */
+      .property-action-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid var(--gray-100);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+
+      .property-action-bar.visible {
+        transform: translateY(0);
+      }
+
+      .action-bar-price {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      .action-bar-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      /* Back to top button */
+      .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        cursor: pointer;
+        z-index: 99;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .back-to-top.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .back-to-top:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(99, 102, 241, 0.4);
+      }
+
+      /* Gallery Modal */
+      .gallery-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .gallery-modal.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .gallery-modal-content {
+        width: 90%;
+        max-width: 1200px;
+        position: relative;
+      }
+
+      .gallery-modal-close {
+        position: absolute;
+        top: -60px;
+        right: 0;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .gallery-modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+      }
+
+      .gallery-modal-image {
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .gallery-modal-image img {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 10px;
+      }
+
+      .gallery-modal-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .gallery-modal-nav:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .gallery-modal-prev {
+        left: -80px;
+      }
+
+      .gallery-modal-next {
+        right: -80px;
+      }
+
+      .gallery-modal-counter {
+        position: absolute;
+        bottom: -40px;
+        left: 0;
+        color: white;
+        font-weight: 500;
+        font-size: 1rem;
+      }
+
+      .gallery-modal-thumbs {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        margin-top: 2rem;
+        padding-bottom: 1rem;
+      }
+
+      .gallery-modal-thumb {
+        width: 100px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .gallery-modal-thumb.active {
+        border-color: var(--primary-color);
+      }
+
+      .gallery-modal-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Footer */
+      footer {
+        background: var(--text-dark);
+        color: var(--white);
+        padding: 80px 2rem 40px;
+      }
+
+      .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 4rem;
+        margin-bottom: 3rem;
+      }
+
+      .footer-logo {
+        font-size: 2rem;
+        font-weight: 900;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      .footer-about {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+        line-height: 1.7;
+        font-size: 1rem;
+      }
+
+      .footer-section h3 {
+        margin-bottom: 2rem;
+        color: var(--white);
+        position: relative;
+        padding-bottom: 0.75rem;
+        font-weight: 700;
+        font-size: 1.125rem;
+        letter-spacing: -0.01em;
+      }
+
+      .footer-section h3::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 1rem;
+      }
+
+      .footer-section a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      .footer-section a:hover {
+        color: var(--white);
+        padding-left: 0.25rem;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .social-links a {
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+      }
+
+      .social-links a:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 2.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+      }
+
+      .newsletter {
+        margin-top: 2rem;
+      }
+
+      .newsletter p {
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .newsletter-form {
+        display: flex;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .newsletter-form input {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        font-size: 0.9rem;
+        background: var(--white);
+      }
+
+      .newsletter-form input:focus {
+        outline: none;
+      }
+
+      .newsletter-form button {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .newsletter-form button:hover {
+        background: var(--primary-dark);
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .property-content {
+          grid-template-columns: 1.5fr 1fr;
+        }
+
+        .similar-properties-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .gallery-modal-prev {
+          left: -70px;
+        }
+
+        .gallery-modal-next {
+          right: -70px;
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .property-gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .gallery-main {
+          height: 400px;
+        }
+
+        .gallery-main img {
+          border-radius: 24px 24px 0 0;
+        }
+
+        .gallery-thumbnails {
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr;
+        }
+
+        .gallery-thumbnail:first-child img {
+          border-radius: 0 0 0 24px;
+        }
+
+        .gallery-thumbnail:last-child img {
+          border-radius: 0 0 24px 0;
+        }
+
+        .property-content {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .property-sidebar {
+          position: static;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .gallery-modal-prev {
+          left: 20px;
+        }
+
+        .gallery-modal-next {
+          right: 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          position: fixed;
+          top: 80px;
+          left: -100%;
+          width: 100%;
+          height: calc(100vh - 80px);
+          background: var(--white);
+          flex-direction: column;
+          padding: 2rem;
+          transition: left 0.3s;
+          box-shadow: var(--shadow-lg);
+          z-index: 1000;
+        }
+
+        .nav-links.active {
+          left: 0;
+        }
+
+        .mobile-toggle {
+          display: block;
+        }
+
+        .property-gallery {
+          margin-bottom: 1rem;
+        }
+
+        .gallery-main {
+          height: 350px;
+        }
+
+        .property-sidebar {
+          grid-template-columns: 1fr;
+        }
+
+        .property-features,
+        .amenities-grid,
+        .nearby-places-list {
+          grid-template-columns: 1fr;
+        }
+
+        .property-features {
+          flex-wrap: wrap;
+        }
+
+        .similar-properties-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
+        }
+
+        .gallery-modal-content {
+          width: 95%;
+        }
+
+        .gallery-modal-image {
+          height: 60vh;
+        }
+
+        .gallery-modal-thumbs {
+          display: none;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .property-title {
+          font-size: 1.8rem;
+        }
+
+        .property-price {
+          font-size: 2rem;
+        }
+
+        .gallery-thumbnails {
+          display: none;
+        }
+
+        .gallery-main {
+          height: 300px;
+        }
+
+        .gallery-main img {
+          border-radius: 24px;
+        }
+
+        .property-features {
+          gap: 1rem;
+        }
+
+        .feature-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 1.2rem;
+        }
+
+        .similar-property-image {
+          height: 150px;
+        }
+
+        .action-bar-price {
+          font-size: 1.2rem;
+        }
+
+        .action-bar-buttons .btn {
+          padding: 0.75rem 1rem;
+          font-size: 0.85rem;
+        }
+
+        .gallery-modal-close,
+        .gallery-modal-nav {
+          width: 40px;
+          height: 40px;
+          font-size: 1.2rem;
+        }
+
+        .gallery-modal-close {
+          top: -50px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Back to top button -->
+    <div class="back-to-top" id="backToTop">
+      <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Header -->
+    <header id="header">
+      <nav>
+        <div class="logo">
+          <i class="fas fa-home"></i>
+          SmartRent
+        </div>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="index.html#properties">Bất động sản</a></li>
+          <li><a href="index.html#features">Tính năng</a></li>
+          <li><a href="index.html#about">Về chúng tôi</a></li>
+          <li><a href="index.html#contact">Liên hệ</a></li>
+          <li><a href="#" class="btn btn-primary">Đăng nhập</a></li>
+        </ul>
+        <div class="mobile-toggle" id="mobileToggle">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Property Details Section -->
+    <section class="property-details">
+      <div class="property-container">
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs">
+          <a href="index.html">Trang chủ</a>
+          <span class="separator"><i class="fas fa-chevron-right"></i></span>
+          <a href="index.html#properties">Bất động sản</a>
+          <span class="separator"><i class="fas fa-chevron-right"></i></span>
+          <span>Căn hộ cao cấp Vinhomes Central Park</span>
+        </div>
+
+        <!-- Property Gallery -->
+        <div class="property-gallery">
+          <div class="gallery-main" id="galleryMain">
+            <img
+              src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80"
+              alt="Căn hộ cao cấp Vinhomes Central Park"
+            />
+            <button class="view-all-photos" id="viewAllPhotos">
+              <i class="fas fa-images"></i> Xem tất cả (15 ảnh)
+            </button>
+          </div>
+          <div class="gallery-thumbnails">
+            <div class="gallery-thumbnail">
+              <img
+                src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80"
+                alt="Phòng khách"
+              />
+            </div>
+            <div class="gallery-thumbnail">
+              <img
+                src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80"
+                alt="Phòng bếp"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Property Content -->
+        <div class="property-content">
+          <div class="property-main">
+            <!-- Property Info -->
+            <div class="property-info">
+              <div class="property-header">
+                <div class="property-badge">Hot</div>
+                <h1 class="property-title">
+                  Căn hộ cao cấp Vinhomes Central Park
+                </h1>
+                <div class="property-location">
+                  <i class="fas fa-map-marker-alt"></i> 208 Nguyễn Hữu Cảnh,
+                  Quận Bình Thạnh, TP.HCM
+                </div>
+                <div class="property-price">8.500.000₫ / tháng</div>
+                <div class="property-price-note">
+                  Đã bao gồm phí quản lý, không bao gồm điện nước
+                </div>
+              </div>
+
+              <div class="property-features">
+                <div class="property-feature">
+                  <div class="feature-icon">
+                    <i class="fas fa-bed"></i>
+                  </div>
+                  <div class="feature-text">Phòng ngủ</div>
+                  <div class="feature-value">2 phòng</div>
+                </div>
+                <div class="property-feature">
+                  <div class="feature-icon">
+                    <i class="fas fa-bath"></i>
+                  </div>
+                  <div class="feature-text">Phòng tắm</div>
+                  <div class="feature-value">2 phòng</div>
+                </div>
+                <div class="property-feature">
+                  <div class="feature-icon">
+                    <i class="fas fa-vector-square"></i>
+                  </div>
+                  <div class="feature-text">Diện tích</div>
+                  <div class="feature-value">75m²</div>
+                </div>
+                <div class="property-feature">
+                  <div class="feature-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                  </div>
+                  <div class="feature-text">Năm xây dựng</div>
+                  <div class="feature-value">2018</div>
+                </div>
+                <div class="property-feature">
+                  <div class="feature-icon">
+                    <i class="fas fa-couch"></i>
+                  </div>
+                  <div class="feature-text">Nội thất</div>
+                  <div class="feature-value">Đầy đủ</div>
+                </div>
+              </div>
+
+              <div class="property-description">
+                <h3>Mô tả</h3>
+                <p>
+                  Căn hộ cao cấp Vinhomes Central Park tọa lạc tại vị trí đắc
+                  địa của Quận Bình Thạnh, TP.HCM. Với diện tích 75m², căn hộ
+                  được thiết kế sang trọng, hiện đại với 2 phòng ngủ và 2 phòng
+                  tắm, đáp ứng đầy đủ nhu cầu sinh hoạt của gia đình 3-4 thành
+                  viên.
+                </p>
+                <p>
+                  Căn hộ được trang bị đầy đủ nội thất cao cấp, sẵn sàng để ở
+                  ngay. Phòng khách rộng rãi với cửa kính lớn đón ánh sáng tự
+                  nhiên, mang đến không gian sống thoáng đãng và ấm cúng. Nhà
+                  bếp hiện đại với đầy đủ thiết bị như tủ lạnh, bếp từ, lò vi
+                  sóng, máy rửa chén...
+                </p>
+                <p>
+                  Cư dân Vinhomes Central Park được thừa hưởng hệ thống tiện ích
+                  đẳng cấp bao gồm: hồ bơi, phòng gym, spa, khu vui chơi trẻ em,
+                  công viên, trường học quốc tế, và trung tâm thương mại Vincom
+                  ngay trong khu đô thị. Hệ thống an ninh 24/7 đảm bảo an toàn
+                  tuyệt đối cho cư dân.
+                </p>
+                <p>
+                  Vị trí đắc địa giúp cư dân dễ dàng di chuyển đến các quận
+                  trung tâm như Quận 1, Quận 2 chỉ trong vài phút. Đặc biệt, từ
+                  căn hộ có thể ngắm nhìn toàn cảnh sông Sài Gòn và công viên
+                  trung tâm rộng 14ha - lá phổi xanh của thành phố.
+                </p>
+                <span class="read-more" id="readMore">Xem thêm</span>
+              </div>
+            </div>
+
+            <!-- Amenities Section -->
+            <div class="property-amenities">
+              <h3>Tiện ích</h3>
+              <div class="amenities-grid">
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-wifi"></i>
+                  </div>
+                  <div class="amenity-text">Wi-Fi tốc độ cao</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-snowflake"></i>
+                  </div>
+                  <div class="amenity-text">Điều hòa trung tâm</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-tv"></i>
+                  </div>
+                  <div class="amenity-text">Smart TV 55"</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-parking"></i>
+                  </div>
+                  <div class="amenity-text">Chỗ đỗ xe</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-swimming-pool"></i>
+                  </div>
+                  <div class="amenity-text">Hồ bơi</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-dumbbell"></i>
+                  </div>
+                  <div class="amenity-text">Phòng gym</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-shield-alt"></i>
+                  </div>
+                  <div class="amenity-text">An ninh 24/7</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-utensils"></i>
+                  </div>
+                  <div class="amenity-text">Bếp đầy đủ thiết bị</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-wind"></i>
+                  </div>
+                  <div class="amenity-text">Ban công rộng</div>
+                </div>
+                <div class="amenity-item">
+                  <div class="amenity-icon">
+                    <i class="fas fa-tshirt"></i>
+                  </div>
+                  <div class="amenity-text">Máy giặt & Máy sấy</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="property-location-info">
+              <h3>Vị trí</h3>
+              <div class="map-container">
+                <div class="map-placeholder">
+                  <i class="fas fa-map-marked-alt"></i>
+                  <p>Bản đồ hiển thị vị trí bất động sản</p>
+                </div>
+              </div>
+
+              <div class="nearby-places">
+                <h4>Địa điểm lân cận</h4>
+                <div class="nearby-places-list">
+                  <div class="nearby-place">
+                    <i class="fas fa-store"></i>
+                    <div>
+                      <div class="nearby-place-text">Vincom Center</div>
+                      <div class="nearby-place-distance">50m</div>
+                    </div>
+                  </div>
+                  <div class="nearby-place">
+                    <i class="fas fa-utensils"></i>
+                    <div>
+                      <div class="nearby-place-text">
+                        Nhà hàng The Coffee House
+                      </div>
+                      <div class="nearby-place-distance">100m</div>
+                    </div>
+                  </div>
+                  <div class="nearby-place">
+                    <i class="fas fa-hospital"></i>
+                    <div>
+                      <div class="nearby-place-text">Bệnh viện Vinmec</div>
+                      <div class="nearby-place-distance">200m</div>
+                    </div>
+                  </div>
+                  <div class="nearby-place">
+                    <i class="fas fa-school"></i>
+                    <div>
+                      <div class="nearby-place-text">
+                        Trường Quốc tế Vinschool
+                      </div>
+                      <div class="nearby-place-distance">300m</div>
+                    </div>
+                  </div>
+                  <div class="nearby-place">
+                    <i class="fas fa-bus"></i>
+                    <div>
+                      <div class="nearby-place-text">Trạm xe buýt</div>
+                      <div class="nearby-place-distance">150m</div>
+                    </div>
+                  </div>
+                  <div class="nearby-place">
+                    <i class="fas fa-tree"></i>
+                    <div>
+                      <div class="nearby-place-text">Công viên trung tâm</div>
+                      <div class="nearby-place-distance">100m</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Similar Properties -->
+            <div class="similar-properties">
+              <h3>Bất động sản tương tự</h3>
+              <div class="similar-properties-grid">
+                <div class="similar-property-card">
+                  <div class="similar-property-image">
+                    <img
+                      src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80"
+                      alt="Căn hộ Sunrise City"
+                    />
+                  </div>
+                  <div class="similar-property-info">
+                    <div class="similar-property-price">5.5 triệu/tháng</div>
+                    <h4 class="similar-property-title">Căn hộ Sunrise City</h4>
+                    <div class="similar-property-location">
+                      <i class="fas fa-map-marker-alt"></i> Quận 7, TP.HCM
+                    </div>
+                    <div class="similar-property-features">
+                      <div class="similar-property-feature">
+                        <i class="fas fa-bed"></i> 1
+                      </div>
+                      <div class="similar-property-feature">
+                        <i class="fas fa-bath"></i> 1
+                      </div>
+                      <div class="similar-property-feature">
+                        <i class="fas fa-vector-square"></i> 55m²
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="similar-property-card">
+                  <div class="similar-property-image">
+                    <img
+                      src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"
+                      alt="Căn hộ Masteri Thảo Điền"
+                    />
+                  </div>
+                  <div class="similar-property-info">
+                    <div class="similar-property-price">7.2 triệu/tháng</div>
+                    <h4 class="similar-property-title">
+                      Căn hộ Masteri Thảo Điền
+                    </h4>
+                    <div class="similar-property-location">
+                      <i class="fas fa-map-marker-alt"></i> Quận 2, TP.HCM
+                    </div>
+                    <div class="similar-property-features">
+                      <div class="similar-property-feature">
+                        <i class="fas fa-bed"></i> 2
+                      </div>
+                      <div class="similar-property-feature">
+                        <i class="fas fa-bath"></i> 2
+                      </div>
+                      <div class="similar-property-feature">
+                        <i class="fas fa-vector-square"></i> 70m²
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="similar-property-card">
+                  <div class="similar-property-image">
+                    <img
+                      src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&q=80"
+                      alt="Studio Lexington Residence"
+                    />
+                  </div>
+                  <div class="similar-property-info">
+                    <div class="similar-property-price">3.5 triệu/tháng</div>
+                    <h4 class="similar-property-title">
+                      Studio Lexington Residence
+                    </h4>
+                    <div class="similar-property-location">
+                      <i class="fas fa-map-marker-alt"></i> Quận 2, TP.HCM
+                    </div>
+                    <div class="similar-property-features">
+                      <div class="similar-property-feature">
+                        <i class="fas fa-bed"></i> Studio
+                      </div>
+                      <div class="similar-property-feature">
+                        <i class="fas fa-bath"></i> 1
+                      </div>
+                      <div class="similar-property-feature">
+                        <i class="fas fa-vector-square"></i> 35m²
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="property-sidebar">
+            <!-- Contact Form -->
+            <div class="contact-card">
+              <div class="contact-header">
+                <img
+                  src="https://randomuser.me/api/portraits/men/32.jpg"
+                  alt="Người cho thuê"
+                  class="contact-avatar"
+                />
+                <div>
+                  <div class="contact-name">Nguyễn Văn An</div>
+                  <div class="contact-role">Chủ nhà</div>
+                  <div class="contact-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                    <div class="contact-rating-score">4.5 (28 đánh giá)</div>
+                  </div>
+                </div>
+              </div>
+
+              <form class="contact-form">
+                <div class="form-group">
+                  <label for="name">Họ tên</label>
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Nhập họ tên của bạn"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Nhập địa chỉ email"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="phone">Số điện thoại</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Nhập số điện thoại"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="message">Lời nhắn</label>
+                  <textarea
+                    id="message"
+                    placeholder="Nhập lời nhắn cho người cho thuê..."
+                  ></textarea>
+                </div>
+              </form>
+
+              <div class="contact-actions">
+                <button class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i> Gửi yêu cầu xem nhà
+                </button>
+                <button class="btn btn-outline">
+                  <i class="fas fa-phone-alt"></i> Gọi trực tiếp
+                </button>
+              </div>
+
+              <div class="contact-info">
+                <div class="contact-info-item">
+                  <i class="fas fa-phone-alt"></i> +84 901 234 567
+                </div>
+                <div class="contact-info-item">
+                  <i class="fas fa-envelope"></i> an.nguyen@gmail.com
+                </div>
+                <div class="contact-info-item">
+                  <i class="fas fa-clock"></i> Phản hồi trong vòng 24 giờ
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking Widget -->
+            <div class="booking-widget">
+              <h3>Chi tiết giao dịch</h3>
+              <div class="booking-details">
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Tiền thuê hàng tháng</div>
+                  <div class="booking-detail-value">8.500.000₫</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Phí quản lý</div>
+                  <div class="booking-detail-value">Đã bao gồm</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Tiền cọc</div>
+                  <div class="booking-detail-value">2 tháng (17.000.000₫)</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">
+                    Thời hạn thuê tối thiểu
+                  </div>
+                  <div class="booking-detail-value">12 tháng</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Ngày có thể vào ở</div>
+                  <div class="booking-detail-value">15/03/2026</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Phương thức thanh toán</div>
+                  <div class="booking-detail-value">3 tháng/lần</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Điện</div>
+                  <div class="booking-detail-value">Theo giá nhà nước</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Nước</div>
+                  <div class="booking-detail-value">100.000₫/người/tháng</div>
+                </div>
+                <div class="booking-detail">
+                  <div class="booking-detail-label">Internet</div>
+                  <div class="booking-detail-value">Miễn phí</div>
+                </div>
+              </div>
+
+              <div class="booking-total">
+                <div class="booking-total-label">Tổng phải trả ban đầu</div>
+                <div class="booking-total-value">25.500.000₫</div>
+              </div>
+
+              <div class="contact-actions">
+                <button class="btn btn-primary">
+                  <i class="fas fa-calendar-check"></i> Đặt lịch xem nhà
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Bar -->
+    <div class="property-action-bar" id="actionBar">
+      <div class="action-bar-price">8.500.000₫ / tháng</div>
+      <div class="action-bar-buttons">
+        <button class="btn btn-outline">
+          <i class="fas fa-phone-alt"></i> Gọi ngay
+        </button>
+        <button class="btn btn-primary">
+          <i class="fas fa-paper-plane"></i> Liên hệ
+        </button>
+      </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div class="gallery-modal" id="galleryModal">
+      <div class="gallery-modal-content">
+        <div class="gallery-modal-close" id="galleryClose">
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="gallery-modal-image" id="galleryModalImage">
+          <img
+            src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80"
+            alt="Căn hộ cao cấp Vinhomes Central Park"
+          />
+        </div>
+        <div class="gallery-modal-nav gallery-modal-prev" id="galleryPrev">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="gallery-modal-nav gallery-modal-next" id="galleryNext">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="gallery-modal-counter" id="galleryCounter">1 / 15</div>
+        <div class="gallery-modal-thumbs" id="galleryThumbs">
+          <div class="gallery-modal-thumb active">
+            <img
+              src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80"
+              alt="Tổng quan căn hộ"
+            />
+          </div>
+          <div class="gallery-modal-thumb">
+            <img
+              src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=200&q=80"
+              alt="Phòng khách"
+            />
+          </div>
+          <div class="gallery-modal-thumb">
+            <img
+              src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=200&q=80"
+              alt="Phòng bếp"
+            />
+          </div>
+          <div class="gallery-modal-thumb">
+            <img
+              src="https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=200&q=80"
+              alt="Phòng ngủ chính"
+            />
+          </div>
+          <div class="gallery-modal-thumb">
+            <img
+              src="https://images.unsplash.com/photo-1564540583246-934409427776?w=200&q=80"
+              alt="Phòng tắm"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo"><i class="fas fa-home"></i> SmartRent</div>
+          <p class="footer-about">
+            SmartRent là nền tảng quản lý và cho thuê bất động sản thông minh
+            hàng đầu, ứng dụng công nghệ AI giúp kết nối chủ nhà và người thuê
+            hiệu quả.
+          </p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3>Liên kết nhanh</h3>
+          <ul>
+            <li>
+              <a href="index.html"
+                ><i class="fas fa-chevron-right"></i> Trang chủ</a
+              >
+            </li>
+            <li>
+              <a href="index.html#properties"
+                ><i class="fas fa-chevron-right"></i> Bất động sản</a
+              >
+            </li>
+            <li>
+              <a href="index.html#features"
+                ><i class="fas fa-chevron-right"></i> Tính năng</a
+              >
+            </li>
+            <li>
+              <a href="index.html#about"
+                ><i class="fas fa-chevron-right"></i> Về chúng tôi</a
+              >
+            </li>
+            <li>
+              <a href="index.html#contact"
+                ><i class="fas fa-chevron-right"></i> Liên hệ</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Dịch vụ</h3>
+          <ul>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Thuê nhà</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Cho thuê</a>
+            </li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-chevron-right"></i> Quản lý tài sản</a
+              >
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-chevron-right"></i> Tư vấn đầu tư</a>
+            </li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-chevron-right"></i> Ký hợp đồng điện tử</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Liên hệ</h3>
+          <ul>
+            <li>
+              <a href="#"
+                ><i class="fas fa-map-marker-alt"></i> 123 Nguyễn Huệ, Quận 1,
+                TP.HCM</a
+              >
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-phone-alt"></i> (028) 3822 8888</a>
+            </li>
+            <li>
+              <a href="#"><i class="fas fa-envelope"></i> info@smartrent.vn</a>
+            </li>
+            <li>
+              <a href="#"
+                ><i class="fas fa-clock"></i> 8:00 - 17:30, Thứ 2 - Thứ 7</a
+              >
+            </li>
+          </ul>
+
+          <div class="newsletter">
+            <p>Đăng ký nhận tin mới nhất</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Email của bạn" required />
+              <button type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 SmartRent. Tất cả quyền được bảo lưu.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile Menu Toggle
+      const mobileToggle = document.getElementById("mobileToggle");
+      const navLinks = document.getElementById("navLinks");
+
+      mobileToggle.addEventListener("click", function () {
+        navLinks.classList.toggle("active");
+
+        if (navLinks.classList.contains("active")) {
+          mobileToggle.innerHTML = '<i class="fas fa-times"></i>';
+        } else {
+          mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+      });
+
+      // Header scroll effect
+      const header = document.getElementById("header");
+
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+
+      // Action bar visibility
+      const actionBar = document.getElementById("actionBar");
+
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 600) {
+          actionBar.classList.add("visible");
+        } else {
+          actionBar.classList.remove("visible");
+        }
+      });
+
+      // Back to top button
+      const backToTop = document.getElementById("backToTop");
+
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 300) {
+          backToTop.classList.add("active");
+        } else {
+          backToTop.classList.remove("active");
+        }
+      });
+
+      backToTop.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+
+      // Read more functionality
+      const readMore = document.getElementById("readMore");
+      const description = document.querySelector(".property-description");
+
+      readMore.addEventListener("click", function () {
+        const paragraphs = description.querySelectorAll("p");
+
+        for (let i = 0; i < paragraphs.length; i++) {
+          paragraphs[i].style.display = "block";
+        }
+
+        readMore.style.display = "none";
+      });
+
+      // Gallery Modal
+      const galleryModal = document.getElementById("galleryModal");
+      const viewAllPhotos = document.getElementById("viewAllPhotos");
+      const galleryClose = document.getElementById("galleryClose");
+      const galleryMain = document.getElementById("galleryMain");
+      const galleryModalImage = document
+        .getElementById("galleryModalImage")
+        .querySelector("img");
+      const galleryPrev = document.getElementById("galleryPrev");
+      const galleryNext = document.getElementById("galleryNext");
+      const galleryCounter = document.getElementById("galleryCounter");
+      const galleryThumbs = document.getElementById("galleryThumbs");
+
+      // Sample gallery images
+      const galleryImages = [
+        {
+          large:
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
+          thumb:
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80",
+          alt: "Tổng quan căn hộ",
+        },
+        {
+          large:
+            "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80",
+          thumb:
+            "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=200&q=80",
+          alt: "Phòng khách",
+        },
+        {
+          large:
+            "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=1200&q=80",
+          thumb:
+            "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=200&q=80",
+          alt: "Phòng bếp",
+        },
+        {
+          large:
+            "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=1200&q=80",
+          thumb:
+            "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=200&q=80",
+          alt: "Phòng ngủ chính",
+        },
+        {
+          large:
+            "https://images.unsplash.com/photo-1564540583246-934409427776?w=1200&q=80",
+          thumb:
+            "https://images.unsplash.com/photo-1564540583246-934409427776?w=200&q=80",
+          alt: "Phòng tắm",
+        },
+      ];
+
+      let currentImageIndex = 0;
+
+      // Open gallery modal
+      viewAllPhotos.addEventListener("click", function () {
+        galleryModal.classList.add("active");
+        document.body.style.overflow = "hidden";
+        updateGalleryCounter();
+      });
+
+      galleryMain.addEventListener("click", function () {
+        galleryModal.classList.add("active");
+        document.body.style.overflow = "hidden";
+        updateGalleryCounter();
+      });
+
+      // Close gallery modal
+      galleryClose.addEventListener("click", function () {
+        galleryModal.classList.remove("active");
+        document.body.style.overflow = "auto";
+      });
+
+      // Navigate gallery
+      galleryPrev.addEventListener("click", function () {
+        currentImageIndex =
+          (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+        updateGalleryImage();
+        updateGalleryCounter();
+        updateGalleryThumbs();
+      });
+
+      galleryNext.addEventListener("click", function () {
+        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+        updateGalleryImage();
+        updateGalleryCounter();
+        updateGalleryThumbs();
+      });
+
+      // Update gallery image
+      function updateGalleryImage() {
+        galleryModalImage.src = galleryImages[currentImageIndex].large;
+        galleryModalImage.alt = galleryImages[currentImageIndex].alt;
+      }
+
+      // Update gallery counter
+      function updateGalleryCounter() {
+        galleryCounter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+      }
+
+      // Update gallery thumbnails
+      function updateGalleryThumbs() {
+        const thumbs = galleryThumbs.querySelectorAll(".gallery-modal-thumb");
+        thumbs.forEach((thumb, index) => {
+          if (index === currentImageIndex) {
+            thumb.classList.add("active");
+          } else {
+            thumb.classList.remove("active");
+          }
+        });
+      }
+
+      // Thumbnail click handlers
+      const thumbs = galleryThumbs.querySelectorAll(".gallery-modal-thumb");
+      thumbs.forEach((thumb, index) => {
+        thumb.addEventListener("click", function () {
+          currentImageIndex = index;
+          updateGalleryImage();
+          updateGalleryCounter();
+          updateGalleryThumbs();
+        });
+      });
+
+      // Close gallery with ESC key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && galleryModal.classList.contains("active")) {
+          galleryModal.classList.remove("active");
+          document.body.style.overflow = "auto";
+        }
+      });
+
+      // Gallery arrow key navigation
+      document.addEventListener("keydown", function (e) {
+        if (!galleryModal.classList.contains("active")) return;
+
+        if (e.key === "ArrowLeft") {
+          currentImageIndex =
+            (currentImageIndex - 1 + galleryImages.length) %
+            galleryImages.length;
+          updateGalleryImage();
+          updateGalleryCounter();
+          updateGalleryThumbs();
+        }
+
+        if (e.key === "ArrowRight") {
+          currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+          updateGalleryImage();
+          updateGalleryCounter();
+          updateGalleryThumbs();
+        }
+      });
+    </script>
+  </body>
+</html>
