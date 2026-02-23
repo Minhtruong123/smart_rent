@@ -1,6 +1,7 @@
 package com.cots.service.implement;
 
 import com.cots.dto.request.RegisterRequest;
+import com.cots.dto.response.UserResponse;
 import com.cots.enums.Gender;
 import com.cots.enums.Role;
 import com.cots.model.User;
@@ -17,6 +18,17 @@ import java.time.LocalDateTime;
 public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    public UserResponse getUserProfile(String email) {
+        User user = getByEmail(email);
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhone())
+                .role(user.getRole().name())
+                .build();
+    }
     public User getByEmail(String email) {
         return userRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));

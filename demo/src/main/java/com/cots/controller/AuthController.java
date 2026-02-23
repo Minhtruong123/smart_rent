@@ -6,6 +6,7 @@ import com.cots.dto.request.RegisterRequest;
 import com.cots.dto.response.LoginResponse;
 import com.cots.dto.response.RefreshTokenResponse;
 import com.cots.service.AuthService;
+import com.cots.service.implement.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController extends AbstractController{
     private final AuthService authService;
+    private final UserService userService;
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         var tokens = authService.login(request);
-        return ok(new LoginResponse(
-                tokens.get("accessToken"),
-                tokens.get("refreshToken")
-        ));
+
+        var userResponse = userService.getUserProfile(request.email());
+
+        LoginResponse response = LoginResponse.builder()
+                .accessToken(tokens.get("accessToken"))
+                .refreshToken(tokens.get("refreshToken"))
+                .user(userResponse)
+                .build();
+
+        return ok(response);
     }
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request){
