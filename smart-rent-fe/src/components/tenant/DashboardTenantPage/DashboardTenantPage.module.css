@@ -1,0 +1,818 @@
+.mainLayout {
+  margin-top: 80px;
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: white;
+  border-right: 1px solid var(--gray-200);
+  padding: 2rem 0;
+  position: fixed;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.sidebarMenu {
+  list-style: none;
+  padding: 0 1rem;
+}
+
+.sidebarMenu li {
+  margin-bottom: 0.5rem;
+}
+
+.sidebarMenu a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  color: var(--text-light);
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.sidebarMenu a:hover,
+.sidebarMenu a.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.sidebarMenu i {
+  width: 20px;
+  font-size: 1.2rem;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  margin-left: 280px;
+  padding: 2rem;
+}
+
+.pageHeader {
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.breadcrumb {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Stats Cards */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.statCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--primary-color);
+  transition: transform 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+}
+
+.statIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-primary);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+/* Search Section */
+.searchCard {
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.searchTitle {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.searchForm {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.searchCard .formGroup input,
+.searchCard .formGroup select {
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.searchCard .formGroup input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn,
+.btnPrimary,
+.btnOutline,
+.btnSuccess,
+.btnWarning,
+.btnDanger {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  justify-content: center;
+}
+
+.btnPrimary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.searchCard .btnPrimary {
+  background: white;
+  color: var(--primary-color);
+}
+
+.btnOutline {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: var(--primary-color);
+  background: transparent;
+  border-color: var(--primary-color);
+}
+
+.btnSuccess {
+  background: var(--success-color);
+  color: white;
+}
+
+.btnWarning {
+  background: var(--warning-color);
+  color: white;
+}
+
+.btnDanger {
+  background: var(--danger-color);
+  color: white;
+}
+
+/* Property Cards */
+.propertiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.propertyCard {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.propertyCard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.propertyImage {
+  height: 200px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.propertyBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--success-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.propertyInfo {
+  padding: 1.5rem;
+}
+
+.propertyPrice {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.propertyTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.propertyLocation {
+  color: var(--text-light);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.propertyFeatures {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.propertyActions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Tables */
+.tableResponsive {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--gray-200);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th,
+td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+th {
+  background: var(--gray-50);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.statusPending {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+.statusApproved {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.statusRejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.statusWarning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+/* Contract styles */
+.contractCard {
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.contractCard:hover {
+  box-shadow: var(--shadow);
+}
+
+.contractHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.contractTitle {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.contractDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-light);
+}
+
+.contractActions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* Bill styles */
+.billSummary {
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.billAmount {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.billItems {
+  margin-top: 1.5rem;
+}
+
+.billItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.billItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Payment styles */
+.paymentSection {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.paymentMethodTitle {
+  margin-bottom: 1rem;
+}
+
+.paymentMethods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.paymentMethod {
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.paymentMethod:hover,
+.paymentMethod.selected {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.paymentMethod img {
+  height: 40px;
+  margin-bottom: 1rem;
+}
+
+.paymentAction {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.paymentAction .btnPrimary {
+  font-size: 1.1rem;
+  padding: 1.2rem 3rem;
+}
+
+/* Profile styles */
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.profileAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: white;
+  font-weight: 700;
+}
+
+.profileInfo h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.profileInfo p {
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+}
+
+.profileActions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* Notification styles */
+.notificationItem {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.notificationItem:last-child {
+  border-bottom: none;
+}
+
+.notificationWrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.notificationIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.notificationSuccess {
+  background: var(--success-color);
+}
+
+.notificationWarning {
+  background: var(--warning-color);
+}
+
+.notificationPrimary {
+  background: var(--primary-color);
+}
+
+.notificationContent {
+  flex: 1;
+}
+
+.notificationContent h4 {
+  margin-bottom: 0.5rem;
+}
+
+.notificationContent p {
+  color: var(--text-light);
+  margin: 0.5rem 0;
+}
+
+.notificationContent small {
+  color: var(--text-muted);
+}
+
+/* Page */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+/* Chatbot */
+.chatbotContainer {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
+.chatbotToggle {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
+}
+
+.chatbotToggle:hover {
+  transform: scale(1.1);
+}
+
+.chatbotWindow {
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  width: 350px;
+  height: 500px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbotWindow.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.chatbotHeader {
+  padding: 1.5rem;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chatAvatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatbotMessages {
+  height: 300px;
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.message {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.messageContent {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.message.bot .messageContent {
+  background: var(--gray-100);
+  color: var(--text-dark);
+}
+
+.message.user .messageContent {
+  background: var(--primary-color);
+  color: white;
+}
+
+.chatbotInput {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.chatbotInput input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--gray-200);
+  border-radius: 20px;
+  margin-right: 0.5rem;
+}
+
+.chatbotInput button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .content {
+    margin-left: 0;
+  }
+
+  .searchForm {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+
+  .propertiesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .paymentMethods {
+    grid-template-columns: 1fr;
+  }
+
+  .chatbotWindow {
+    width: 300px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}

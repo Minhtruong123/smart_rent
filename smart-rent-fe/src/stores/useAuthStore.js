@@ -3,8 +3,8 @@ import { toast } from "sonner";
 import { authService } from "../services/authService";
 
 export const useAuthStore = create((set, get) => ({
-  accessToken: null,
-  user: null,
+  accessToken: localStorage.getItem("accessToken") || null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
   loading: false,
 
   setAccessToken: (token) => set({ accessToken: token }),
@@ -16,7 +16,12 @@ export const useAuthStore = create((set, get) => ({
       set({ loading: true });
 
       const res = await authService.signIn(email, password);
-      const { accessToken, user } = res.data;
+      const { accessToken, refreshToken, user } = res.data;
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+
       set({ accessToken, user });
 
       toast.success("Đăng nhập thành công 🎉");
@@ -45,19 +50,27 @@ export const useAuthStore = create((set, get) => ({
 
   signOut: async () => {
     try {
-      get().clearState();
-      await authService.signOut();
+      const refreshToken = localStorage.getItem("refreshToken");
+      await authService.signOut(refreshToken);
       toast.success("Đã đăng xuất");
     } catch {
       toast.error("Logout lỗi");
+    } finally {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      get().clearState();
+      toast.success("Đã đăng xuất thành công");
     }
   },
 
   fetchMe: async () => {
     try {
       const res = await authService.fetchMe();
-      set({ user: res.data.user });
-    } catch {
+      set({ user: res.data });
+      localStorage.setItem("user", JSON.stringify(res.data));
+    } catch (error) {
+      console.error("FetchMe lỗi:", error.response?.status);
       get().clearState();
     }
   },

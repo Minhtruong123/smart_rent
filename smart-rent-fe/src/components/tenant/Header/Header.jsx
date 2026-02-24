@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuthStore } from "../../../stores/useAuthStore";
 import styles from "./Header.module.css";
 
@@ -7,9 +7,10 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const { user, signOut } = useAuthStore();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -35,16 +36,15 @@ export default function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleLoginClick = (e) => {
-    e.preventDefault();
-    navigate("/login");
-    setIsMenuOpen(false);
-  };
-
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     setIsDropdownOpen(false);
     navigate("/login");
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(true);
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -61,23 +61,47 @@ export default function Header() {
             className={`${styles.navLinks} ${isMenuOpen ? styles.active : ""}`}
           >
             <li>
-              <a href="#home">Trang chủ</a>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive ? styles.activeLink : ""
+                }
+              >
+                Trang chủ
+              </NavLink>
             </li>
             <li>
-              <a href="#properties">Bất động sản</a>
+              <NavLink
+                to="/real-estate-page"
+                className={({ isActive }) =>
+                  isActive ? styles.activeLink : ""
+                }
+              >
+                Bất động sản
+              </NavLink>
             </li>
             <li>
-              <a href="#features">Tính năng</a>
+              <NavLink
+                to="/feature-page"
+                className={({ isActive }) =>
+                  isActive ? styles.activeLink : ""
+                }
+              >
+                Tính năng
+              </NavLink>
             </li>
             <li>
-              <a href="#about">Về chúng tôi</a>
-            </li>
-            <li>
-              <a href="#contact">Liên hệ</a>
+              <NavLink
+                to="/about-us-page"
+                className={({ isActive }) =>
+                  isActive ? styles.activeLink : ""
+                }
+              >
+                Về chúng tôi
+              </NavLink>
             </li>
             <li>
               {user ? (
-                /* Hiển thị khi đã Đăng nhập */
                 <div className={styles.userSection} ref={dropdownRef}>
                   <div
                     className={styles.userProfile}
@@ -95,13 +119,13 @@ export default function Header() {
                   {isDropdownOpen && (
                     <div className={styles.dropdownMenu}>
                       <button
-                        onClick={() => navigate("/profile")}
+                        onClick={() => navigate("/dashboard-tenant-page")}
                         className={styles.dropdownItem}
                       >
                         <i className="fas fa-user-circle"></i> Thông tin cá nhân
                       </button>
                       <button
-                        onClick={handleLogout}
+                        onClick={confirmLogout}
                         className={`${styles.dropdownItem} ${styles.logoutBtn}`}
                       >
                         <i className="fas fa-sign-out-alt"></i> Đăng xuất
@@ -110,7 +134,6 @@ export default function Header() {
                   )}
                 </div>
               ) : (
-                /* Hiển thị khi chưa Đăng nhập */
                 <button
                   onClick={() => navigate("/login")}
                   className={styles.btnPrimary}
@@ -125,6 +148,32 @@ export default function Header() {
           </div>
         </nav>
       </header>
+
+      {showLogoutConfirm && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalIcon}>
+              <i className="fas fa-exclamation-circle"></i>
+            </div>
+            <h3>Xác nhận đăng xuất</h3>
+            <p>Bạn có chắc chắn muốn rời khỏi hệ thống SmartRent không?</p>
+            <div className={styles.modalButtons}>
+              <button
+                className={styles.btnCancel}
+                onClick={() => setShowLogoutConfirm(false)}
+              >
+                Hủy bỏ
+              </button>
+              <button
+                className={styles.btnConfirmLogout}
+                onClick={handleLogout}
+              >
+                Đăng xuất ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

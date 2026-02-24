@@ -9,12 +9,12 @@ export const authService = {
     return api.post("/auth/login", { email, password });
   },
 
-  signOut() {
-    return api.post("/auth/logout");
+  signOut(refreshToken) {
+    return api.post("/auth/logout", { refreshToken });
   },
 
   fetchMe() {
-    return api.get("/users/me");
+    return api.get("/user/me");
   },
 
   refresh() {

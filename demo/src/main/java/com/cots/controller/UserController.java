@@ -16,7 +16,7 @@ public class UserController extends AbstractController{
     private final UserService userService;
     @GetMapping("/me")
     public ResponseEntity<?> fetchMe(@AuthenticationPrincipal Jwt jwt){
-        String email = jwt.getClaim("email");
+        String email = jwt.getSubject();
 
         var userProfile = userService.getUserProfile(email);
 
