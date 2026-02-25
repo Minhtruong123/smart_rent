@@ -15,6 +15,7 @@ import DetailRealEstatePage from "./components/tenant/DetailRealEstatePage/Detai
 import AboutUsPage from "./components/tenant/AboutUsPage/AboutUsPage";
 import FeaturePage from "./components/tenant/FeaturePage/FeaturePage";
 import DashboardTenantPage from "./components/tenant/DashboardTenantPage/DashboardTenantPage";
+import ScrollToTop from "./components/ScrollToTop";
 import { useAuthStore } from "./stores/useAuthStore";
 
 const MainLayout = () => (
@@ -37,6 +38,7 @@ function App() {
     <>
       <Toaster position="top-right" richColors />
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/login" element={<Auth />} />
           <Route element={<MainLayout />}>

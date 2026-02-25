@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "users")
+@Table(name = "property_images")
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -17,7 +17,9 @@ public class PropertyImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @Column(name = "image_url")
     String imageUrl;
+    @Column(name = "is_main")
     Boolean isMain = false;
     @ManyToOne
     @JsonManagedReference

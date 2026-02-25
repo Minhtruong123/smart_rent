@@ -19,7 +19,7 @@ export default function Auth() {
   });
 
   const [registerData, setRegisterData] = useState({
-    name: "",
+    fullName: "",
     email: "",
     phone: "",
     gender: "MALE",
@@ -87,7 +87,7 @@ export default function Auth() {
     }
 
     await signUp({
-      name: registerData.name,
+      fullName: registerData.fullName,
       email: registerData.email,
       phone: registerData.phone,
       gender: registerData.gender,
@@ -274,7 +274,7 @@ export default function Auth() {
                           type="text"
                           className={styles.formInput}
                           placeholder="Nguyễn Văn A"
-                          value={registerData.name}
+                          value={registerData.fullName}
                           onChange={(e) =>
                             setRegisterData({
                               ...registerData,
