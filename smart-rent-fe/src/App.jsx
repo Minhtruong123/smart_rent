@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Outlet,
+  Navigate,
 } from "react-router-dom";
 import { Toaster } from "sonner";
 import Header from "./components/tenant/Header/Header";
@@ -16,6 +17,10 @@ import AboutUsPage from "./components/tenant/AboutUsPage/AboutUsPage";
 import FeaturePage from "./components/tenant/FeaturePage/FeaturePage";
 import DashboardTenantPage from "./components/tenant/DashboardTenantPage/DashboardTenantPage";
 import ScrollToTop from "./components/ScrollToTop";
+import Sidebar from "./components/host/Sidebar/Sidebar";
+import OwnerDashboard from "./components/host/OwnerDashboard/OwnerDashboard";
+
+import ProtectedRoute from "./routes/ProtectedRoute";
 import { useAuthStore } from "./stores/useAuthStore";
 
 const MainLayout = () => (
@@ -26,8 +31,16 @@ const MainLayout = () => (
   </>
 );
 
+const OwnerLayout = () => (
+  <>
+    <Sidebar />
+    <Outlet />
+  </>
+);
+
 function App() {
   const { fetchMe, accessToken } = useAuthStore();
+
   useEffect(() => {
     if (accessToken) {
       fetchMe();
@@ -40,7 +53,11 @@ function App() {
       <Router>
         <ScrollToTop />
         <Routes>
-          <Route path="/login" element={<Auth />} />
+          <Route
+            path="/login"
+            element={!accessToken ? <Auth /> : <Navigate to="/" />}
+          />
+
           <Route element={<MainLayout />}>
             <Route path="/" element={<TenantIndex />} />
             <Route path="/real-estate-page" element={<RealEstatePage />} />
@@ -50,11 +67,29 @@ function App() {
             />
             <Route path="/about-us-page" element={<AboutUsPage />} />
             <Route path="/feature-page" element={<FeaturePage />} />
-            <Route
-              path="/dashboard-tenant-page"
-              element={<DashboardTenantPage />}
-            />
           </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={["TENANT"]} />}>
+            <Route element={<MainLayout />}>
+              <Route
+                path="/dashboard-tenant-page"
+                element={<DashboardTenantPage />}
+              />
+            </Route>
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={["OWNER"]} />}>
+            <Route element={<OwnerLayout />}>
+              <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+            </Route>
+          </Route>
+
+          <Route
+            path="*"
+            element={
+              <div className="p-20 text-center">404 - Trang không tồn tại</div>
+            }
+          />
         </Routes>
       </Router>
     </>

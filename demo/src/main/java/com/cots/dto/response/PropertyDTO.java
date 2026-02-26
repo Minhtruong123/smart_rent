@@ -7,6 +7,7 @@ public record PropertyDTO(
         String price,
         String title,
         String location,
+        String type,
         String bedrooms,
         Integer bathrooms,
         String totalRooms,

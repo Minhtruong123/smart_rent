@@ -11,7 +11,7 @@ const usePropertyStore = create((set) => ({
     try {
       const response = await propertyService.listProperty();
       set({ properties: response.data, loading: false });
-    } catch (err) {
+    } catch (error) {
       set({ error: "Không thể tải danh sách phòng", loading: false });
     }
   },

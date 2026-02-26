@@ -75,7 +75,14 @@ export default function Auth() {
     e.preventDefault();
     const success = await signIn(loginData.email, loginData.password);
     if (success) {
-      navigate("/");
+      const user = useAuthStore.getState().user;
+      if (user?.role === "OWNER") {
+        navigate("/owner/dashboard");
+      } else if (user?.role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     }
   };
 

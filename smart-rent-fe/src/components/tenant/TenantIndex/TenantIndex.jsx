@@ -377,14 +377,11 @@ export default function TenantIndex() {
                     </div>
                   </div>
                   <div className={styles.propertyInfo}>
-                    <div className={styles.propertyPrice}>
-                      {new Intl.NumberFormat("vi-VN").format(property.price)}{" "}
-                      VNĐ/tháng
-                    </div>
+                    <div className={styles.propertyPrice}>{property.price}</div>
                     <h3 className={styles.propertyTitle}>{property.title}</h3>
                     <div className={styles.propertyLocation}>
                       <i className="fas fa-map-marker-alt"></i>{" "}
-                      {property.district}, {property.city}
+                      {property.location}
                     </div>
                     <div className={styles.propertyFeatures}>
                       <div className={styles.propertyFeature}>

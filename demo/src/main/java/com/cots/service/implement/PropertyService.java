@@ -51,6 +51,7 @@ public class PropertyService implements IPropertyService {
                 String.format("%,.0f VNĐ/tháng", p.getPrice()),
                 p.getTitle(),
                 location,
+                p.getType().toString(),
                 bedrooms,
                 bathrooms,
                 totalRooms,
