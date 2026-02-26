@@ -34,6 +34,7 @@ public class Property {
     Double price;
     @Enumerated(EnumType.STRING)
     PropertyType type;
+    @Enumerated(EnumType.STRING)
     PropertyStatus status;
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
     List<PropertyImage> propertyImages;

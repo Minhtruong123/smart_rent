@@ -37,43 +37,51 @@ api.interceptors.response.use(
       !error.response ||
       originalRequest._retry ||
       originalRequest.url.includes("/auth/login") ||
-      originalRequest.url.includes("/auth/register") ||
-      originalRequest.url.includes("/auth/refresh-token") ||
-      originalRequest.url.includes("/auth/logout")
+      originalRequest.url.includes("/auth/refresh-token")
     ) {
       return Promise.reject(error);
     }
 
-    if (error.response.status === 403) {
+    if (error.response.status === 401 || error.response.status === 403) {
       if (isRefreshing) {
-        originalRequest._retry = true;
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return api(originalRequest);
-        });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
 
-      try {
-        const res = await api.post("/auth/refresh-token");
-        const newToken = res.data.accessToken;
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.post(
+            `${api.defaults.baseURL}/auth/refresh-token`,
+            {},
+            { withCredentials: true },
+          );
 
-        useAuthStore.getState().setAccessToken(newToken);
-        processQueue(null, newToken);
+          const newToken = res.data.accessToken;
 
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return api(originalRequest);
-      } catch (err) {
-        processQueue(err, null);
-        useAuthStore.getState().clearState();
-        return Promise.reject(err);
-      } finally {
-        isRefreshing = false;
-      }
+          useAuthStore.getState().setAccessToken(newToken);
+
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
+          processQueue(null, newToken);
+          resolve(api(originalRequest));
+        } catch (err) {
+          processQueue(err, null);
+          useAuthStore.getState().clearState();
+          window.location.href = "/login";
+          reject(err);
+        } finally {
+          isRefreshing = false;
+        }
+      });
     }
 
     return Promise.reject(error);

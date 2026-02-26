@@ -278,7 +278,7 @@ export default function Auth() {
                           onChange={(e) =>
                             setRegisterData({
                               ...registerData,
-                              name: e.target.value,
+                              fullName: e.target.value,
                             })
                           }
                           required

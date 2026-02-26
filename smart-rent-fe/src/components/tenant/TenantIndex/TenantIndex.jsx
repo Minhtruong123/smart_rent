@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import usePropertyStore from "../../../stores/usePropertyStore";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import styles from "./TenantIndex.module.css";
 
@@ -6,6 +8,9 @@ export default function TenantIndex() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef(null);
+  const { properties, loading, error, fetchProperties } = usePropertyStore();
+
+  const navigate = useNavigate();
 
   const testimonials = [
     {
@@ -33,6 +38,10 @@ export default function TenantIndex() {
       rating: 4,
     },
   ];
+
+  useEffect(() => {
+    fetchProperties();
+  }, [fetchProperties]);
 
   useEffect(() => {
     let ticking = false;
@@ -116,6 +125,19 @@ export default function TenantIndex() {
     setCurrentTestimonialIndex(
       (prevIndex) => (prevIndex + 1) % testimonials.length,
     );
+  };
+
+  const getBadgeClass = (type) => {
+    switch (type) {
+      case "ROOM":
+        return styles.badgeRoom;
+      case "APARTMENT":
+        return styles.badgeApartment;
+      case "HOUSE":
+        return styles.badgeHouse;
+      default:
+        return styles.badgeDefault;
+    }
   };
 
   const currentTestimonial = testimonials[currentTestimonialIndex];
@@ -321,187 +343,70 @@ export default function TenantIndex() {
               đại
             </p>
           </div>
-          <div className={styles.propertiesGrid}>
-            {/* Property Card 1 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80"
-                  alt="Luxury Apartment"
-                />
-                <div className={styles.propertyBadge}>Hot</div>
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>8.5 triệu/tháng</div>
-                <h3 className={styles.propertyTitle}>
-                  Căn hộ cao cấp Vinhomes Central Park
-                </h3>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i> Quận Bình Thạnh,
-                  TP.HCM
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bed"></i> 2 Phòng ngủ
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bath"></i> 2 Phòng tắm
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-vector-square"></i> 75m²
-                  </div>
-                </div>
-              </div>
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <div className={styles.spinner}></div>
+              <p>Đang tải danh sách bất động sản...</p>
             </div>
-
-            {/* Property Card 2 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80"
-                  alt="Modern Apartment"
-                />
-                <div className={styles.propertyBadge}>Mới</div>
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>5.5 triệu/tháng</div>
-                <h3 className={styles.propertyTitle}>Căn hộ Sunrise City</h3>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i> Quận 7, TP.HCM
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bed"></i> 1 Phòng ngủ
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bath"></i> 1 Phòng tắm
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-vector-square"></i> 55m²
-                  </div>
-                </div>
-              </div>
+          ) : error ? (
+            <div className={styles.errorContainer}>
+              <p>{error}</p>
+              <button
+                onClick={() => fetchProperties()}
+                className={styles.btnPrimary}
+              >
+                Thử lại
+              </button>
             </div>
-
-            {/* Property Card 3 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=80"
-                  alt="Luxury Villa"
-                />
-                <div className={styles.propertyBadge}>VIP</div>
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>15 triệu/tháng</div>
-                <h3 className={styles.propertyTitle}>Biệt thự The Palm</h3>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i> Quận 9, TP.HCM
+          ) : (
+            <div className={styles.propertiesGrid}>
+              {properties.slice(0, 6).map((property) => (
+                <div key={property.id} className={styles.propertyCard}>
+                  <div className={styles.propertyImage}>
+                    <img
+                      src={
+                        property.image ||
+                        "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80"
+                      }
+                      alt={property.title}
+                    />
+                    <div
+                      className={`${styles.propertyBadge} ${getBadgeClass(property.type)}`}
+                    >
+                      {property.type}
+                    </div>
+                  </div>
+                  <div className={styles.propertyInfo}>
+                    <div className={styles.propertyPrice}>
+                      {new Intl.NumberFormat("vi-VN").format(property.price)}{" "}
+                      VNĐ/tháng
+                    </div>
+                    <h3 className={styles.propertyTitle}>{property.title}</h3>
+                    <div className={styles.propertyLocation}>
+                      <i className="fas fa-map-marker-alt"></i>{" "}
+                      {property.district}, {property.city}
+                    </div>
+                    <div className={styles.propertyFeatures}>
+                      <div className={styles.propertyFeature}>
+                        <i className="fas fa-vector-square"></i> {property.area}
+                      </div>
+                      {property.bedrooms && (
+                        <div className={styles.propertyFeature}>
+                          <i className="fas fa-bed"></i> {property.bedrooms} PN
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bed"></i> 4 Phòng ngủ
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bath"></i> 3 Phòng tắm
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-vector-square"></i> 200m²
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-
-            {/* Additional Property Cards */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80"
-                  alt="Minimalist Apartment"
-                />
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>4.2 triệu/tháng</div>
-                <h3 className={styles.propertyTitle}>
-                  Căn hộ Masteri Thảo Điền
-                </h3>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i> Quận 2, TP.HCM
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bed"></i> 1 Phòng ngủ
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bath"></i> 1 Phòng tắm
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-vector-square"></i> 45m²
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=800&q=80"
-                  alt="Modern House"
-                />
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>12 triệu/tháng</div>
-                <h3 className={styles.propertyTitle}>Nhà phố Thảo Điền</h3>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i> Quận 2, TP.HCM
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bed"></i> 3 Phòng ngủ
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bath"></i> 2 Phòng tắm
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-vector-square"></i> 120m²
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&q=80"
-                  alt="Studio Apartment"
-                />
-                <div className={styles.propertyBadge}>Tiết kiệm</div>
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>3.5 triệu/tháng</div>
-                <h3 className={styles.propertyTitle}>
-                  Studio Lexington Residence
-                </h3>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i> Quận 2, TP.HCM
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bed"></i> Studio
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-bath"></i> 1 Phòng tắm
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <i className="fas fa-vector-square"></i> 35m²
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
 
           <div className={styles.viewMoreContainer}>
-            <a href="#" className={styles.btnOutline}>
+            <a
+              onClick={() => navigate("/real-estate-page")}
+              className={styles.btnOutline}
+            >
               Xem thêm bất động sản <i className="fas fa-arrow-right"></i>
             </a>
           </div>
