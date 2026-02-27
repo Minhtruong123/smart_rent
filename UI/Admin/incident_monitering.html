@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giám sát & Sự cố - SmartRent Admin</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+      * {
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .sidebar-gradient {
+        background: linear-gradient(180deg, #1a1f36 0%, #0f1419 100%);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 15px 0 rgba(102, 126, 234, 0.4);
+        transform: translateY(0);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(102, 126, 234, 0.6);
+      }
+
+      .card-modern {
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+      }
+
+      .card-modern:hover {
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        transform: translateY(-5px);
+      }
+
+      .sidebar-link {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar-link::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-link:hover::before,
+      .sidebar-link.active::before {
+        transform: scaleY(1);
+      }
+
+      .sidebar-link:hover {
+        background: rgba(102, 126, 234, 0.1);
+        transform: translateX(5px);
+      }
+
+      .sidebar-link.active {
+        background: rgba(102, 126, 234, 0.15);
+      }
+
+      .stat-card {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--gradient-from) 0%,
+          var(--gradient-to) 100%
+        );
+      }
+
+      .stat-card-blue::before {
+        --gradient-from: #667eea;
+        --gradient-to: #764ba2;
+      }
+
+      .stat-card-green::before {
+        --gradient-from: #10b981;
+        --gradient-to: #059669;
+      }
+
+      .stat-card-orange::before {
+        --gradient-from: #f59e0b;
+        --gradient-to: #d97706;
+      }
+
+      .stat-card-red::before {
+        --gradient-from: #ef4444;
+        --gradient-to: #dc2626;
+      }
+
+      .avatar-ring {
+        border: 2px solid transparent;
+        background:
+          linear-gradient(white, white) padding-box,
+          linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease-out;
+        }
+
+        .mobile-sidebar.show {
+          transform: translateX(0);
+        }
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+      }
+
+      .alert-item {
+        border-left: 4px solid transparent;
+        background: linear-gradient(white, white) padding-box;
+        transition: all 0.3s ease;
+      }
+
+      .alert-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .alert-critical {
+        border-left-color: #ef4444;
+      }
+
+      .alert-high {
+        border-left-color: #f59e0b;
+      }
+
+      .alert-medium {
+        border-left-color: #3b82f6;
+      }
+
+      .alert-low {
+        border-left-color: #10b981;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      .status-online {
+        background-color: #10b981;
+        animation: pulse 2s infinite;
+      }
+
+      .status-warning {
+        background-color: #f59e0b;
+      }
+
+      .status-offline {
+        background-color: #ef4444;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        }
+        70% {
+          transform: scale(1);
+          box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+        }
+        100% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
+      }
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+      }
+
+      .progress-bar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: width 1s ease-in-out;
+      }
+
+      .priority-high {
+        background: linear-gradient(135deg, #fee2e2, #fca5a5);
+        color: #dc2626;
+      }
+
+      .priority-medium {
+        background: linear-gradient(135deg, #fef3c7, #fbbf24);
+        color: #d97706;
+      }
+
+      .priority-low {
+        background: linear-gradient(135deg, #d1fae5, #34d399);
+        color: #059669;
+      }
+
+      .filter-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex h-screen">
+      <!-- Sidebar - Desktop -->
+      <div
+        class="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 sidebar-gradient text-white"
+      >
+        <div
+          class="flex items-center justify-center h-20 border-b border-gray-700"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-lg"></i>
+            </div>
+            <span
+              class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent"
+              >SmartRent</span
+            >
+          </div>
+        </div>
+
+        <div class="flex flex-col flex-1 overflow-y-auto py-6 px-3">
+          <nav class="space-y-2">
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="p-4 border-t border-gray-700">
+          <div
+            class="flex items-center space-x-3 bg-gray-800 bg-opacity-50 rounded-xl p-3"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=40&h=40&fit=crop&crop=faces"
+              alt="Admin"
+              class="w-10 h-10 rounded-full object-cover avatar-ring"
+            />
+            <div class="flex-1">
+              <p class="font-semibold text-sm">Lê Văn Cường</p>
+              <p class="text-xs text-gray-400">Administrator</p>
+            </div>
+
+            <button class="text-gray-400 hover:text-white transition-colors">
+              <i class="fas fa-sign-out-alt w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Header -->
+      <div
+        class="md:hidden fixed top-0 left-0 right-0 z-50 sidebar-gradient text-white"
+      >
+        <div class="flex items-center justify-between p-4">
+          <div class="flex items-center space-x-2">
+            <div
+              class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+            >
+              <i class="fas fa-home text-white text-sm"></i>
+            </div>
+            <span class="text-lg font-bold">SmartRent</span>
+          </div>
+          <button
+            id="mobile-menu-button"
+            class="text-gray-300 hover:text-white transition-colors"
+          >
+            <i class="fas fa-bars w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Sidebar -->
+      <div
+        id="mobile-sidebar"
+        class="fixed inset-0 z-40 md:hidden"
+        style="display: none"
+      >
+        <div
+          id="mobile-sidebar-backdrop"
+          class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        ></div>
+
+        <div
+          class="fixed inset-y-0 left-0 z-40 w-64 sidebar-gradient text-white mobile-sidebar"
+        >
+          <div
+            class="flex items-center justify-between h-16 border-b border-gray-700 px-4"
+          >
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center"
+              >
+                <i class="fas fa-home text-white text-sm"></i>
+              </div>
+              <span class="text-lg font-bold">SmartRent</span>
+            </div>
+            <button
+              id="close-mobile-sidebar"
+              class="text-gray-300 hover:text-white transition-colors"
+            >
+              <i class="fas fa-times w-6 h-6"></i>
+            </button>
+          </div>
+
+          <nav class="flex-1 px-3 py-6 space-y-2">
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-home w-5 h-5 mr-3"></i>
+              <span>Trang chủ</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-users w-5 h-5 mr-3"></i>
+              <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-database w-5 h-5 mr-3"></i>
+              <span>Quản lý bất động sản</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+              <span>Thống kê báo cáo</span>
+            </a>
+
+            <a href="#" class="sidebar-link active flex items-center px-4 py-3">
+              <i class="fas fa-shield-alt w-5 h-5 mr-3"></i>
+              <span>Giám sát & Sự cố</span>
+            </a>
+
+            <a href="#" class="sidebar-link flex items-center px-4 py-3">
+              <i class="fas fa-cog w-5 h-5 mr-3"></i>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <main class="flex-1 md:ml-64 px-4 py-8 md:py-6 mt-16 md:mt-0">
+        <div class="max-w-7xl mx-auto">
+          <!-- Page Header -->
+          <div class="mb-8">
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h1
+                    class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+                  >
+                    Giám sát & Sự cố
+                  </h1>
+                  <p class="mt-2 text-gray-600 font-medium">
+                    Theo dõi và quản lý các sự cố trong hệ thống SmartRent
+                  </p>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                  <button
+                    class="btn-primary text-white px-6 py-3 rounded-xl font-semibold"
+                  >
+                    <i class="fas fa-plus mr-2"></i>
+                    Tạo báo cáo
+                  </button>
+                  <div class="relative">
+                    <i class="fas fa-bell text-2xl text-indigo-600"></i>
+                    <div class="notification-badge">7</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Status Cards -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <!-- Total Incidents -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-red"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">Tổng sự cố</p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">47</p>
+                  <div class="flex items-center mt-2">
+                    <span class="status-dot status-offline"></span>
+                    <span class="text-red-500 text-xs font-semibold"
+                      >23 đang xử lý</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Critical Issues -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-orange"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">
+                    Sự cố nghiêm trọng
+                  </p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">8</p>
+                  <div class="flex items-center mt-2">
+                    <span class="status-dot status-warning"></span>
+                    <span class="text-orange-500 text-xs font-semibold"
+                      >Cần xử lý ngay</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-fire text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- System Uptime -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-green"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">
+                    Thời gian hoạt động
+                  </p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">99.8%</p>
+                  <div class="flex items-center mt-2">
+                    <span class="status-dot status-online"></span>
+                    <span class="text-green-500 text-xs font-semibold"
+                      >Hoạt động tốt</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-server text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Response Time -->
+            <div
+              class="glass-effect rounded-2xl p-6 card-modern stat-card stat-card-blue"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-600 font-semibold">
+                    Thời gian phản hồi
+                  </p>
+                  <p class="text-3xl font-bold text-gray-900 mt-1">2.4h</p>
+                  <div class="flex items-center mt-2">
+                    <i
+                      class="fas fa-arrow-down text-green-500 text-xs mr-1"
+                    ></i>
+                    <span class="text-green-500 text-xs font-semibold"
+                      >-15%</span
+                    >
+                    <span class="text-gray-500 text-xs ml-1"
+                      >từ tháng trước</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center"
+                >
+                  <i class="fas fa-clock text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts and Monitoring -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Incident Trend Chart -->
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Xu hướng sự cố</h3>
+                <select
+                  class="border-2 border-gray-200 rounded-lg px-3 py-2 text-sm"
+                >
+                  <option>7 ngày qua</option>
+                  <option>30 ngày qua</option>
+                  <option>3 tháng qua</option>
+                </select>
+              </div>
+              <div class="chart-container">
+                <canvas id="incidentChart"></canvas>
+              </div>
+            </div>
+
+            <!-- System Performance -->
+            <div class="glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">
+                  Hiệu suất hệ thống
+                </h3>
+                <div class="flex items-center space-x-2">
+                  <span class="status-dot status-online"></span>
+                  <span class="text-sm font-semibold text-green-600"
+                    >Hoạt động tốt</span
+                  >
+                </div>
+              </div>
+
+              <div class="space-y-6">
+                <div>
+                  <div class="flex items-center justify-between text-sm mb-3">
+                    <span class="font-medium text-gray-700 flex items-center">
+                      <i class="fas fa-microchip text-indigo-600 mr-2"></i>
+                      CPU Usage
+                    </span>
+                    <span class="font-bold text-indigo-600">45%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                      class="progress-bar h-3 rounded-full"
+                      style="width: 45%"
+                    ></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between text-sm mb-3">
+                    <span class="font-medium text-gray-700 flex items-center">
+                      <i class="fas fa-memory text-green-600 mr-2"></i>
+                      Memory
+                    </span>
+                    <span class="font-bold text-green-600">67%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                      class="h-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600"
+                      style="width: 67%"
+                    ></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between text-sm mb-3">
+                    <span class="font-medium text-gray-700 flex items-center">
+                      <i class="fas fa-hdd text-orange-600 mr-2"></i>
+                      Storage
+                    </span>
+                    <span class="font-bold text-orange-600">23%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                      class="h-3 rounded-full bg-gradient-to-r from-orange-500 to-yellow-600"
+                      style="width: 23%"
+                    ></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between text-sm mb-3">
+                    <span class="font-medium text-gray-700 flex items-center">
+                      <i class="fas fa-wifi text-blue-600 mr-2"></i>
+                      Network
+                    </span>
+                    <span class="font-bold text-blue-600">89%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                      class="h-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600"
+                      style="width: 89%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Incident Management -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Active Incidents -->
+            <div class="lg:col-span-2 glass-effect rounded-2xl p-6 card-modern">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">
+                  Sự cố đang xử lý
+                </h3>
+                <div class="flex items-center space-x-2">
+                  <button
+                    class="filter-btn active px-3 py-1 rounded-lg text-sm font-semibold border-2 border-gray-200"
+                  >
+                    Tất cả
+                  </button>
+                  <button
+                    class="filter-btn px-3 py-1 rounded-lg text-sm font-semibold border-2 border-gray-200"
+                  >
+                    Nghiêm trọng
+                  </button>
+                  <button
+                    class="filter-btn px-3 py-1 rounded-lg text-sm font-semibold border-2 border-gray-200"
+                  >
+                    Cao
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-4 max-h-96 overflow-y-auto">
+                <!-- Critical Incident -->
+                <div class="alert-item alert-critical p-4 rounded-xl bg-white">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0">
+                        <div
+                          class="w-10 h-10 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center"
+                        >
+                          <i class="fas fa-fire text-red-600"></i>
+                        </div>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                          <h4 class="text-sm font-bold text-gray-900">
+                            #INC-001 - Server Database Down
+                          </h4>
+                          <span
+                            class="priority-high text-xs px-2 py-1 rounded-full font-semibold"
+                          >
+                            NGHIÊM TRỌNG
+                          </span>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">
+                          Máy chủ cơ sở dữ liệu chính không phản hồi. Ảnh hưởng
+                          đến toàn bộ hệ thống.
+                        </p>
+                        <div
+                          class="flex items-center space-x-4 text-xs text-gray-500"
+                        >
+                          <span
+                            ><i class="fas fa-user mr-1"></i>Nguyễn Văn
+                            Tech</span
+                          >
+                          <span
+                            ><i class="fas fa-clock mr-1"></i>15 phút
+                            trước</span
+                          >
+                          <span
+                            ><i class="fas fa-building mr-1"></i>Datacenter
+                            A</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
+                    >
+                      Xử lý
+                    </button>
+                  </div>
+                </div>
+
+                <!-- High Priority Incident -->
+                <div class="alert-item alert-high p-4 rounded-xl bg-white">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0">
+                        <div
+                          class="w-10 h-10 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center"
+                        >
+                          <i
+                            class="fas fa-exclamation-triangle text-orange-600"
+                          ></i>
+                        </div>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                          <h4 class="text-sm font-bold text-gray-900">
+                            #INC-002 - Payment Gateway Error
+                          </h4>
+                          <span
+                            class="priority-medium text-xs px-2 py-1 rounded-full font-semibold"
+                          >
+                            CAO
+                          </span>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">
+                          Lỗi thanh toán qua gateway VNPay, người dùng không thể
+                          thanh toán.
+                        </p>
+                        <div
+                          class="flex items-center space-x-4 text-xs text-gray-500"
+                        >
+                          <span
+                            ><i class="fas fa-user mr-1"></i>Trần Thị Minh</span
+                          >
+                          <span
+                            ><i class="fas fa-clock mr-1"></i>1 giờ trước</span
+                          >
+                          <span
+                            ><i class="fas fa-credit-card mr-1"></i>Payment
+                            System</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
+                    >
+                      Xử lý
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Medium Priority Incident -->
+                <div class="alert-item alert-medium p-4 rounded-xl bg-white">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0">
+                        <div
+                          class="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center"
+                        >
+                          <i class="fas fa-info-circle text-blue-600"></i>
+                        </div>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                          <h4 class="text-sm font-bold text-gray-900">
+                            #INC-003 - Upload Image Slow
+                          </h4>
+                          <span
+                            class="priority-medium text-xs px-2 py-1 rounded-full font-semibold"
+                          >
+                            TRUNG BÌNH
+                          </span>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">
+                          Tốc độ upload hình ảnh chậm hơn bình thường, người
+                          dùng phàn nàn.
+                        </p>
+                        <div
+                          class="flex items-center space-x-4 text-xs text-gray-500"
+                        >
+                          <span
+                            ><i class="fas fa-user mr-1"></i>Lê Văn Đức</span
+                          >
+                          <span
+                            ><i class="fas fa-clock mr-1"></i>2 giờ trước</span
+                          >
+                          <span
+                            ><i class="fas fa-cloud mr-1"></i>Storage
+                            Service</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
+                    >
+                      Xử lý
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Low Priority Incident -->
+                <div class="alert-item alert-low p-4 rounded-xl bg-white">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0">
+                        <div
+                          class="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center"
+                        >
+                          <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                          <h4 class="text-sm font-bold text-gray-900">
+                            #INC-004 - Email Template Issue
+                          </h4>
+                          <span
+                            class="priority-low text-xs px-2 py-1 rounded-full font-semibold"
+                          >
+                            THẤP
+                          </span>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">
+                          Email thông báo có lỗi hiển thị font chữ trên một số
+                          thiết bị.
+                        </p>
+                        <div
+                          class="flex items-center space-x-4 text-xs text-gray-500"
+                        >
+                          <span
+                            ><i class="fas fa-user mr-1"></i>Phạm Thị Lan</span
+                          >
+                          <span
+                            ><i class="fas fa-clock mr-1"></i>4 giờ trước</span
+                          >
+                          <span
+                            ><i class="fas fa-envelope mr-1"></i>Email
+                            Service</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
+                    >
+                      Xử lý
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Resolved Incident -->
+                <div class="alert-item p-4 rounded-xl bg-gray-50 opacity-75">
+                  <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0">
+                        <div
+                          class="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-200 rounded-full flex items-center justify-center"
+                        >
+                          <i class="fas fa-check text-green-600"></i>
+                        </div>
+                      </div>
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                          <h4 class="text-sm font-bold text-gray-700">
+                            #INC-000 - Login Issue Fixed
+                          </h4>
+                          <span
+                            class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold"
+                          >
+                            ĐÃ GIẢI QUYẾT
+                          </span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-2">
+                          Đã khắc phục sự cố đăng nhập thành công.
+                        </p>
+                        <div
+                          class="flex items-center space-x-4 text-xs text-gray-400"
+                        >
+                          <span
+                            ><i class="fas fa-user mr-1"></i>Nguyễn Văn
+                            Tech</span
+                          >
+                          <span
+                            ><i class="fas fa-check mr-1"></i>Đã giải
+                            quyết</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- System Services Status -->
+            <div class="space-y-6">
+              <!-- Service Status -->
+              <div class="glass-effect rounded-2xl p-6 card-modern">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">
+                  Trạng thái dịch vụ
+                </h3>
+                <div class="space-y-4">
+                  <div
+                    class="flex items-center justify-between p-3 bg-white rounded-lg border"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <span class="status-dot status-online"></span>
+                      <div>
+                        <p class="font-semibold text-sm">Web Application</p>
+                        <p class="text-xs text-gray-500">smartrent.com</p>
+                      </div>
+                    </div>
+                    <span class="text-xs text-green-600 font-semibold"
+                      >Online</span
+                    >
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between p-3 bg-white rounded-lg border"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <span class="status-dot status-online"></span>
+                      <div>
+                        <p class="font-semibold text-sm">API Service</p>
+                        <p class="text-xs text-gray-500">api.smartrent.com</p>
+                      </div>
+                    </div>
+                    <span class="text-xs text-green-600 font-semibold"
+                      >Online</span
+                    >
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between p-3 bg-white rounded-lg border"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <span class="status-dot status-warning"></span>
+                      <div>
+                        <p class="font-semibold text-sm">Payment Gateway</p>
+                        <p class="text-xs text-gray-500">
+                          payments.smartrent.com
+                        </p>
+                      </div>
+                    </div>
+                    <span class="text-xs text-orange-600 font-semibold"
+                      >Warning</span
+                    >
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between p-3 bg-white rounded-lg border"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <span class="status-dot status-online"></span>
+                      <div>
+                        <p class="font-semibold text-sm">Email Service</p>
+                        <p class="text-xs text-gray-500">mail.smartrent.com</p>
+                      </div>
+                    </div>
+                    <span class="text-xs text-green-600 font-semibold"
+                      >Online</span
+                    >
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between p-3 bg-white rounded-lg border"
+                  >
+                    <div class="flex items-center space-x-3">
+                      <span class="status-dot status-online"></span>
+                      <div>
+                        <p class="font-semibold text-sm">File Storage</p>
+                        <p class="text-xs text-gray-500">cdn.smartrent.com</p>
+                      </div>
+                    </div>
+                    <span class="text-xs text-green-600 font-semibold"
+                      >Online</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="glass-effect rounded-2xl p-6 card-modern">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">
+                  Thao tác nhanh
+                </h3>
+                <div class="space-y-3">
+                  <button
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                  >
+                    <i class="fas fa-plus"></i>
+                    <span>Tạo sự cố mới</span>
+                  </button>
+                  <button
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                  >
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Thông báo bảo trì</span>
+                  </button>
+                  <button
+                    class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                  >
+                    <i class="fas fa-chart-line"></i>
+                    <span>Xuất báo cáo</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Mobile Sidebar Toggle
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileSidebar = document.getElementById("mobile-sidebar");
+        const closeMobileSidebar = document.getElementById(
+          "close-mobile-sidebar",
+        );
+        const mobileSidebarBackdrop = document.getElementById(
+          "mobile-sidebar-backdrop",
+        );
+
+        mobileMenuButton.addEventListener("click", function () {
+          mobileSidebar.style.display = "block";
+          setTimeout(() => {
+            document
+              .querySelector("#mobile-sidebar .mobile-sidebar")
+              .classList.add("show");
+          }, 50);
+        });
+
+        function closeMobileSidebarHandler() {
+          document
+            .querySelector("#mobile-sidebar .mobile-sidebar")
+            .classList.remove("show");
+          setTimeout(() => {
+            mobileSidebar.style.display = "none";
+          }, 300);
+        }
+
+        closeMobileSidebar.addEventListener("click", closeMobileSidebarHandler);
+        mobileSidebarBackdrop.addEventListener(
+          "click",
+          closeMobileSidebarHandler,
+        );
+
+        // Initialize Charts
+        initializeIncidentChart();
+
+        // Animate progress bars
+        setTimeout(() => {
+          const progressBars = document.querySelectorAll(".progress-bar");
+          progressBars.forEach((bar) => {
+            const width = bar.style.width;
+            bar.style.width = "0%";
+            setTimeout(() => {
+              bar.style.width = width;
+            }, 500);
+          });
+        }, 1000);
+
+        // Filter buttons
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        filterButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            filterButtons.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
+      });
+
+      function initializeIncidentChart() {
+        const incidentCtx = document
+          .getElementById("incidentChart")
+          .getContext("2d");
+        const incidentChart = new Chart(incidentCtx, {
+          type: "line",
+          data: {
+            labels: [
+              "21/02",
+              "22/02",
+              "23/02",
+              "24/02",
+              "25/02",
+              "26/02",
+              "27/02",
+            ],
+            datasets: [
+              {
+                label: "Sự cố mới",
+                data: [5, 8, 3, 12, 6, 9, 4],
+                borderColor: "rgba(239, 68, 68, 1)",
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "rgba(239, 68, 68, 1)",
+                pointBorderColor: "#fff",
+                pointBorderWidth: 2,
+                pointRadius: 6,
+              },
+              {
+                label: "Đã giải quyết",
+                data: [7, 6, 8, 9, 11, 8, 12],
+                borderColor: "rgba(16, 185, 129, 1)",
+                backgroundColor: "rgba(16, 185, 129, 0.1)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "rgba(16, 185, 129, 1)",
+                pointBorderColor: "#fff",
+                pointBorderWidth: 2,
+                pointRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  usePointStyle: true,
+                  padding: 20,
+                  font: {
+                    size: 12,
+                    weight: "bold",
+                  },
+                },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: "rgba(0, 0, 0, 0.1)",
+                },
+                ticks: {
+                  font: {
+                    size: 11,
+                  },
+                },
+              },
+              x: {
+                grid: {
+                  display: false,
+                },
+                ticks: {
+                  font: {
+                    size: 11,
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
