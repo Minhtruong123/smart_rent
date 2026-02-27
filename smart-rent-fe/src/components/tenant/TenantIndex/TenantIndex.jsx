@@ -40,7 +40,7 @@ export default function TenantIndex() {
   ];
 
   useEffect(() => {
-    fetchProperties();
+    fetchProperties(0, 6);
   }, [fetchProperties]);
 
   useEffect(() => {
@@ -346,30 +346,18 @@ export default function TenantIndex() {
           {loading ? (
             <div className={styles.loadingContainer}>
               <div className={styles.spinner}></div>
-              <p>Đang tải danh sách bất động sản...</p>
+              <p>Đang tải danh sách...</p>
             </div>
           ) : error ? (
             <div className={styles.errorContainer}>
-              <p>{error}</p>
-              <button
-                onClick={() => fetchProperties()}
-                className={styles.btnPrimary}
-              >
-                Thử lại
-              </button>
+              <p>Không thể tải dữ liệu: {error}</p>
             </div>
           ) : (
             <div className={styles.propertiesGrid}>
-              {properties.slice(0, 6).map((property) => (
+              {properties.map((property) => (
                 <div key={property.id} className={styles.propertyCard}>
                   <div className={styles.propertyImage}>
-                    <img
-                      src={
-                        property.image ||
-                        "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80"
-                      }
-                      alt={property.title}
-                    />
+                    <img src={property.image} alt={property.title} />
                     <div
                       className={`${styles.propertyBadge} ${getBadgeClass(property.type)}`}
                     >

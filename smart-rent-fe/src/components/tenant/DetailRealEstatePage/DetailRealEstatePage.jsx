@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import usePropertyStore from "../../../stores/usePropertyStore";
 import styles from "./DetailRealEstatePage.module.css";
 
 export default function DetailRealEstatePage() {
+  const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isActionBarVisible, setIsActionBarVisible] = useState(false);
   const [isBackToTopVisible, setIsBackToTopVisible] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const { currentProperty, loading, error, fetchDetail } = usePropertyStore();
+
+  useEffect(() => {
+    fetchDetail(id);
+  }, [id, fetchDetail]);
 
   const galleryImages = [
     {
@@ -168,6 +177,10 @@ export default function DetailRealEstatePage() {
       behavior: "smooth",
     });
   };
+
+  if (loading) return <div className={styles.loading}>Đang tải...</div>;
+  if (error || !currentProperty)
+    return <div className={styles.error}>Không tìm thấy tin đăng.</div>;
   return (
     <>
       <div
