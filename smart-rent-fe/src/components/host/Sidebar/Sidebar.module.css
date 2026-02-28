@@ -203,3 +203,79 @@
     margin-left: auto;
   }
 }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px); /* Hiệu ứng mờ nền */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.confirmModal {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+  animation: slideIn 0.3s ease;
+}
+
+.modalIcon {
+  font-size: 40px;
+  color: #ffcc00;
+  margin-bottom: 15px;
+}
+
+.modalActions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modalActions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.btnCancel {
+  background: #f0f0f0;
+  color: #333;
+}
+.btnDanger {
+  background: #ff4d4f;
+  color: white;
+}
+
+/* Hiệu ứng mượt mà */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

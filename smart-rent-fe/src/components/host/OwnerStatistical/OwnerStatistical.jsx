@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   BarChart,
   Bar,
@@ -161,7 +161,6 @@ export default function OwnerStatistical() {
 
         {/* Dashboard Container */}
         <div className={styles.dashboardContainer}>
-          {/* Page Header */}
           <div className={styles.pageHeader}>
             <h1 className={styles.pageTitle}>Báo cáo & Thống kê</h1>
             <p className={styles.pageSubtitle}>

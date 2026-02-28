@@ -1,9 +1,19 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../../stores/useAuthStore";
 import styles from "./Sidebar.module.css";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const { user, signOut } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    setShowConfirm(false);
+    navigate("/login");
+  };
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -43,11 +53,15 @@ export default function Sidebar() {
             <i className="fas fa-chart-line"></i>
             <span className={styles.menuText}>Thống kê</span>
           </NavLink>
-          <a href="#" className={styles.menuItem}>
+          <NavLink
+            to="/owner/calendar"
+            className={({ isActive }) =>
+              `${styles.menuItem} ${isActive ? styles.active : ""}`
+            }
+          >
             <i className="fas fa-calendar-alt"></i>
             <span className={styles.menuText}>Lịch</span>
-          </a>
-
+          </NavLink>
           <div className={styles.menuLabel}>Quản lý BĐS</div>
           <NavLink
             to="/owner/real-estate"
@@ -100,13 +114,13 @@ export default function Sidebar() {
             <i className="fas fa-user-circle"></i>
             <span className={styles.menuText}>Tài khoản</span>
           </a>
-          <a href="#" className={styles.menuItem}>
-            <i className="fas fa-cog"></i>
-            <span className={styles.menuText}>Cài đặt</span>
-          </a>
-          <a href="#" className={styles.menuItem}>
-            <i className="fas fa-headset"></i>
-            <span className={styles.menuText}>Hỗ trợ</span>
+          <a
+            href="#"
+            className={styles.menuItem}
+            onClick={() => setShowConfirm(true)}
+          >
+            <i className="fas fa-sign-out-alt"></i>
+            <span className={styles.menuText}>Đăng xuất</span>
           </a>
         </div>
 
@@ -120,6 +134,31 @@ export default function Sidebar() {
           </div>
         </div>
       </aside>
+
+      {showConfirm && (
+        <div className={styles.overlay}>
+          <div className={styles.confirmModal}>
+            <div className={styles.modalIcon}>
+              <i className="fas fa-exclamation-circle"></i>
+            </div>
+            <h3>Xác nhận đăng xuất</h3>
+            <p>
+              Bạn có chắc chắn muốn thoát khỏi phiên làm việc hiện tại không?
+            </p>
+            <div className={styles.modalActions}>
+              <button
+                className={styles.btnCancel}
+                onClick={() => setShowConfirm(false)}
+              >
+                Hủy
+              </button>
+              <button className={styles.btnDanger} onClick={handleLogout}>
+                Đăng xuất
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
