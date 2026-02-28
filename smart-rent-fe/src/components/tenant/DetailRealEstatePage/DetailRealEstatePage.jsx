@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import usePropertyStore from "../../../stores/usePropertyStore";
 import styles from "./DetailRealEstatePage.module.css";
 
@@ -10,6 +10,12 @@ export default function DetailRealEstatePage() {
   const [isActionBarVisible, setIsActionBarVisible] = useState(false);
   const [isBackToTopVisible, setIsBackToTopVisible] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
 
   const { currentProperty, loading, error, fetchDetail } = usePropertyStore();
 
@@ -17,50 +23,51 @@ export default function DetailRealEstatePage() {
     fetchDetail(id);
   }, [id, fetchDetail]);
 
-  const galleryImages = [
+  // Fallback images nếu API không trả về đủ ảnh
+  const defaultImages = [
     {
-      large:
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
-      thumb:
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=200&q=80",
-      alt: "Tổng quan căn hộ",
+      url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
+      alt: "Tổng quan bất động sản",
     },
     {
-      large:
-        "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80",
-      thumb:
-        "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=200&q=80",
+      url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80",
       alt: "Phòng khách",
     },
     {
-      large:
-        "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=1200&q=80",
-      thumb:
-        "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=200&q=80",
+      url: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=1200&q=80",
       alt: "Phòng bếp",
     },
     {
-      large:
-        "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=1200&q=80",
-      thumb:
-        "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=200&q=80",
-      alt: "Phòng ngủ chính",
+      url: "https://images.unsplash.com/photo-1560185007-5f0bb1866cab?w=1200&q=80",
+      alt: "Phòng ngủ",
     },
     {
-      large:
-        "https://images.unsplash.com/photo-1564540583246-934409427776?w=1200&q=80",
-      thumb:
-        "https://images.unsplash.com/photo-1564540583246-934409427776?w=200&q=80",
+      url: "https://images.unsplash.com/photo-1564540583246-934409427776?w=1200&q=80",
       alt: "Phòng tắm",
     },
   ];
 
+  // Xử lý images từ API
+  const galleryImages =
+    currentProperty?.images?.length > 0
+      ? currentProperty.images.map((img, index) => ({
+          large: img.url,
+          thumb: img.url + "?w=200&q=80",
+          alt: `Hình ảnh ${index + 1}`,
+        }))
+      : defaultImages.map((img) => ({
+          large: img.url,
+          thumb: img.url.replace("w=1200", "w=200"),
+          alt: img.alt,
+        }));
+
+  // Similar properties mẫu
   const similarProperties = [
     {
-      id: 1,
+      id: 2,
       image:
         "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80",
-      price: "5.5 triệu/tháng",
+      price: "5.500.000₫/tháng",
       title: "Căn hộ Sunrise City",
       location: "Quận 7, TP.HCM",
       bedrooms: 1,
@@ -68,10 +75,10 @@ export default function DetailRealEstatePage() {
       area: "55m²",
     },
     {
-      id: 2,
+      id: 3,
       image:
         "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80",
-      price: "7.2 triệu/tháng",
+      price: "7.200.000₫/tháng",
       title: "Căn hộ Masteri Thảo Điền",
       location: "Quận 2, TP.HCM",
       bedrooms: 2,
@@ -79,10 +86,10 @@ export default function DetailRealEstatePage() {
       area: "70m²",
     },
     {
-      id: 3,
+      id: 4,
       image:
         "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&q=80",
-      price: "3.5 triệu/tháng",
+      price: "3.500.000₫/tháng",
       title: "Studio Lexington Residence",
       location: "Quận 2, TP.HCM",
       bedrooms: "Studio",
@@ -91,34 +98,47 @@ export default function DetailRealEstatePage() {
     },
   ];
 
-  const amenities = [
-    { icon: "fas fa-wifi", text: "Wi-Fi tốc độ cao" },
-    { icon: "fas fa-snowflake", text: "Điều hòa trung tâm" },
-    { icon: "fas fa-tv", text: 'Smart TV 55"' },
-    { icon: "fas fa-parking", text: "Chỗ đỗ xe" },
-    { icon: "fas fa-swimming-pool", text: "Hồ bơi" },
-    { icon: "fas fa-dumbbell", text: "Phòng gym" },
-    { icon: "fas fa-shield-alt", text: "An ninh 24/7" },
-    { icon: "fas fa-utensils", text: "Bếp đầy đủ thiết bị" },
-    { icon: "fas fa-wind", text: "Ban công rộng" },
-    { icon: "fas fa-tshirt", text: "Máy giặt & Máy sấy" },
-  ];
+  // Amenity icons mapping
+  const getAmenityIcon = (name) => {
+    const iconMap = {
+      wifi: "fas fa-wifi",
+      "wi-fi": "fas fa-wifi",
+      internet: "fas fa-wifi",
+      "chỗ để xe": "fas fa-parking",
+      "bãi đỗ xe": "fas fa-parking",
+      "thang máy": "fas fa-elevator",
+      "máy lạnh": "fas fa-snowflake",
+      "điều hòa": "fas fa-snowflake",
+      tivi: "fas fa-tv",
+      "smart tv": "fas fa-tv",
+      "hồ bơi": "fas fa-swimming-pool",
+      gym: "fas fa-dumbbell",
+      "phòng gym": "fas fa-dumbbell",
+      "an ninh": "fas fa-shield-alt",
+      "bảo vệ": "fas fa-shield-alt",
+      bếp: "fas fa-utensils",
+      "nhà bếp": "fas fa-utensils",
+      "ban công": "fas fa-wind",
+      "máy giặt": "fas fa-tshirt",
+      "tủ lạnh": "fas fa-snowman",
+      "nóng lạnh": "fas fa-shower",
+    };
+
+    const lowerName = name.toLowerCase();
+    return iconMap[lowerName] || "fas fa-check-circle";
+  };
 
   const nearbyPlaces = [
-    { icon: "fas fa-store", text: "Vincom Center", distance: "50m" },
+    { icon: "fas fa-store", text: "Vincom Center", distance: "500m" },
     {
       icon: "fas fa-utensils",
       text: "Nhà hàng The Coffee House",
-      distance: "100m",
+      distance: "200m",
     },
-    { icon: "fas fa-hospital", text: "Bệnh viện Vinmec", distance: "200m" },
-    {
-      icon: "fas fa-school",
-      text: "Trường Quốc tế Vinschool",
-      distance: "300m",
-    },
+    { icon: "fas fa-hospital", text: "Bệnh viện Đa khoa", distance: "1km" },
+    { icon: "fas fa-school", text: "Trường Đại học", distance: "800m" },
     { icon: "fas fa-bus", text: "Trạm xe buýt", distance: "150m" },
-    { icon: "fas fa-tree", text: "Công viên trung tâm", distance: "100m" },
+    { icon: "fas fa-tree", text: "Công viên", distance: "300m" },
   ];
 
   useEffect(() => {
@@ -132,13 +152,11 @@ export default function DetailRealEstatePage() {
       if (!isModalOpen) return;
 
       if (e.key === "Escape") {
-        setIsModalOpen(false);
+        closeModal();
       } else if (e.key === "ArrowLeft") {
-        setCurrentImageIndex(
-          (prev) => (prev - 1 + galleryImages.length) % galleryImages.length,
-        );
+        navigateGallery("prev");
       } else if (e.key === "ArrowRight") {
-        setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+        navigateGallery("next");
       }
     };
 
@@ -149,9 +167,10 @@ export default function DetailRealEstatePage() {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isModalOpen, galleryImages.length]);
+  }, [isModalOpen]);
 
-  const openModal = () => {
+  const openModal = (index = 0) => {
+    setCurrentImageIndex(index);
     setIsModalOpen(true);
     document.body.style.overflow = "hidden";
   };
@@ -172,60 +191,109 @@ export default function DetailRealEstatePage() {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  if (loading) return <div className={styles.loading}>Đang tải...</div>;
-  if (error || !currentProperty)
-    return <div className={styles.error}>Không tìm thấy tin đăng.</div>;
+  const handleContactFormChange = (e) => {
+    const { name, value } = e.target;
+    setContactForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    console.log("Contact form submitted:", contactForm);
+    // Xử lý gửi form liên hệ
+  };
+
+  const formatPrice = (price) => {
+    if (!price) return "Liên hệ";
+    return price;
+  };
+
+  const getPropertyType = (type) => {
+    const typeMap = {
+      ROOM: "Phòng trọ",
+      APARTMENT: "Căn hộ",
+      HOUSE: "Nhà nguyên căn",
+      STUDIO: "Studio",
+    };
+    return typeMap[type] || type;
+  };
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}>
+          <div className={styles.spinner}></div>
+          <p>Đang tải thông tin bất động sản...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !currentProperty) {
+    return (
+      <div className={styles.errorContainer}>
+        <div className={styles.errorContent}>
+          <i className="fas fa-exclamation-triangle"></i>
+          <h3>Không tìm thấy thông tin</h3>
+          <p>Bất động sản này có thể đã được gỡ bỏ hoặc không tồn tại.</p>
+          <Link
+            to="/properties"
+            className={`${styles.btn} ${styles.btnPrimary}`}
+          >
+            <i className="fas fa-arrow-left"></i>
+            Quay lại danh sách
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
-      <div
-        className={`${styles.backToTop} ${isBackToTopVisible ? styles.active : ""}`}
-        onClick={scrollToTop}
-      >
-        <i className="fas fa-arrow-up"></i>
-      </div>
-
-      {/* Property Details Section */}
-      <section className={styles.propertyDetails}>
+      <div className={styles.propertyDetails}>
         <div className={styles.propertyContainer}>
           {/* Breadcrumbs */}
-          <div className={styles.breadcrumbs}>
-            <a href="/">Trang chủ</a>
+          <nav className={styles.breadcrumbs}>
+            <Link to="/">Trang chủ</Link>
             <span className={styles.separator}>
               <i className="fas fa-chevron-right"></i>
             </span>
-            <a href="/#properties">Bất động sản</a>
+            <Link to="/properties">Bất động sản</Link>
             <span className={styles.separator}>
               <i className="fas fa-chevron-right"></i>
             </span>
-            <span>Căn hộ cao cấp Vinhomes Central Park</span>
-          </div>
+            <span>{getPropertyType(currentProperty.type)}</span>
+          </nav>
 
           {/* Property Gallery */}
           <div className={styles.propertyGallery}>
-            <div className={styles.galleryMain} onClick={openModal}>
+            <div className={styles.galleryMain} onClick={() => openModal(0)}>
               <img
-                src={galleryImages[0].large}
-                alt="Căn hộ cao cấp Vinhomes Central Park"
+                src={galleryImages[0]?.large || currentProperty.image}
+                alt={currentProperty.title}
+                loading="lazy"
               />
-              <button className={styles.viewAllPhotos} onClick={openModal}>
-                <i className="fas fa-images"></i> Xem tất cả (
-                {galleryImages.length} ảnh)
+              <button className={styles.viewAllPhotos}>
+                <i className="fas fa-images"></i>
+                Xem tất cả ({galleryImages.length} ảnh)
               </button>
             </div>
-            <div className={styles.galleryThumbnails}>
-              <div className={styles.galleryThumbnail}>
-                <img src={galleryImages[1].thumb} alt={galleryImages[1].alt} />
+
+            {galleryImages.length > 1 && (
+              <div className={styles.galleryThumbnails}>
+                {galleryImages.slice(1, 3).map((image, index) => (
+                  <div
+                    key={index + 1}
+                    className={styles.galleryThumbnail}
+                    onClick={() => openModal(index + 1)}
+                  >
+                    <img src={image.thumb} alt={image.alt} loading="lazy" />
+                  </div>
+                ))}
               </div>
-              <div className={styles.galleryThumbnail}>
-                <img src={galleryImages[2].thumb} alt={galleryImages[2].alt} />
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Property Content */}
@@ -234,17 +302,25 @@ export default function DetailRealEstatePage() {
               {/* Property Info */}
               <div className={styles.propertyInfo}>
                 <div className={styles.propertyHeader}>
-                  <div className={styles.propertyBadge}>Hot</div>
+                  {currentProperty.badge && (
+                    <div className={styles.propertyBadge}>
+                      {currentProperty.badge}
+                    </div>
+                  )}
                   <h1 className={styles.propertyTitle}>
-                    Căn hộ cao cấp Vinhomes Central Park
+                    {currentProperty.title}
                   </h1>
                   <div className={styles.propertyLocation}>
-                    <i className="fas fa-map-marker-alt"></i> 208 Nguyễn Hữu
-                    Cảnh, Quận Bình Thạnh, TP.HCM
+                    <i className="fas fa-map-marker-alt"></i>
+                    {currentProperty.location}
                   </div>
-                  <div className={styles.propertyPrice}>8.500.000₫ / tháng</div>
+                  <div className={styles.propertyPrice}>
+                    {formatPrice(currentProperty.price)}
+                  </div>
                   <div className={styles.propertyPriceNote}>
-                    Đã bao gồm phí quản lý, không bao gồm điện nước
+                    {currentProperty.type === "ROOM"
+                      ? "Đã bao gồm điện nước, internet"
+                      : "Chưa bao gồm phí điện nước"}
                   </div>
                 </div>
 
@@ -254,105 +330,126 @@ export default function DetailRealEstatePage() {
                       <i className="fas fa-bed"></i>
                     </div>
                     <div className={styles.featureText}>Phòng ngủ</div>
-                    <div className={styles.featureValue}>2 phòng</div>
+                    <div className={styles.featureValue}>
+                      {currentProperty.bedrooms}
+                      {currentProperty.bedrooms === "Studio" ? "" : " phòng"}
+                    </div>
                   </div>
+
                   <div className={styles.propertyFeature}>
                     <div className={styles.featureIcon}>
                       <i className="fas fa-bath"></i>
                     </div>
                     <div className={styles.featureText}>Phòng tắm</div>
-                    <div className={styles.featureValue}>2 phòng</div>
+                    <div className={styles.featureValue}>
+                      {currentProperty.bathrooms} phòng
+                    </div>
                   </div>
+
                   <div className={styles.propertyFeature}>
                     <div className={styles.featureIcon}>
                       <i className="fas fa-vector-square"></i>
                     </div>
                     <div className={styles.featureText}>Diện tích</div>
-                    <div className={styles.featureValue}>75m²</div>
+                    <div className={styles.featureValue}>
+                      {currentProperty.area}
+                    </div>
                   </div>
+
                   <div className={styles.propertyFeature}>
                     <div className={styles.featureIcon}>
-                      <i className="fas fa-calendar-alt"></i>
+                      <i className="fas fa-home"></i>
                     </div>
-                    <div className={styles.featureText}>Năm xây dựng</div>
-                    <div className={styles.featureValue}>2018</div>
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <div className={styles.featureIcon}>
-                      <i className="fas fa-couch"></i>
+                    <div className={styles.featureText}>Loại hình</div>
+                    <div className={styles.featureValue}>
+                      {getPropertyType(currentProperty.type)}
                     </div>
-                    <div className={styles.featureText}>Nội thất</div>
-                    <div className={styles.featureValue}>Đầy đủ</div>
                   </div>
+
+                  {currentProperty.totalRooms &&
+                    currentProperty.totalRooms !== "0" && (
+                      <div className={styles.propertyFeature}>
+                        <div className={styles.featureIcon}>
+                          <i className="fas fa-door-open"></i>
+                        </div>
+                        <div className={styles.featureText}>Tổng số phòng</div>
+                        <div className={styles.featureValue}>
+                          {currentProperty.totalRooms} phòng
+                        </div>
+                      </div>
+                    )}
                 </div>
 
                 <div className={styles.propertyDescription}>
-                  <h3>Mô tả</h3>
-                  <p>
-                    Căn hộ cao cấp Vinhomes Central Park tọa lạc tại vị trí đắc
-                    địa của Quận Bình Thạnh, TP.HCM. Với diện tích 75m², căn hộ
-                    được thiết kế sang trọng, hiện đại với 2 phòng ngủ và 2
-                    phòng tắm, đáp ứng đầy đủ nhu cầu sinh hoạt của gia đình 3-4
-                    thành viên.
-                  </p>
-                  {isDescriptionExpanded && (
-                    <>
-                      <p>
-                        Căn hộ được trang bị đầy đủ nội thất cao cấp, sẵn sàng
-                        để ở ngay. Phòng khách rộng rãi với cửa kính lớn đón ánh
-                        sáng tự nhiên, mang đến không gian sống thoáng đãng và
-                        ấm cúng. Nhà bếp hiện đại với đầy đủ thiết bị như tủ
-                        lạnh, bếp từ, lò vi sóng, máy rửa chén...
-                      </p>
-                      <p>
-                        Cư dân Vinhomes Central Park được thừa hưởng hệ thống
-                        tiện ích đẳng cấp bao gồm: hồ bơi, phòng gym, spa, khu
-                        vui chơi trẻ em, công viên, trường học quốc tế, và trung
-                        tâm thương mại Vincom ngay trong khu đô thị. Hệ thống an
-                        ninh 24/7 đảm bảo an toàn tuyệt đối cho cư dân.
-                      </p>
-                      <p>
-                        Vị trí đắc địa giúp cư dân dễ dàng di chuyển đến các
-                        quận trung tâm như Quận 1, Quận 2 chỉ trong vài phút.
-                        Đặc biệt, từ căn hộ có thể ngắm nhìn toàn cảnh sông Sài
-                        Gòn và công viên trung tâm rộng 14ha - lá phổi xanh của
-                        thành phố.
-                      </p>
-                    </>
-                  )}
-                  {!isDescriptionExpanded && (
-                    <span
-                      className={styles.readMore}
-                      onClick={() => setIsDescriptionExpanded(true)}
-                    >
-                      Xem thêm
-                    </span>
-                  )}
+                  <h3>Mô tả chi tiết</h3>
+                  <div className={styles.descriptionContent}>
+                    <p>
+                      {currentProperty.type === "ROOM"
+                        ? `Phòng trọ ${currentProperty.title} tại ${currentProperty.location} với diện tích ${currentProperty.area}. Phòng được thiết kế tối ưu, đầy đủ tiện nghi cơ bản phục vụ cho sinh hoạt hàng ngày.`
+                        : `${getPropertyType(currentProperty.type)} ${currentProperty.title} tọa lạc tại vị trí thuận lợi ${currentProperty.location}. Với diện tích ${currentProperty.area}, có ${currentProperty.bedrooms} phòng ngủ và ${currentProperty.bathrooms} phòng tắm.`}
+                    </p>
+
+                    {isDescriptionExpanded && (
+                      <>
+                        <p>
+                          Bất động sản này được xây dựng với chất lượng cao, đảm
+                          bảo an toàn và tiện nghi cho người thuê. Vị trí giao
+                          thông thuận lợi, gần các trung tâm thương mại, trường
+                          học, bệnh viện và các tiện ích công cộng.
+                        </p>
+                        <p>
+                          Đặc biệt, khu vực này có hạ tầng hoàn thiện, an ninh
+                          tốt, môi trường sống trong lành, rất phù hợp cho các
+                          gia đình trẻ, sinh viên và người lao động.
+                        </p>
+                      </>
+                    )}
+
+                    {!isDescriptionExpanded && (
+                      <button
+                        className={styles.readMore}
+                        onClick={() => setIsDescriptionExpanded(true)}
+                      >
+                        Xem thêm
+                        <i className="fas fa-chevron-down"></i>
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Amenities Section */}
-              <div className={styles.propertyAmenities}>
-                <h3>Tiện ích</h3>
-                <div className={styles.amenitiesGrid}>
-                  {amenities.map((amenity, index) => (
-                    <div key={index} className={styles.amenityItem}>
-                      <div className={styles.amenityIcon}>
-                        <i className={amenity.icon}></i>
-                      </div>
-                      <div className={styles.amenityText}>{amenity.text}</div>
+              {currentProperty.amenities &&
+                currentProperty.amenities.length > 0 && (
+                  <div className={styles.propertyAmenities}>
+                    <h3>Tiện ích</h3>
+                    <div className={styles.amenitiesGrid}>
+                      {currentProperty.amenities.map((amenity, index) => (
+                        <div key={index} className={styles.amenityItem}>
+                          <div className={styles.amenityIcon}>
+                            <i
+                              className={
+                                amenity.icon || getAmenityIcon(amenity.name)
+                              }
+                            ></i>
+                          </div>
+                          <div className={styles.amenityText}>
+                            {amenity.name}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                )}
 
               {/* Location Section */}
               <div className={styles.propertyLocationInfo}>
-                <h3>Vị trí</h3>
+                <h3>Vị trí & Tiện ích xung quanh</h3>
                 <div className={styles.mapContainer}>
                   <div className={styles.mapPlaceholder}>
                     <i className="fas fa-map-marked-alt"></i>
-                    <p>Bản đồ hiển thị vị trí bất động sản</p>
+                    <p>Vị trí: {currentProperty.location}</p>
+                    <small>Bản đồ chi tiết sẽ được cập nhật sớm</small>
                   </div>
                 </div>
 
@@ -381,12 +478,17 @@ export default function DetailRealEstatePage() {
                 <h3>Bất động sản tương tự</h3>
                 <div className={styles.similarPropertiesGrid}>
                   {similarProperties.map((property) => (
-                    <div
+                    <Link
                       key={property.id}
+                      to={`/properties/${property.id}`}
                       className={styles.similarPropertyCard}
                     >
                       <div className={styles.similarPropertyImage}>
-                        <img src={property.image} alt={property.title} />
+                        <img
+                          src={property.image}
+                          alt={property.title}
+                          loading="lazy"
+                        />
                       </div>
                       <div className={styles.similarPropertyInfo}>
                         <div className={styles.similarPropertyPrice}>
@@ -396,7 +498,7 @@ export default function DetailRealEstatePage() {
                           {property.title}
                         </h4>
                         <div className={styles.similarPropertyLocation}>
-                          <i className="fas fa-map-marker-alt"></i>{" "}
+                          <i className="fas fa-map-marker-alt"></i>
                           {property.location}
                         </div>
                         <div className={styles.similarPropertyFeatures}>
@@ -407,12 +509,12 @@ export default function DetailRealEstatePage() {
                             <i className="fas fa-bath"></i> {property.bathrooms}
                           </div>
                           <div className={styles.similarPropertyFeature}>
-                            <i className="fas fa-vector-square"></i>{" "}
+                            <i className="fas fa-vector-square"></i>
                             {property.area}
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -425,207 +527,269 @@ export default function DetailRealEstatePage() {
                 <div className={styles.contactHeader}>
                   <img
                     src="https://randomuser.me/api/portraits/men/32.jpg"
-                    alt="Người cho thuê"
+                    alt="Chủ nhà"
                     className={styles.contactAvatar}
                   />
                   <div>
                     <div className={styles.contactName}>Nguyễn Văn An</div>
                     <div className={styles.contactRole}>Chủ nhà</div>
                     <div className={styles.contactRating}>
-                      <i className="fas fa-star"></i>
-                      <i className="fas fa-star"></i>
-                      <i className="fas fa-star"></i>
-                      <i className="fas fa-star"></i>
+                      {[...Array(4)].map((_, i) => (
+                        <i key={i} className="fas fa-star"></i>
+                      ))}
                       <i className="fas fa-star-half-alt"></i>
-                      <div className={styles.contactRatingScore}>
+                      <span className={styles.contactRatingScore}>
                         4.5 (28 đánh giá)
-                      </div>
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <form className={styles.contactForm}>
+                <form
+                  className={styles.contactForm}
+                  onSubmit={handleContactSubmit}
+                >
                   <div className={styles.formGroup}>
-                    <label htmlFor="name">Họ tên</label>
+                    <label htmlFor="name">Họ tên *</label>
                     <input
                       type="text"
                       id="name"
+                      name="name"
+                      value={contactForm.name}
+                      onChange={handleContactFormChange}
                       placeholder="Nhập họ tên của bạn"
+                      required
                     />
                   </div>
+
                   <div className={styles.formGroup}>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email">Email *</label>
                     <input
                       type="email"
                       id="email"
+                      name="email"
+                      value={contactForm.email}
+                      onChange={handleContactFormChange}
                       placeholder="Nhập địa chỉ email"
+                      required
                     />
                   </div>
+
                   <div className={styles.formGroup}>
-                    <label htmlFor="phone">Số điện thoại</label>
+                    <label htmlFor="phone">Số điện thoại *</label>
                     <input
                       type="tel"
                       id="phone"
+                      name="phone"
+                      value={contactForm.phone}
+                      onChange={handleContactFormChange}
                       placeholder="Nhập số điện thoại"
+                      required
                     />
                   </div>
+
                   <div className={styles.formGroup}>
                     <label htmlFor="message">Lời nhắn</label>
                     <textarea
                       id="message"
-                      placeholder="Nhập lời nhắn cho người cho thuê..."
+                      name="message"
+                      value={contactForm.message}
+                      onChange={handleContactFormChange}
+                      placeholder={`Tôi quan tâm đến ${currentProperty.title}. Xin vui lòng liên hệ với tôi.`}
+                      rows="4"
                     ></textarea>
+                  </div>
+
+                  <div className={styles.contactActions}>
+                    <button
+                      type="submit"
+                      className={`${styles.btn} ${styles.btnPrimary}`}
+                    >
+                      <i className="fas fa-paper-plane"></i>
+                      Gửi yêu cầu xem nhà
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.btn} ${styles.btnOutline}`}
+                    >
+                      <i className="fas fa-phone-alt"></i>
+                      Gọi trực tiếp
+                    </button>
                   </div>
                 </form>
 
-                <div className={styles.contactActions}>
-                  <button className={`${styles.btn} ${styles.btnPrimary}`}>
-                    <i className="fas fa-paper-plane"></i> Gửi yêu cầu xem nhà
-                  </button>
-                  <button className={`${styles.btn} ${styles.btnOutline}`}>
-                    <i className="fas fa-phone-alt"></i> Gọi trực tiếp
-                  </button>
-                </div>
-
                 <div className={styles.contactInfo}>
                   <div className={styles.contactInfoItem}>
-                    <i className="fas fa-phone-alt"></i> +84 901 234 567
+                    <i className="fas fa-phone-alt"></i>
+                    <a href="tel:+84901234567">+84 901 234 567</a>
                   </div>
                   <div className={styles.contactInfoItem}>
-                    <i className="fas fa-envelope"></i> an.nguyen@gmail.com
+                    <i className="fas fa-envelope"></i>
+                    <a href="mailto:contact@example.com">contact@example.com</a>
                   </div>
                   <div className={styles.contactInfoItem}>
-                    <i className="fas fa-clock"></i> Phản hồi trong vòng 24 giờ
+                    <i className="fas fa-clock"></i>
+                    Phản hồi trong vòng 2 giờ
                   </div>
                 </div>
               </div>
 
-              {/* Booking Widget */}
-              <div className={styles.bookingWidget}>
-                <h3>Chi tiết giao dịch</h3>
-                <div className={styles.bookingDetails}>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>
-                      Tiền thuê hàng tháng
-                    </div>
-                    <div className={styles.bookingDetailValue}>8.500.000₫</div>
+              {/* Quick Info Card */}
+              <div className={styles.quickInfoCard}>
+                <h3>Thông tin nhanh</h3>
+                <div className={styles.quickInfoList}>
+                  <div className={styles.quickInfoItem}>
+                    <span className={styles.quickInfoLabel}>Giá thuê:</span>
+                    <span className={styles.quickInfoValue}>
+                      {formatPrice(currentProperty.price)}
+                    </span>
                   </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>Phí quản lý</div>
-                    <div className={styles.bookingDetailValue}>Đã bao gồm</div>
+
+                  <div className={styles.quickInfoItem}>
+                    <span className={styles.quickInfoLabel}>Loại hình:</span>
+                    <span className={styles.quickInfoValue}>
+                      {getPropertyType(currentProperty.type)}
+                    </span>
                   </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>Tiền cọc</div>
-                    <div className={styles.bookingDetailValue}>
-                      2 tháng (17.000.000₫)
-                    </div>
+
+                  <div className={styles.quickInfoItem}>
+                    <span className={styles.quickInfoLabel}>Diện tích:</span>
+                    <span className={styles.quickInfoValue}>
+                      {currentProperty.area}
+                    </span>
                   </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>
-                      Thời hạn thuê tối thiểu
-                    </div>
-                    <div className={styles.bookingDetailValue}>12 tháng</div>
+
+                  <div className={styles.quickInfoItem}>
+                    <span className={styles.quickInfoLabel}>Phòng ngủ:</span>
+                    <span className={styles.quickInfoValue}>
+                      {currentProperty.bedrooms}
+                    </span>
                   </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>
-                      Ngày có thể vào ở
-                    </div>
-                    <div className={styles.bookingDetailValue}>15/03/2026</div>
+
+                  <div className={styles.quickInfoItem}>
+                    <span className={styles.quickInfoLabel}>Phòng tắm:</span>
+                    <span className={styles.quickInfoValue}>
+                      {currentProperty.bathrooms}
+                    </span>
                   </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>
-                      Phương thức thanh toán
-                    </div>
-                    <div className={styles.bookingDetailValue}>3 tháng/lần</div>
-                  </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>Điện</div>
-                    <div className={styles.bookingDetailValue}>
-                      Theo giá nhà nước
-                    </div>
-                  </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>Nước</div>
-                    <div className={styles.bookingDetailValue}>
-                      100.000₫/người/tháng
-                    </div>
-                  </div>
-                  <div className={styles.bookingDetail}>
-                    <div className={styles.bookingDetailLabel}>Internet</div>
-                    <div className={styles.bookingDetailValue}>Miễn phí</div>
+
+                  <div className={styles.quickInfoItem}>
+                    <span className={styles.quickInfoLabel}>Tình trạng:</span>
+                    <span
+                      className={`${styles.quickInfoValue} ${styles.available}`}
+                    >
+                      Còn trống
+                    </span>
                   </div>
                 </div>
 
-                <div className={styles.bookingTotal}>
-                  <div className={styles.bookingTotalLabel}>
-                    Tổng phải trả ban đầu
-                  </div>
-                  <div className={styles.bookingTotalValue}>25.500.000₫</div>
-                </div>
-
-                <div className={styles.contactActions}>
-                  <button className={`${styles.btn} ${styles.btnPrimary}`}>
-                    <i className="fas fa-calendar-check"></i> Đặt lịch xem nhà
+                <div className={styles.quickActions}>
+                  <button
+                    className={`${styles.btn} ${styles.btnPrimary} ${styles.btnBlock}`}
+                  >
+                    <i className="fas fa-calendar-check"></i>
+                    Đặt lịch xem nhà
                   </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Action Bar */}
       <div
-        className={`${styles.propertyActionBar} ${isActionBarVisible ? styles.visible : ""}`}
+        className={`${styles.propertyActionBar} ${
+          isActionBarVisible ? styles.visible : ""
+        }`}
       >
-        <div className={styles.actionBarPrice}>8.500.000₫ / tháng</div>
-        <div className={styles.actionBarButtons}>
-          <button className={`${styles.btn} ${styles.btnOutline}`}>
-            <i className="fas fa-phone-alt"></i> Gọi ngay
-          </button>
-          <button className={`${styles.btn} ${styles.btnPrimary}`}>
-            <i className="fas fa-paper-plane"></i> Liên hệ
-          </button>
+        <div className={styles.actionBarContent}>
+          <div className={styles.actionBarInfo}>
+            <div className={styles.actionBarPrice}>
+              {formatPrice(currentProperty.price)}
+            </div>
+            <div className={styles.actionBarTitle}>{currentProperty.title}</div>
+          </div>
+          <div className={styles.actionBarButtons}>
+            <button
+              className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`}
+            >
+              <i className="fas fa-phone-alt"></i>
+              <span className={styles.btnTextDesktop}>Gọi ngay</span>
+            </button>
+            <button
+              className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`}
+            >
+              <i className="fas fa-paper-plane"></i>
+              <span className={styles.btnTextDesktop}>Liên hệ</span>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Back to Top */}
+      <button
+        className={`${styles.backToTop} ${isBackToTopVisible ? styles.active : ""}`}
+        onClick={scrollToTop}
+        aria-label="Về đầu trang"
+      >
+        <i className="fas fa-arrow-up"></i>
+      </button>
 
       {/* Gallery Modal */}
       {isModalOpen && (
         <div className={`${styles.galleryModal} ${styles.active}`}>
           <div className={styles.galleryModalContent}>
-            <div className={styles.galleryModalClose} onClick={closeModal}>
+            <button
+              className={styles.galleryModalClose}
+              onClick={closeModal}
+              aria-label="Đóng"
+            >
               <i className="fas fa-times"></i>
-            </div>
+            </button>
+
             <div className={styles.galleryModalImage}>
               <img
-                src={galleryImages[currentImageIndex].large}
-                alt={galleryImages[currentImageIndex].alt}
+                src={galleryImages[currentImageIndex]?.large}
+                alt={galleryImages[currentImageIndex]?.alt}
               />
             </div>
-            <div
-              className={`${styles.galleryModalNav} ${styles.galleryModalPrev}`}
-              onClick={() => navigateGallery("prev")}
-            >
-              <i className="fas fa-chevron-left"></i>
-            </div>
-            <div
-              className={`${styles.galleryModalNav} ${styles.galleryModalNext}`}
-              onClick={() => navigateGallery("next")}
-            >
-              <i className="fas fa-chevron-right"></i>
-            </div>
+
+            {galleryImages.length > 1 && (
+              <>
+                <button
+                  className={`${styles.galleryModalNav} ${styles.galleryModalPrev}`}
+                  onClick={() => navigateGallery("prev")}
+                  aria-label="Ảnh trước"
+                >
+                  <i className="fas fa-chevron-left"></i>
+                </button>
+
+                <button
+                  className={`${styles.galleryModalNav} ${styles.galleryModalNext}`}
+                  onClick={() => navigateGallery("next")}
+                  aria-label="Ảnh tiếp theo"
+                >
+                  <i className="fas fa-chevron-right"></i>
+                </button>
+              </>
+            )}
+
             <div className={styles.galleryModalCounter}>
               {currentImageIndex + 1} / {galleryImages.length}
             </div>
+
             <div className={styles.galleryModalThumbs}>
               {galleryImages.map((image, index) => (
-                <div
+                <button
                   key={index}
-                  className={`${styles.galleryModalThumb} ${index === currentImageIndex ? styles.active : ""}`}
+                  className={`${styles.galleryModalThumb} ${
+                    index === currentImageIndex ? styles.active : ""
+                  }`}
                   onClick={() => setCurrentImageIndex(index)}
                 >
                   <img src={image.thumb} alt={image.alt} />
-                </div>
+                </button>
               ))}
             </div>
           </div>

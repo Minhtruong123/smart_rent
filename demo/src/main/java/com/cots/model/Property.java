@@ -37,6 +37,8 @@ public class Property {
     @Enumerated(EnumType.STRING)
     PropertyStatus status;
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    List<PropertyAmenity> propertyAmenities;
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
     List<PropertyImage> propertyImages;
     @OneToOne(mappedBy = "property")
     ApartmentDetail apartmentDetails;

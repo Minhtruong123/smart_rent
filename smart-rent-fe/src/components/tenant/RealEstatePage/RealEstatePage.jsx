@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import usePropertyStore from "../../../stores/usePropertyStore";
+import { useNavigate } from "react-router-dom";
 import styles from "./RealEstatePage.module.css";
 
 export default function RealEstatePage() {
@@ -10,6 +11,7 @@ export default function RealEstatePage() {
   const [activePage, setActivePage] = useState(0);
   const { properties, totalPages, loading, fetchProperties } =
     usePropertyStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProperties(activePage, 9);
@@ -222,7 +224,13 @@ export default function RealEstatePage() {
               <p>Đang tải dữ liệu...</p>
             ) : (
               properties.map((property) => (
-                <div key={property.id} className={styles.propertyCard}>
+                <div
+                  key={property.id}
+                  className={styles.propertyCard}
+                  onClick={() =>
+                    navigate(`/detail-real-estate-page/${property.id}`)
+                  }
+                >
                   <div className={styles.propertyImage}>
                     <img src={property.image} alt={property.title} />{" "}
                     {/* Dùng imageUrl */}

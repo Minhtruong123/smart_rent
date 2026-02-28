@@ -16,6 +16,7 @@ public record PropertyDTO(
         Integer bathrooms,
         String totalRooms,
         String area,
-        List<ImageDTO> images
+        List<ImageDTO> images,
+        List<AmenityDTO> amenities
 ) {
 }

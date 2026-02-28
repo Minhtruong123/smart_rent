@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 
 export default function Sidebar() {
@@ -24,24 +25,39 @@ export default function Sidebar() {
 
         <div className={styles.sidebarMenu}>
           <div className={styles.menuLabel}>Tổng quan</div>
-          <a href="#" className={`${styles.menuItem} ${styles.active}`}>
+          <NavLink
+            to="/owner/dashboard"
+            className={({ isActive }) =>
+              `${styles.menuItem} ${isActive ? styles.active : ""}`
+            }
+          >
             <i className="fas fa-tachometer-alt"></i>
             <span className={styles.menuText}>Dashboard</span>
-          </a>
-          <a href="#" className={styles.menuItem}>
+          </NavLink>
+          <NavLink
+            to="/owner/statistical"
+            className={({ isActive }) =>
+              `${styles.menuItem} ${isActive ? styles.active : ""}`
+            }
+          >
             <i className="fas fa-chart-line"></i>
             <span className={styles.menuText}>Thống kê</span>
-          </a>
+          </NavLink>
           <a href="#" className={styles.menuItem}>
             <i className="fas fa-calendar-alt"></i>
             <span className={styles.menuText}>Lịch</span>
           </a>
 
           <div className={styles.menuLabel}>Quản lý BĐS</div>
-          <a href="#" className={styles.menuItem}>
+          <NavLink
+            to="/owner/real-estate"
+            className={({ isActive }) =>
+              `${styles.menuItem} ${isActive ? styles.active : ""}`
+            }
+          >
             <i className="fas fa-building"></i>
             <span className={styles.menuText}>Bất động sản</span>
-          </a>
+          </NavLink>
           <a href="#" className={styles.menuItem}>
             <i className="fas fa-plus-circle"></i>
             <span className={styles.menuText}>Thêm BĐS mới</span>

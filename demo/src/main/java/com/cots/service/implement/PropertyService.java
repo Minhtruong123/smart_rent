@@ -1,5 +1,6 @@
 package com.cots.service.implement;
 
+import com.cots.dto.response.AmenityDTO;
 import com.cots.dto.response.ImageDTO;
 import com.cots.dto.response.PropertyDTO;
 import com.cots.model.Property;
@@ -46,6 +47,19 @@ public class PropertyService implements IPropertyService {
     }
 
     @Override
+    public List<AmenityDTO> mapAmenities(Property p) {
+        if (p.getPropertyAmenities() == null) return List.of();
+
+        return p.getPropertyAmenities().stream()
+                .map(pa -> AmenityDTO.builder()
+                        .name(pa.getAmenity().getName())
+                        .icon(pa.getAmenity().getIcon())
+                        .build())
+                .toList();
+    }
+
+
+    @Override
     public PropertyDTO convertToDTO(Property p) {
         String location = String.format("%s, %s, %s", p.getWard(), p.getDistrict(), p.getCity());
         String bedrooms = "0";
@@ -78,6 +92,7 @@ public class PropertyService implements IPropertyService {
                 .totalRooms(totalRooms)
                 .area(p.getArea() + "m²")
                 .images(mapImages(p))
+                .amenities(mapAmenities(p))
                 .build();
     }
 }
