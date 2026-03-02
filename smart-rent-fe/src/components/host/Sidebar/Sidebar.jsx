@@ -78,10 +78,15 @@ export default function Sidebar() {
           </a>
 
           <div className={styles.menuLabel}>Khách thuê</div>
-          <a href="#" className={styles.menuItem}>
+          <NavLink
+            to="/owner/rent-request"
+            className={({ isActive }) =>
+              `${styles.menuItem} ${isActive ? styles.active : ""}`
+            }
+          >
             <i className="fas fa-user-check"></i>
             <span className={styles.menuText}>Yêu cầu thuê</span>
-          </a>
+          </NavLink>
           <NavLink
             to="/owner/contract"
             className={({ isActive }) =>

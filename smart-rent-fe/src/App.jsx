@@ -23,6 +23,7 @@ import RealEstateManagement from "./components/host/RealEstateManagement/RealEst
 import OwnerStatistical from "./components/host/OwnerStatistical/OwnerStatistical";
 import OwnerCalendar from "./components/host/OwnerCalendar/OwnerCalendar";
 import ContractManagement from "./components/host/ContractManagement/ContractManagement";
+import RentRequestManagement from "./components/host/RentRequestManagement/RentRequestManagement";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useAuthStore } from "./stores/useAuthStore";
@@ -92,6 +93,10 @@ function App() {
               <Route path="/owner/statistical" element={<OwnerStatistical />} />
               <Route path="/owner/calendar" element={<OwnerCalendar />} />
               <Route path="/owner/contract" element={<ContractManagement />} />
+              <Route
+                path="/owner/rent-request"
+                element={<RentRequestManagement />}
+              />
             </Route>
           </Route>
 
