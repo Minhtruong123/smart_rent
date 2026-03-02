@@ -1,0 +1,1641 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartRent - Quản lý Bảo trì</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --accent-light: #fbbf24;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --bg-light: #f8fafc;
+        --bg-dark: #1e293b;
+        --bg-card: #ffffff;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        background-color: var(--bg-light);
+        min-height: 100vh;
+      }
+
+      /* Dashboard Layout */
+      .dashboard {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: var(--white);
+        border-right: 1px solid var(--gray-200);
+        box-shadow: var(--shadow);
+        z-index: 100;
+        transition: all 0.3s ease;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-collapsed {
+        width: 80px;
+      }
+
+      .sidebar-header {
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo i {
+        -webkit-text-fill-color: var(--primary-color);
+        filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));
+      }
+
+      .sidebar-toggle {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 1.25rem;
+        color: var(--gray-500);
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-toggle:hover {
+        color: var(--primary-color);
+        transform: rotate(180deg);
+      }
+
+      .sidebar-menu {
+        padding: 1.5rem 0;
+      }
+
+      .menu-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--gray-500);
+        padding: 0.75rem 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .menu-item {
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .menu-item:hover {
+        background: var(--gray-50);
+        color: var(--primary-color);
+      }
+
+      .menu-item.active {
+        background: var(--gray-50);
+        color: var(--primary-color);
+        border-left: 3px solid var(--primary-color);
+      }
+
+      .menu-item i {
+        font-size: 1.25rem;
+        min-width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-collapsed .logo-text,
+      .sidebar-collapsed .menu-label,
+      .sidebar-collapsed .menu-text {
+        display: none;
+      }
+
+      .sidebar-collapsed .menu-item {
+        justify-content: center;
+        padding: 0.75rem;
+      }
+
+      .sidebar-collapsed .sidebar-toggle {
+        margin-left: 0;
+      }
+
+      .sidebar-footer {
+        border-top: 1px solid var(--gray-200);
+        padding: 1rem 1.5rem;
+        margin-top: auto;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: 600;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+      }
+
+      .user-role {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        transition: all 0.3s ease;
+      }
+
+      .main-content-expanded {
+        margin-left: 80px;
+      }
+
+      /* Navbar */
+      .navbar {
+        background: var(--white);
+        padding: 0.875rem 2rem;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow-sm);
+        border-bottom: 1px solid var(--gray-200);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .nav-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .nav-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .nav-action {
+        color: var(--gray-600);
+        font-size: 1.25rem;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-action:hover {
+        color: var(--primary-color);
+      }
+
+      .nav-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--danger-color);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Dashboard Content */
+      .dashboard-container {
+        padding: 2rem;
+      }
+
+      .page-header {
+        margin-bottom: 2rem;
+      }
+
+      .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .page-subtitle {
+        color: var(--text-light);
+        font-size: 1rem;
+      }
+
+      /* Maintenance Tabs */
+      .maintenance-tabs {
+        display: flex;
+        margin-bottom: 2rem;
+        background: var(--white);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .maintenance-tab {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        font-weight: 600;
+        color: var(--text-light);
+        cursor: pointer;
+        flex: 1;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .maintenance-tab:hover {
+        color: var(--primary-dark);
+      }
+
+      .maintenance-tab.active {
+        background-color: var(--primary-color);
+        color: var(--white);
+      }
+
+      /* Maintenance Form */
+      .form-card {
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--gray-100);
+      }
+
+      .form-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .form-title i {
+        color: var(--primary-color);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-dark);
+      }
+
+      .form-required {
+        color: var(--danger-color);
+        margin-left: 0.25rem;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        color: var(--text-dark);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px 12px;
+        color: var(--text-dark);
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .form-hint {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        margin-top: 0.5rem;
+      }
+
+      .form-file-upload {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        border: 2px dashed var(--gray-300);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .form-file-upload:hover {
+        border-color: var(--primary-color);
+      }
+
+      .upload-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .upload-text {
+        font-weight: 500;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .upload-hint {
+        font-size: 0.85rem;
+        color: var(--text-light);
+        text-align: center;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      /* Maintenance Requests */
+      .maintenance-requests {
+        margin-top: 2rem;
+      }
+
+      .request-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .maintenance-card {
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid var(--gray-100);
+        transition: all 0.3s ease;
+      }
+
+      .maintenance-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .maintenance-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--gray-100);
+      }
+
+      .maintenance-property {
+        font-weight: 700;
+        color: var(--text-dark);
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .maintenance-id {
+        font-size: 0.875rem;
+        color: var(--text-light);
+      }
+
+      .maintenance-status {
+        padding: 0.4rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      .status-in-progress {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--info-color);
+      }
+
+      .status-completed {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+      }
+
+      .status-cancelled {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+      }
+
+      .maintenance-body {
+        padding: 1.5rem;
+      }
+
+      .maintenance-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .meta-group {
+        flex: 1;
+      }
+
+      .meta-label {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-bottom: 0.25rem;
+      }
+
+      .meta-value {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .maintenance-issue {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 0.5rem;
+      }
+
+      .issue-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+      }
+
+      .issue-description {
+        color: var(--text-light);
+        font-size: 0.95rem;
+      }
+
+      .maintenance-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--gray-100);
+        background: var(--gray-50);
+      }
+
+      .maintenance-date {
+        font-size: 0.875rem;
+        color: var(--text-light);
+      }
+
+      .maintenance-actions {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: var(--success-color);
+        filter: brightness(90%);
+        transform: translateY(-2px);
+      }
+
+      .btn-warning {
+        background: var(--warning-color);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background: var(--warning-color);
+        filter: brightness(90%);
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: var(--danger-color);
+        filter: brightness(90%);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--text-dark);
+        border: 1px solid var(--gray-300);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      /* Filter Form */
+      .filter-form {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .filter-label {
+        font-weight: 500;
+        color: var(--text-dark);
+        white-space: nowrap;
+      }
+
+      .filter-control {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        min-width: 150px;
+      }
+
+      .filter-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .filter-date {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .filter-btn:hover {
+        background: var(--primary-dark);
+      }
+
+      /* Empty state */
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: var(--shadow);
+        margin: 2rem 0;
+      }
+
+      .empty-icon {
+        font-size: 3rem;
+        color: var(--gray-400);
+        margin-bottom: 1.5rem;
+      }
+
+      .empty-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+      }
+
+      .empty-description {
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 991px) {
+        .sidebar {
+          width: 80px;
+        }
+
+        .sidebar .logo-text,
+        .sidebar .menu-label,
+        .sidebar .menu-text,
+        .sidebar .user-name,
+        .sidebar .user-role {
+          display: none;
+        }
+
+        .sidebar .menu-item {
+          justify-content: center;
+          padding: 0.75rem;
+        }
+
+        .sidebar .sidebar-toggle {
+          margin-left: 0;
+        }
+
+        .main-content {
+          margin-left: 80px;
+        }
+
+        .main-content-expanded {
+          margin-left: 80px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+          width: 280px;
+        }
+
+        .sidebar.active .logo-text,
+        .sidebar.active .menu-label,
+        .sidebar.active .menu-text,
+        .sidebar.active .user-name,
+        .sidebar.active .user-role {
+          display: block;
+        }
+
+        .sidebar.active .menu-item {
+          justify-content: flex-start;
+          padding: 0.75rem 1.5rem;
+        }
+
+        .sidebar.active .sidebar-toggle {
+          margin-left: auto;
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .main-content-expanded {
+          margin-left: 0;
+        }
+
+        .mobile-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 99;
+          display: none;
+        }
+
+        .mobile-overlay.active {
+          display: block;
+        }
+
+        .filter-form {
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .maintenance-tabs {
+          flex-direction: column;
+        }
+
+        .maintenance-tab {
+          margin-bottom: 0.5rem;
+        }
+
+        .filter-group {
+          width: 100%;
+        }
+
+        .filter-control {
+          flex-grow: 1;
+        }
+
+        .form-actions {
+          flex-direction: column;
+        }
+
+        .form-actions .btn {
+          width: 100%;
+        }
+      }
+
+      /* Utilities */
+      .mt-0 {
+        margin-top: 0;
+      }
+
+      .mt-1 {
+        margin-top: 0.25rem;
+      }
+
+      .mt-2 {
+        margin-top: 0.5rem;
+      }
+
+      .mt-3 {
+        margin-top: 1rem;
+      }
+
+      .mt-4 {
+        margin-top: 1.5rem;
+      }
+
+      .mt-5 {
+        margin-top: 3rem;
+      }
+
+      .mb-0 {
+        margin-bottom: 0;
+      }
+
+      .mb-1 {
+        margin-bottom: 0.25rem;
+      }
+
+      .mb-2 {
+        margin-bottom: 0.5rem;
+      }
+
+      .mb-3 {
+        margin-bottom: 1rem;
+      }
+
+      .mb-4 {
+        margin-bottom: 1.5rem;
+      }
+
+      .mb-5 {
+        margin-bottom: 3rem;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      .text-primary {
+        color: var(--primary-color);
+      }
+
+      .text-success {
+        color: var(--success-color);
+      }
+
+      .text-warning {
+        color: var(--warning-color);
+      }
+
+      .text-danger {
+        color: var(--danger-color);
+      }
+
+      .text-info {
+        color: var(--info-color);
+      }
+
+      .text-muted {
+        color: var(--text-light);
+      }
+
+      .fw-bold {
+        font-weight: 700;
+      }
+
+      .d-flex {
+        display: flex;
+      }
+
+      .justify-content-between {
+        justify-content: space-between;
+      }
+
+      .align-items-center {
+        align-items: center;
+      }
+
+      .flex-column {
+        flex-direction: column;
+      }
+
+      .gap-1 {
+        gap: 0.25rem;
+      }
+
+      .gap-2 {
+        gap: 0.5rem;
+      }
+
+      .gap-3 {
+        gap: 1rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fas fa-home"></i>
+            <span class="logo-text">SmartRent</span>
+          </div>
+          <div class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-menu">
+          <div class="menu-label">Tổng quan</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-chart-line"></i>
+            <span class="menu-text">Thống kê</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="menu-text">Lịch</span>
+          </a>
+
+          <div class="menu-label">Quản lý BĐS</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-building"></i>
+            <span class="menu-text">Bất động sản</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-plus-circle"></i>
+            <span class="menu-text">Thêm BĐS mới</span>
+          </a>
+          <a href="#" class="menu-item active">
+            <i class="fas fa-tools"></i>
+            <span class="menu-text">Bảo trì</span>
+          </a>
+
+          <div class="menu-label">Khách thuê</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-user-check"></i>
+            <span class="menu-text">Yêu cầu thuê</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-file-contract"></i>
+            <span class="menu-text">Hợp đồng</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-users"></i>
+            <span class="menu-text">Người thuê</span>
+          </a>
+
+          <div class="menu-label">Tài chính</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span class="menu-text">Hóa đơn</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-money-bill-wave"></i>
+            <span class="menu-text">Giao dịch</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-credit-card"></i>
+            <span class="menu-text">Phương thức thanh toán</span>
+          </a>
+
+          <div class="menu-label">Cài đặt</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-user-circle"></i>
+            <span class="menu-text">Tài khoản</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-cog"></i>
+            <span class="menu-text">Cài đặt</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-headset"></i>
+            <span class="menu-text">Hỗ trợ</span>
+          </a>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar">NT</div>
+            <div>
+              <div class="user-name">Nguyễn Thành</div>
+              <div class="user-role">Chủ nhà</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content" id="mainContent">
+        <!-- Navbar -->
+        <nav class="navbar">
+          <div class="nav-title">Quản lý Bảo trì</div>
+          <div class="nav-actions">
+            <div class="nav-action">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-bell"></i>
+              <span class="nav-badge">3</span>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-envelope"></i>
+              <span class="nav-badge">5</span>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-th-large"></i>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+          <!-- Page Header -->
+          <div class="page-header">
+            <h1 class="page-title">Quản lý Bảo trì</h1>
+            <p class="page-subtitle">
+              Tạo và theo dõi các yêu cầu bảo trì cho tất cả bất động sản của
+              bạn
+            </p>
+          </div>
+
+          <!-- Maintenance Tabs -->
+          <div class="maintenance-tabs">
+            <div class="maintenance-tab active">Tất cả yêu cầu</div>
+            <div class="maintenance-tab">Đang chờ xử lý</div>
+            <div class="maintenance-tab">Đang thực hiện</div>
+            <div class="maintenance-tab">Đã hoàn thành</div>
+            <div class="maintenance-tab">Đã hủy</div>
+          </div>
+
+          <!-- Maintenance Form -->
+          <div class="form-card">
+            <h3 class="form-title">
+              <i class="fas fa-plus-circle"></i> Tạo yêu cầu bảo trì mới
+            </h3>
+
+            <form id="maintenanceForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="property" class="form-label"
+                    >Bất động sản<span class="form-required">*</span></label
+                  >
+                  <select id="property" class="form-select" required>
+                    <option value="" selected disabled>
+                      Chọn bất động sản
+                    </option>
+                    <option value="1">
+                      Căn hộ Vinhomes Central Park (BĐS-001)
+                    </option>
+                    <option value="2">Căn hộ Sunrise City (BĐS-002)</option>
+                    <option value="3">Biệt thự The Palm (BĐS-003)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="category" class="form-label"
+                    >Loại sự cố<span class="form-required">*</span></label
+                  >
+                  <select id="category" class="form-select" required>
+                    <option value="" selected disabled>Chọn loại sự cố</option>
+                    <option value="plumbing">Hệ thống nước/Ống nước</option>
+                    <option value="electrical">Hệ thống điện</option>
+                    <option value="appliance">Thiết bị gia dụng</option>
+                    <option value="hvac">Điều hòa/Sưởi</option>
+                    <option value="structural">Kết cấu/Tường/Sàn</option>
+                    <option value="pest">Kiểm soát côn trùng</option>
+                    <option value="other">Khác</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="priority" class="form-label"
+                    >Mức độ ưu tiên<span class="form-required">*</span></label
+                  >
+                  <select id="priority" class="form-select" required>
+                    <option value="" selected disabled>
+                      Chọn mức độ ưu tiên
+                    </option>
+                    <option value="low">Thấp</option>
+                    <option value="medium">Trung bình</option>
+                    <option value="high">Cao</option>
+                    <option value="emergency">Khẩn cấp</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="assignee" class="form-label"
+                    >Người phụ trách</label
+                  >
+                  <select id="assignee" class="form-select">
+                    <option value="" selected>Tự động phân công</option>
+                    <option value="1">Nguyễn Văn Kỹ Thuật</option>
+                    <option value="2">Trần Bảo Trì</option>
+                    <option value="3">Lê Thợ Sửa</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="title" class="form-label"
+                  >Tiêu đề sự cố<span class="form-required">*</span></label
+                >
+                <input
+                  type="text"
+                  id="title"
+                  class="form-control"
+                  placeholder="Nhập tiêu đề ngắn gọn"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="form-label"
+                  >Mô tả chi tiết<span class="form-required">*</span></label
+                >
+                <textarea
+                  id="description"
+                  class="form-control form-textarea"
+                  placeholder="Mô tả chi tiết về sự cố..."
+                  required
+                ></textarea>
+                <p class="form-hint">
+                  Mô tả càng chi tiết càng giúp việc xử lý được nhanh chóng và
+                  hiệu quả
+                </p>
+              </div>
+
+              <div class="form-group">
+                <label for="requestDate" class="form-label"
+                  >Ngày bắt đầu<span class="form-required">*</span></label
+                >
+                <input
+                  type="date"
+                  id="requestDate"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Hình ảnh/Tài liệu đính kèm</label>
+                <div class="form-file-upload" id="fileUpload">
+                  <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                  </div>
+                  <div class="upload-text">
+                    Kéo và thả file vào đây hoặc nhấn để chọn
+                  </div>
+                  <p class="upload-hint">
+                    Hỗ trợ: JPG, PNG, PDF. Tối đa 5MB/file
+                  </p>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style="display: none"
+                    multiple
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="budget" class="form-label">Ngân sách dự kiến</label>
+                <input
+                  type="number"
+                  id="budget"
+                  class="form-control"
+                  placeholder="Nhập ngân sách dự kiến (VNĐ)"
+                />
+                <p class="form-hint">Để trống nếu chưa xác định được chi phí</p>
+              </div>
+
+              <div class="form-group">
+                <label for="notes" class="form-label">Ghi chú bổ sung</label>
+                <textarea
+                  id="notes"
+                  class="form-control"
+                  placeholder="Ghi chú thêm..."
+                ></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline">Hủy</button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Tạo yêu cầu
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Maintenance Request List -->
+          <div class="maintenance-requests">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3 class="mt-0 mb-0">Danh sách yêu cầu bảo trì</h3>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-sm">
+                  <i class="fas fa-filter"></i> Lọc
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-download"></i> Xuất
+                </button>
+              </div>
+            </div>
+
+            <div class="filter-form mb-4">
+              <div class="filter-group">
+                <label class="filter-label">Trạng thái:</label>
+                <select class="filter-control">
+                  <option value="all">Tất cả</option>
+                  <option value="pending">Chờ xử lý</option>
+                  <option value="in-progress">Đang thực hiện</option>
+                  <option value="completed">Hoàn thành</option>
+                  <option value="cancelled">Đã hủy</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label class="filter-label">Bất động sản:</label>
+                <select class="filter-control">
+                  <option value="all">Tất cả</option>
+                  <option value="1">Vinhomes Central Park</option>
+                  <option value="2">Sunrise City</option>
+                  <option value="3">The Palm</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label class="filter-label">Từ ngày:</label>
+                <input type="date" class="filter-date" />
+              </div>
+
+              <div class="filter-group">
+                <label class="filter-label">Đến ngày:</label>
+                <input type="date" class="filter-date" />
+              </div>
+
+              <button class="filter-btn">Áp dụng</button>
+            </div>
+
+            <div class="request-grid">
+              <!-- Maintenance Request Item 1 -->
+              <div class="maintenance-card">
+                <div class="maintenance-header">
+                  <div>
+                    <div class="maintenance-property">Căn hộ Sunrise City</div>
+                    <div class="maintenance-id">Mã: BT-2026-001</div>
+                  </div>
+                  <span class="maintenance-status status-in-progress"
+                    >Đang thực hiện</span
+                  >
+                </div>
+                <div class="maintenance-body">
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Loại sự cố</div>
+                      <div class="meta-value">Hệ thống điều hòa</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Ưu tiên</div>
+                      <div class="meta-value text-warning">Cao</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Ngày tạo</div>
+                      <div class="meta-value">10/02/2026</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Người phụ trách</div>
+                      <div class="meta-value">Trần Bảo Trì</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-issue">
+                    <div class="issue-title">
+                      Điều hòa phòng khách bị rò rỉ nước
+                    </div>
+                    <div class="issue-description">
+                      Điều hòa phòng khách bị rò rỉ nước xuống sàn, đã tắt tạm
+                      thời để tránh hỏng sàn gỗ. Cần kỹ thuật đến kiểm tra và
+                      sửa chữa.
+                    </div>
+                  </div>
+                </div>
+                <div class="maintenance-footer">
+                  <div class="maintenance-date">Cập nhật: 15/02/2026</div>
+                  <div class="maintenance-actions">
+                    <button class="btn btn-sm btn-outline">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-primary">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Maintenance Request Item 2 -->
+              <div class="maintenance-card">
+                <div class="maintenance-header">
+                  <div>
+                    <div class="maintenance-property">Biệt thự The Palm</div>
+                    <div class="maintenance-id">Mã: BT-2026-002</div>
+                  </div>
+                  <span class="maintenance-status status-pending"
+                    >Chờ xử lý</span
+                  >
+                </div>
+                <div class="maintenance-body">
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Loại sự cố</div>
+                      <div class="meta-value">Hệ thống nước</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Ưu tiên</div>
+                      <div class="meta-value text-danger">Khẩn cấp</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Ngày tạo</div>
+                      <div class="meta-value">18/02/2026</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Người phụ trách</div>
+                      <div class="meta-value">Chưa phân công</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-issue">
+                    <div class="issue-title">
+                      Vòi nước phòng tắm chính bị rò rỉ
+                    </div>
+                    <div class="issue-description">
+                      Vòi nước ở bồn tắm phòng tắm chính bị rò rỉ liên tục. Đã
+                      tạm thời khóa van nước, cần thay thế vòi mới hoặc sửa
+                      chữa.
+                    </div>
+                  </div>
+                </div>
+                <div class="maintenance-footer">
+                  <div class="maintenance-date">Cập nhật: 18/02/2026</div>
+                  <div class="maintenance-actions">
+                    <button class="btn btn-sm btn-outline">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-primary">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Maintenance Request Item 3 -->
+              <div class="maintenance-card">
+                <div class="maintenance-header">
+                  <div>
+                    <div class="maintenance-property">
+                      Căn hộ Vinhomes Central Park
+                    </div>
+                    <div class="maintenance-id">Mã: BT-2026-003</div>
+                  </div>
+                  <span class="maintenance-status status-completed"
+                    >Hoàn thành</span
+                  >
+                </div>
+                <div class="maintenance-body">
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Loại sự cố</div>
+                      <div class="meta-value">Thiết bị gia dụng</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Ưu tiên</div>
+                      <div class="meta-value">Trung bình</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Ngày tạo</div>
+                      <div class="meta-value">05/02/2026</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Người phụ trách</div>
+                      <div class="meta-value">Lê Thợ Sửa</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-issue">
+                    <div class="issue-title">
+                      Tủ lạnh không làm lạnh hiệu quả
+                    </div>
+                    <div class="issue-description">
+                      Tủ lạnh không làm lạnh bình thường, thực phẩm bị hư hỏng.
+                      Cần kiểm tra và sửa chữa hoặc thay thế nếu cần thiết.
+                    </div>
+                  </div>
+                </div>
+                <div class="maintenance-footer">
+                  <div class="maintenance-date">Hoàn thành: 15/02/2026</div>
+                  <div class="maintenance-actions">
+                    <button class="btn btn-sm btn-outline">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-success">
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Maintenance Request Item 4 -->
+              <div class="maintenance-card">
+                <div class="maintenance-header">
+                  <div>
+                    <div class="maintenance-property">Căn hộ Sunrise City</div>
+                    <div class="maintenance-id">Mã: BT-2026-004</div>
+                  </div>
+                  <span class="maintenance-status status-cancelled"
+                    >Đã hủy</span
+                  >
+                </div>
+                <div class="maintenance-body">
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Loại sự cố</div>
+                      <div class="meta-value">Kết cấu/Tường</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Ưu tiên</div>
+                      <div class="meta-value">Thấp</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-meta">
+                    <div class="meta-group">
+                      <div class="meta-label">Ngày tạo</div>
+                      <div class="meta-value">02/02/2026</div>
+                    </div>
+                    <div class="meta-group">
+                      <div class="meta-label">Người phụ trách</div>
+                      <div class="meta-value">Nguyễn Văn Kỹ Thuật</div>
+                    </div>
+                  </div>
+                  <div class="maintenance-issue">
+                    <div class="issue-title">Nứt tường nhỏ trong phòng ngủ</div>
+                    <div class="issue-description">
+                      Có vết nứt nhỏ trên tường phòng ngủ phụ, không ảnh hưởng
+                      đến kết cấu nhưng cần sửa chữa để đảm bảo thẩm mỹ.
+                    </div>
+                  </div>
+                </div>
+                <div class="maintenance-footer">
+                  <div class="maintenance-date">Hủy: 03/02/2026</div>
+                  <div class="maintenance-actions">
+                    <button class="btn btn-sm btn-outline">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-redo"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <script>
+      // Sidebar Toggle
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const sidebar = document.getElementById("sidebar");
+      const mainContent = document.getElementById("mainContent");
+      const mobileOverlay = document.getElementById("mobileOverlay");
+
+      sidebarToggle.addEventListener("click", function () {
+        sidebar.classList.toggle("active");
+        mobileOverlay.classList.toggle("active");
+      });
+
+      mobileOverlay.addEventListener("click", function () {
+        sidebar.classList.remove("active");
+        mobileOverlay.classList.remove("active");
+      });
+
+      // Maintenance Tabs
+      const maintenanceTabs = document.querySelectorAll(".maintenance-tab");
+
+      maintenanceTabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          maintenanceTabs.forEach((t) => t.classList.remove("active"));
+          this.classList.add("active");
+        });
+      });
+
+      // File Upload
+      const fileUpload = document.getElementById("fileUpload");
+      const fileInput = document.getElementById("fileInput");
+
+      fileUpload.addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", function () {
+        // Hiển thị tên file đã chọn
+        if (this.files.length > 0) {
+          let fileNames = Array.from(this.files)
+            .map((file) => file.name)
+            .join(", ");
+          let uploadHint = document.querySelector(".upload-hint");
+          uploadHint.innerHTML = `Đã chọn: ${fileNames}`;
+          fileUpload.style.borderColor = "var(--primary-color)";
+        }
+      });
+
+      // Form Submit
+      const maintenanceForm = document.getElementById("maintenanceForm");
+
+      maintenanceForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        alert("Yêu cầu bảo trì đã được tạo thành công!");
+
+        maintenanceForm.reset();
+        document.querySelector(".upload-hint").innerHTML =
+          "Hỗ trợ: JPG, PNG, PDF. Tối đa 5MB/file";
+        fileUpload.style.borderColor = "var(--gray-300)";
+      });
+    </script>
+  </body>
+</html>

@@ -22,6 +22,7 @@ import OwnerDashboard from "./components/host/OwnerDashboard/OwnerDashboard";
 import RealEstateManagement from "./components/host/RealEstateManagement/RealEstateManagement";
 import OwnerStatistical from "./components/host/OwnerStatistical/OwnerStatistical";
 import OwnerCalendar from "./components/host/OwnerCalendar/OwnerCalendar";
+import ContractManagement from "./components/host/ContractManagement/ContractManagement";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useAuthStore } from "./stores/useAuthStore";
@@ -90,6 +91,7 @@ function App() {
               />
               <Route path="/owner/statistical" element={<OwnerStatistical />} />
               <Route path="/owner/calendar" element={<OwnerCalendar />} />
+              <Route path="/owner/contract" element={<ContractManagement />} />
             </Route>
           </Route>
 

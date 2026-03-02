@@ -1,0 +1,1942 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartRent - Quản Lý Yêu Cầu Thuê</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-color: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary-color: #ec4899;
+        --accent-color: #f59e0b;
+        --accent-light: #fbbf24;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --text-muted: #94a3b8;
+        --bg-light: #f8fafc;
+        --bg-dark: #1e293b;
+        --bg-card: #ffffff;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+        --gray-800: #1e293b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        background-color: var(--bg-light);
+        min-height: 100vh;
+      }
+
+      /* Dashboard Layout */
+      .dashboard {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: var(--white);
+        border-right: 1px solid var(--gray-200);
+        box-shadow: var(--shadow);
+        z-index: 100;
+        transition: all 0.3s ease;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-collapsed {
+        width: 80px;
+      }
+
+      .sidebar-header {
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo i {
+        -webkit-text-fill-color: var(--primary-color);
+        filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));
+      }
+
+      .sidebar-toggle {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 1.25rem;
+        color: var(--gray-500);
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-toggle:hover {
+        color: var(--primary-color);
+        transform: rotate(180deg);
+      }
+
+      .sidebar-menu {
+        padding: 1.5rem 0;
+      }
+
+      .menu-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--gray-500);
+        padding: 0.75rem 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .menu-item {
+        padding: 0.75rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .menu-item:hover {
+        background: var(--gray-50);
+        color: var(--primary-color);
+      }
+
+      .menu-item.active {
+        background: var(--gray-50);
+        color: var(--primary-color);
+        border-left: 3px solid var(--primary-color);
+      }
+
+      .menu-item i {
+        font-size: 1.25rem;
+        min-width: 24px;
+        text-align: center;
+      }
+
+      .sidebar-collapsed .logo-text,
+      .sidebar-collapsed .menu-label,
+      .sidebar-collapsed .menu-text {
+        display: none;
+      }
+
+      .sidebar-collapsed .menu-item {
+        justify-content: center;
+        padding: 0.75rem;
+      }
+
+      .sidebar-collapsed .sidebar-toggle {
+        margin-left: 0;
+      }
+
+      .sidebar-footer {
+        border-top: 1px solid var(--gray-200);
+        padding: 1rem 1.5rem;
+        margin-top: auto;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-weight: 600;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-dark);
+      }
+
+      .user-role {
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        transition: all 0.3s ease;
+      }
+
+      .main-content-expanded {
+        margin-left: 80px;
+      }
+
+      /* Navbar */
+      .navbar {
+        background: var(--white);
+        padding: 0.875rem 2rem;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow-sm);
+        border-bottom: 1px solid var(--gray-200);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .nav-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .nav-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .nav-action {
+        color: var(--gray-600);
+        font-size: 1.25rem;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-action:hover {
+        color: var(--primary-color);
+      }
+
+      .nav-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--danger-color);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Dashboard Content */
+      .dashboard-container {
+        padding: 2rem;
+      }
+
+      .page-header {
+        margin-bottom: 2rem;
+      }
+
+      .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .page-subtitle {
+        color: var(--text-light);
+        font-size: 1rem;
+      }
+
+      /* Filter Bar */
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .filter-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .filter-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .filter-search {
+        position: relative;
+        width: 300px;
+      }
+
+      .filter-search input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--gray-300);
+        background: var(--white);
+        color: var(--text-dark);
+        font-size: 0.95rem;
+      }
+
+      .filter-search i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 1rem;
+      }
+
+      .filter-dropdown select {
+        padding: 0.75rem 2.75rem 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--gray-300);
+        background: var(--white);
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px 12px;
+        min-width: 150px;
+      }
+
+      .filter-date input {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--gray-300);
+        background: var(--white);
+        color: var(--text-dark);
+        font-size: 0.95rem;
+        width: 150px;
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: var(--white);
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        border: 1px solid var(--gray-100);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat-title {
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: var(--white);
+      }
+
+      .stat-icon.primary {
+        background: var(--primary-color);
+      }
+
+      .stat-icon.success {
+        background: var(--success-color);
+      }
+
+      .stat-icon.warning {
+        background: var(--warning-color);
+      }
+
+      .stat-icon.danger {
+        background: var(--danger-color);
+      }
+
+      .stat-icon.info {
+        background: var(--info-color);
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+      }
+
+      .stat-description {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .stat-change {
+        font-weight: 600;
+      }
+
+      .stat-change.positive {
+        color: var(--success-color);
+      }
+
+      .stat-change.negative {
+        color: var(--danger-color);
+      }
+
+      /* Tabs */
+      .content-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--gray-200);
+        margin-bottom: 2rem;
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+
+      .content-tab {
+        padding: 0.75rem 1.5rem;
+        color: var(--text-light);
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 0.5rem 0.5rem 0 0;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .content-tab:hover {
+        color: var(--primary-color);
+      }
+
+      .content-tab.active {
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--primary-color);
+      }
+
+      /* Rental Request Cards */
+      .request-card {
+        background: var(--white);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--gray-100);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .request-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--gray-300);
+      }
+
+      .request-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+      }
+
+      .request-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .request-status {
+        padding: 0.4rem 1rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      .status-approved {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+      }
+
+      .status-rejected {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+      }
+
+      .request-property {
+        display: flex;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .request-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .request-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .request-info {
+        flex: 1;
+      }
+
+      .request-property-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .request-address {
+        color: var(--text-light);
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .request-price {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .request-meta {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .meta-label {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-bottom: 0.25rem;
+      }
+
+      .meta-value {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .request-tenant {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .tenant-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .tenant-info {
+        flex: 1;
+      }
+
+      .tenant-name {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+      }
+
+      .tenant-details {
+        display: flex;
+        gap: 1.5rem;
+        font-size: 0.875rem;
+        color: var(--text-light);
+      }
+
+      .tenant-contact {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .request-message {
+        padding: 1rem;
+        background: var(--gray-50);
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+      }
+
+      .request-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
+      /* Request Detail Modal */
+      .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal {
+        background: var(--white);
+        border-radius: 1rem;
+        box-shadow: var(--shadow-xl);
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideUp 0.3s ease;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      .modal-close {
+        font-size: 1.5rem;
+        color: var(--gray-500);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .modal-close:hover {
+        color: var(--danger-color);
+      }
+
+      .modal-body {
+        padding: 1.5rem;
+      }
+
+      .modal-footer {
+        padding: 1.5rem;
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
+      /* Animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Response Form */
+      .response-form {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--gray-200);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--text-dark);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px 12px;
+      }
+
+      .form-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      /* Buttons & Form Elements */
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .btn-lg {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .btn-success {
+        background: var(--success-color);
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: var(--success-color);
+        filter: brightness(90%);
+        transform: translateY(-2px);
+      }
+
+      .btn-warning {
+        background: var(--warning-color);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background: var(--warning-color);
+        filter: brightness(90%);
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: var(--danger-color);
+        filter: brightness(90%);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--text-dark);
+        border: 1px solid var(--gray-300);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline-primary {
+        background: transparent;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+      }
+
+      .btn-outline-primary:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .btn-outline-success {
+        background: transparent;
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+      }
+
+      .btn-outline-success:hover {
+        background: var(--success-color);
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .btn-outline-danger {
+        background: transparent;
+        color: var(--danger-color);
+        border: 1px solid var(--danger-color);
+      }
+
+      .btn-outline-danger:hover {
+        background: var(--danger-color);
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .badge-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+      }
+
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+      }
+
+      .badge-info {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--info-color);
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+      }
+
+      .page-item {
+        width: 40px;
+        height: 40px;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-dark);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .page-item:hover {
+        background: var(--gray-100);
+      }
+
+      .page-item.active {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .page-item.disabled {
+        color: var(--gray-300);
+        cursor: not-allowed;
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .request-meta {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 991px) {
+        .sidebar {
+          width: 80px;
+        }
+
+        .sidebar .logo-text,
+        .sidebar .menu-label,
+        .sidebar .menu-text,
+        .sidebar .user-name,
+        .sidebar .user-role {
+          display: none;
+        }
+
+        .sidebar .menu-item {
+          justify-content: center;
+          padding: 0.75rem;
+        }
+
+        .sidebar .sidebar-toggle {
+          margin-left: 0;
+        }
+
+        .main-content {
+          margin-left: 80px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+          width: 280px;
+        }
+
+        .sidebar.active .logo-text,
+        .sidebar.active .menu-label,
+        .sidebar.active .menu-text,
+        .sidebar.active .user-name,
+        .sidebar.active .user-role {
+          display: block;
+        }
+
+        .sidebar.active .menu-item {
+          justify-content: flex-start;
+          padding: 0.75rem 1.5rem;
+        }
+
+        .sidebar.active .sidebar-toggle {
+          margin-left: auto;
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .mobile-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 99;
+          display: none;
+        }
+
+        .mobile-overlay.active {
+          display: block;
+        }
+
+        .filter-bar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .filter-section {
+          width: 100%;
+        }
+
+        .filter-search {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .request-property {
+          flex-direction: column;
+        }
+
+        .request-image {
+          width: 100%;
+          height: 160px;
+        }
+
+        .request-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .request-tenant {
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: center;
+        }
+
+        .tenant-avatar {
+          margin: 0 auto 1rem;
+        }
+
+        .tenant-details {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .request-actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">
+            <i class="fas fa-home"></i>
+            <span class="logo-text">SmartRent</span>
+          </div>
+          <div class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-menu">
+          <div class="menu-label">Tổng quan</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-tachometer-alt"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-chart-line"></i>
+            <span class="menu-text">Thống kê</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="menu-text">Lịch</span>
+          </a>
+
+          <div class="menu-label">Quản lý BĐS</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-building"></i>
+            <span class="menu-text">Bất động sản</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-plus-circle"></i>
+            <span class="menu-text">Thêm BĐS mới</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-tools"></i>
+            <span class="menu-text">Bảo trì</span>
+          </a>
+
+          <div class="menu-label">Khách thuê</div>
+          <a href="#" class="menu-item active">
+            <i class="fas fa-user-check"></i>
+            <span class="menu-text">Yêu cầu thuê</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-file-contract"></i>
+            <span class="menu-text">Hợp đồng</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-users"></i>
+            <span class="menu-text">Người thuê</span>
+          </a>
+
+          <div class="menu-label">Tài chính</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span class="menu-text">Hóa đơn</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-money-bill-wave"></i>
+            <span class="menu-text">Giao dịch</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-credit-card"></i>
+            <span class="menu-text">Phương thức thanh toán</span>
+          </a>
+
+          <div class="menu-label">Cài đặt</div>
+          <a href="#" class="menu-item">
+            <i class="fas fa-user-circle"></i>
+            <span class="menu-text">Tài khoản</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-cog"></i>
+            <span class="menu-text">Cài đặt</span>
+          </a>
+          <a href="#" class="menu-item">
+            <i class="fas fa-headset"></i>
+            <span class="menu-text">Hỗ trợ</span>
+          </a>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar">NT</div>
+            <div>
+              <div class="user-name">Nguyễn Thành</div>
+              <div class="user-role">Chủ nhà</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content" id="mainContent">
+        <!-- Navbar -->
+        <nav class="navbar">
+          <div class="nav-title">Quản lý yêu cầu thuê</div>
+          <div class="nav-actions">
+            <div class="nav-action">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-bell"></i>
+              <span class="nav-badge">3</span>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-envelope"></i>
+              <span class="nav-badge">5</span>
+            </div>
+            <div class="nav-action">
+              <i class="fas fa-th-large"></i>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+          <!-- Page Header -->
+          <div class="page-header">
+            <h1 class="page-title">Yêu cầu thuê</h1>
+            <p class="page-subtitle">
+              Quản lý và xử lý các yêu cầu thuê bất động sản từ khách hàng
+            </p>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Tổng yêu cầu thuê</div>
+                <div class="stat-icon primary">
+                  <i class="fas fa-user-check"></i>
+                </div>
+              </div>
+              <div class="stat-value">24</div>
+              <div class="stat-description">
+                <span class="stat-change positive">+8</span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Đang chờ duyệt</div>
+                <div class="stat-icon warning">
+                  <i class="fas fa-clock"></i>
+                </div>
+              </div>
+              <div class="stat-value">8</div>
+              <div class="stat-description">
+                <span>Cần xử lý trong 48 giờ</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Đã chấp nhận</div>
+                <div class="stat-icon success">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+              </div>
+              <div class="stat-value">12</div>
+              <div class="stat-description">
+                <span class="stat-change positive">+4</span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <div class="stat-title">Đã từ chối</div>
+                <div class="stat-icon danger">
+                  <i class="fas fa-times-circle"></i>
+                </div>
+              </div>
+              <div class="stat-value">4</div>
+              <div class="stat-description">
+                <span class="stat-change negative">-2</span>
+                <span>so với tháng trước</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="filter-bar">
+            <div class="filter-section">
+              <div class="filter-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Tìm kiếm yêu cầu thuê..." />
+              </div>
+
+              <div class="filter-dropdown">
+                <select>
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="pending">Chờ duyệt</option>
+                  <option value="approved">Đã chấp nhận</option>
+                  <option value="rejected">Đã từ chối</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="filter-section">
+              <div class="filter-date">
+                <input type="date" placeholder="Từ ngày" />
+              </div>
+
+              <div class="filter-date">
+                <input type="date" placeholder="Đến ngày" />
+              </div>
+
+              <button class="btn btn-sm btn-outline">
+                <i class="fas fa-filter"></i> Lọc
+              </button>
+
+              <button class="btn btn-sm btn-outline">
+                <i class="fas fa-redo"></i> Đặt lại
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="content-tabs">
+            <div class="content-tab active">Tất cả yêu cầu</div>
+            <div class="content-tab">Chờ duyệt</div>
+            <div class="content-tab">Đã chấp nhận</div>
+            <div class="content-tab">Đã từ chối</div>
+          </div>
+
+          <!-- Request Cards -->
+          <div class="request-card" onclick="openRequestDetail('YC-124')">
+            <div class="request-header">
+              <h3 class="request-title">Yêu cầu thuê #YC-124</h3>
+              <span class="request-status status-pending">Chờ duyệt</span>
+            </div>
+
+            <div class="request-property">
+              <div class="request-image">
+                <img
+                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                  alt="Property Image"
+                />
+              </div>
+              <div class="request-info">
+                <div class="request-property-title">
+                  Căn hộ cao cấp Vinhomes Central Park
+                </div>
+                <div class="request-address">
+                  Tòa Park 5, 720A Điện Biên Phủ, Quận Bình Thạnh, TP.HCM
+                </div>
+                <div class="request-price">8.5 triệu/tháng</div>
+              </div>
+            </div>
+
+            <div class="request-meta">
+              <div class="meta-item">
+                <div class="meta-label">Ngày nhận phòng</div>
+                <div class="meta-value">15/02/2026</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Thời hạn thuê</div>
+                <div class="meta-value">12 tháng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Đặt cọc</div>
+                <div class="meta-value">17 triệu đồng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Ngày yêu cầu</div>
+                <div class="meta-value">01/02/2026</div>
+              </div>
+            </div>
+
+            <div class="request-tenant">
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="Tenant"
+                class="tenant-avatar"
+              />
+              <div class="tenant-info">
+                <div class="tenant-name">Trần Quốc Bảo</div>
+                <div class="tenant-details">
+                  <div class="tenant-contact">
+                    <i class="fas fa-phone"></i> 0912 345 678
+                  </div>
+                  <div class="tenant-contact">
+                    <i class="fas fa-envelope"></i> baotq@gmail.com
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="request-message">
+              <p>
+                Tôi rất thích căn hộ này và muốn thuê dài hạn. Tôi làm việc tại
+                khu vực Bình Thạnh nên vị trí này rất thuận tiện. Tôi có thể đến
+                xem nhà vào cuối tuần này không?
+              </p>
+            </div>
+
+            <div class="request-actions">
+              <button class="btn btn-outline-danger">
+                <i class="fas fa-times"></i> Từ chối
+              </button>
+              <button class="btn btn-outline-primary">
+                <i class="fas fa-comments"></i> Liên hệ
+              </button>
+              <button class="btn btn-success">
+                <i class="fas fa-check"></i> Chấp nhận
+              </button>
+            </div>
+          </div>
+
+          <div class="request-card" onclick="openRequestDetail('YC-123')">
+            <div class="request-header">
+              <h3 class="request-title">Yêu cầu thuê #YC-123</h3>
+              <span class="request-status status-pending">Chờ duyệt</span>
+            </div>
+
+            <div class="request-property">
+              <div class="request-image">
+                <img
+                  src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80"
+                  alt="Property Image"
+                />
+              </div>
+              <div class="request-info">
+                <div class="request-property-title">Căn hộ Sunrise City</div>
+                <div class="request-address">
+                  Tòa W3, 23 Nguyễn Hữu Thọ, Quận 7, TP.HCM
+                </div>
+                <div class="request-price">5.5 triệu/tháng</div>
+              </div>
+            </div>
+
+            <div class="request-meta">
+              <div class="meta-item">
+                <div class="meta-label">Ngày nhận phòng</div>
+                <div class="meta-value">10/02/2026</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Thời hạn thuê</div>
+                <div class="meta-value">6 tháng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Đặt cọc</div>
+                <div class="meta-value">11 triệu đồng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Ngày yêu cầu</div>
+                <div class="meta-value">30/01/2026</div>
+              </div>
+            </div>
+
+            <div class="request-tenant">
+              <img
+                src="https://randomuser.me/api/portraits/women/44.jpg"
+                alt="Tenant"
+                class="tenant-avatar"
+              />
+              <div class="tenant-info">
+                <div class="tenant-name">Nguyễn Minh Tâm</div>
+                <div class="tenant-details">
+                  <div class="tenant-contact">
+                    <i class="fas fa-phone"></i> 0987 654 321
+                  </div>
+                  <div class="tenant-contact">
+                    <i class="fas fa-envelope"></i> tamnm@gmail.com
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="request-message">
+              <p>
+                Tôi là nhân viên văn phòng làm việc tại Phú Mỹ Hưng. Tôi cần một
+                căn hộ 1 phòng ngủ, sạch sẽ và thoáng mát. Tôi sẽ ở một mình và
+                cam kết giữ gìn căn hộ cẩn thận.
+              </p>
+            </div>
+
+            <div class="request-actions">
+              <button class="btn btn-outline-danger">
+                <i class="fas fa-times"></i> Từ chối
+              </button>
+              <button class="btn btn-outline-primary">
+                <i class="fas fa-comments"></i> Liên hệ
+              </button>
+              <button class="btn btn-success">
+                <i class="fas fa-check"></i> Chấp nhận
+              </button>
+            </div>
+          </div>
+
+          <div class="request-card" onclick="openRequestDetail('YC-122')">
+            <div class="request-header">
+              <h3 class="request-title">Yêu cầu thuê #YC-122</h3>
+              <span class="request-status status-approved">Đã chấp nhận</span>
+            </div>
+
+            <div class="request-property">
+              <div class="request-image">
+                <img
+                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80"
+                  alt="Property Image"
+                />
+              </div>
+              <div class="request-info">
+                <div class="request-property-title">Căn hộ The Sun Avenue</div>
+                <div class="request-address">
+                  Tòa 5, 28 Mai Chí Thọ, Quận 2, TP.HCM
+                </div>
+                <div class="request-price">7.2 triệu/tháng</div>
+              </div>
+            </div>
+
+            <div class="request-meta">
+              <div class="meta-item">
+                <div class="meta-label">Ngày nhận phòng</div>
+                <div class="meta-value">05/02/2026</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Thời hạn thuê</div>
+                <div class="meta-value">12 tháng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Đặt cọc</div>
+                <div class="meta-value">14.4 triệu đồng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Ngày yêu cầu</div>
+                <div class="meta-value">25/01/2026</div>
+              </div>
+            </div>
+
+            <div class="request-tenant">
+              <img
+                src="https://randomuser.me/api/portraits/men/68.jpg"
+                alt="Tenant"
+                class="tenant-avatar"
+              />
+              <div class="tenant-info">
+                <div class="tenant-name">Lê Minh Hiếu</div>
+                <div class="tenant-details">
+                  <div class="tenant-contact">
+                    <i class="fas fa-phone"></i> 0934 567 890
+                  </div>
+                  <div class="tenant-contact">
+                    <i class="fas fa-envelope"></i> hieulm@gmail.com
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="request-message">
+              <p>
+                Tôi và vợ muốn thuê căn hộ của anh/chị. Chúng tôi cả hai đều làm
+                việc tại khu vực Thủ Thiêm và đang tìm một nơi ở dài hạn. Chúng
+                tôi không nuôi thú cưng và không hút thuốc.
+              </p>
+            </div>
+
+            <div class="request-actions">
+              <button class="btn btn-outline-primary">
+                <i class="fas fa-file-contract"></i> Xem hợp đồng
+              </button>
+              <button class="btn btn-primary">
+                <i class="fas fa-eye"></i> Xem chi tiết
+              </button>
+            </div>
+          </div>
+
+          <div class="request-card" onclick="openRequestDetail('YC-121')">
+            <div class="request-header">
+              <h3 class="request-title">Yêu cầu thuê #YC-121</h3>
+              <span class="request-status status-rejected">Đã từ chối</span>
+            </div>
+
+            <div class="request-property">
+              <div class="request-image">
+                <img
+                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                  alt="Property Image"
+                />
+              </div>
+              <div class="request-info">
+                <div class="request-property-title">
+                  Căn hộ cao cấp Vinhomes Central Park
+                </div>
+                <div class="request-address">
+                  Tòa Park 5, 720A Điện Biên Phủ, Quận Bình Thạnh, TP.HCM
+                </div>
+                <div class="request-price">8.5 triệu/tháng</div>
+              </div>
+            </div>
+
+            <div class="request-meta">
+              <div class="meta-item">
+                <div class="meta-label">Ngày nhận phòng</div>
+                <div class="meta-value">20/01/2026</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Thời hạn thuê</div>
+                <div class="meta-value">3 tháng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Đặt cọc</div>
+                <div class="meta-value">8.5 triệu đồng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Ngày yêu cầu</div>
+                <div class="meta-value">15/01/2026</div>
+              </div>
+            </div>
+
+            <div class="request-tenant">
+              <img
+                src="https://randomuser.me/api/portraits/women/28.jpg"
+                alt="Tenant"
+                class="tenant-avatar"
+              />
+              <div class="tenant-info">
+                <div class="tenant-name">Phạm Thị Lan Anh</div>
+                <div class="tenant-details">
+                  <div class="tenant-contact">
+                    <i class="fas fa-phone"></i> 0978 123 456
+                  </div>
+                  <div class="tenant-contact">
+                    <i class="fas fa-envelope"></i> anhptl@gmail.com
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="request-message">
+              <p>
+                Tôi đang cần thuê ngắn hạn trong thời gian đi công tác tại
+                TP.HCM. Tôi có thể thanh toán trước toàn bộ tiền thuê. Hy vọng
+                anh/chị xem xét.
+              </p>
+            </div>
+
+            <div class="request-actions">
+              <button class="btn btn-outline">
+                <i class="fas fa-history"></i> Lý do từ chối
+              </button>
+              <button class="btn btn-primary">
+                <i class="fas fa-eye"></i> Xem chi tiết
+              </button>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <div class="page-item disabled">
+              <i class="fas fa-angle-left"></i>
+            </div>
+            <div class="page-item active">1</div>
+            <div class="page-item">2</div>
+            <div class="page-item">3</div>
+            <div class="page-item">...</div>
+            <div class="page-item">8</div>
+            <div class="page-item">
+              <i class="fas fa-angle-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Request Detail -->
+    <div class="modal-backdrop" id="requestDetailModal" style="display: none">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Chi tiết yêu cầu thuê #YC-124</h2>
+          <div class="modal-close" onclick="closeRequestDetail()">
+            <i class="fas fa-times"></i>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="request-property">
+            <div class="request-image">
+              <img
+                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                alt="Property Image"
+              />
+            </div>
+            <div class="request-info">
+              <div class="request-property-title">
+                Căn hộ cao cấp Vinhomes Central Park
+              </div>
+              <div class="request-address">
+                Tòa Park 5, 720A Điện Biên Phủ, Quận Bình Thạnh, TP.HCM
+              </div>
+              <div class="request-price">8.5 triệu/tháng</div>
+            </div>
+          </div>
+
+          <div class="request-meta" style="margin-top: 1.5rem">
+            <div class="meta-item">
+              <div class="meta-label">Mã yêu cầu</div>
+              <div class="meta-value">#YC-124</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Trạng thái</div>
+              <div class="meta-value">
+                <span class="badge badge-warning">Chờ duyệt</span>
+              </div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Ngày yêu cầu</div>
+              <div class="meta-value">01/02/2026</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Ngày cập nhật</div>
+              <div class="meta-value">01/02/2026</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem">
+            <h3 style="margin-bottom: 1rem">Thông tin thuê</h3>
+            <div class="request-meta">
+              <div class="meta-item">
+                <div class="meta-label">Ngày bắt đầu</div>
+                <div class="meta-value">15/02/2026</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Thời hạn thuê</div>
+                <div class="meta-value">12 tháng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Ngày kết thúc</div>
+                <div class="meta-value">15/02/2027</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Số người ở</div>
+                <div class="meta-value">2 người</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem">
+            <h3 style="margin-bottom: 1rem">Thông tin tài chính</h3>
+            <div class="request-meta">
+              <div class="meta-item">
+                <div class="meta-label">Giá thuê</div>
+                <div class="meta-value">8.5 triệu/tháng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Tiền cọc</div>
+                <div class="meta-value">17 triệu đồng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Phí quản lý</div>
+                <div class="meta-value">250,000 đồng/tháng</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">Phương thức thanh toán</div>
+                <div class="meta-value">3 tháng/lần</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem">
+            <h3 style="margin-bottom: 1rem">Thông tin người thuê</h3>
+            <div class="request-tenant">
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="Tenant"
+                class="tenant-avatar"
+              />
+              <div class="tenant-info" style="margin-bottom: 0">
+                <div class="tenant-name">Trần Quốc Bảo</div>
+                <div class="tenant-details">
+                  <div class="tenant-contact">
+                    <i class="fas fa-phone"></i> 0912 345 678
+                  </div>
+                  <div class="tenant-contact">
+                    <i class="fas fa-envelope"></i> baotq@gmail.com
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem">
+              <div class="request-meta">
+                <div class="meta-item">
+                  <div class="meta-label">CCCD/CMND</div>
+                  <div class="meta-value">079201012345</div>
+                </div>
+                <div class="meta-item">
+                  <div class="meta-label">Ngày cấp</div>
+                  <div class="meta-value">15/06/2021</div>
+                </div>
+                <div class="meta-item">
+                  <div class="meta-label">Nơi cấp</div>
+                  <div class="meta-value">Cục Cảnh sát</div>
+                </div>
+                <div class="meta-item">
+                  <div class="meta-label">Nghề nghiệp</div>
+                  <div class="meta-value">Kỹ sư phần mềm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem">
+            <h3 style="margin-bottom: 1rem">Tin nhắn</h3>
+            <div class="request-message">
+              <p>
+                Tôi rất thích căn hộ này và muốn thuê dài hạn. Tôi làm việc tại
+                khu vực Bình Thạnh nên vị trí này rất thuận tiện. Tôi có thể đến
+                xem nhà vào cuối tuần này không?
+              </p>
+            </div>
+          </div>
+
+          <div class="response-form">
+            <h3 style="margin-bottom: 1rem">Phản hồi yêu cầu</h3>
+            <div class="form-group">
+              <label class="form-label">Quyết định</label>
+              <select class="form-select">
+                <option value="">-- Chọn quyết định --</option>
+                <option value="approve">Chấp nhận yêu cầu</option>
+                <option value="schedule">Hẹn xem nhà</option>
+                <option value="reject">Từ chối yêu cầu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tin nhắn phản hồi</label>
+              <textarea
+                class="form-control form-textarea"
+                placeholder="Nhập nội dung phản hồi..."
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Đặt lịch (nếu cần)</label>
+              <div style="display: flex; gap: 1rem">
+                <input type="date" class="form-control" style="width: 50%" />
+                <input type="time" class="form-control" style="width: 50%" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="closeRequestDetail()">
+            <i class="fas fa-times"></i> Hủy bỏ
+          </button>
+          <button class="btn btn-outline-danger">
+            <i class="fas fa-times-circle"></i> Từ chối
+          </button>
+          <button class="btn btn-outline-primary">
+            <i class="fas fa-calendar-alt"></i> Hẹn xem nhà
+          </button>
+          <button class="btn btn-success">
+            <i class="fas fa-check-circle"></i> Chấp nhận
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <script>
+      // Sidebar Toggle
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const sidebar = document.getElementById("sidebar");
+      const mainContent = document.getElementById("mainContent");
+      const mobileOverlay = document.getElementById("mobileOverlay");
+
+      sidebarToggle.addEventListener("click", function () {
+        sidebar.classList.toggle("active");
+        mobileOverlay.classList.toggle("active");
+      });
+
+      mobileOverlay.addEventListener("click", function () {
+        sidebar.classList.remove("active");
+        mobileOverlay.classList.remove("active");
+      });
+
+      // Tabs
+      const tabs = document.querySelectorAll(".content-tab");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", function () {
+          tabs.forEach((t) => t.classList.remove("active"));
+          this.classList.add("active");
+        });
+      });
+
+      // Open/Close Request Detail Modal
+      function openRequestDetail(id) {
+        document.getElementById("requestDetailModal").style.display = "flex";
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeRequestDetail() {
+        document.getElementById("requestDetailModal").style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+
+      // Close modal if clicking outside
+      document
+        .getElementById("requestDetailModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeRequestDetail();
+          }
+        });
+    </script>
+  </body>
+</html>

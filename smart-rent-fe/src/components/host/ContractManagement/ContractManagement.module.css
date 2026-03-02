@@ -1,0 +1,809 @@
+.contractManagement {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  color: var(--text-dark);
+  line-height: 1.6;
+  background-color: var(--bg-light);
+  min-height: 100vh;
+  margin-left: 280px;
+}
+
+.navbar {
+  background: var(--white);
+  padding: 0.875rem 2rem;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.navActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navAction {
+  color: var(--gray-600);
+  font-size: 1.25rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navAction:hover {
+  color: var(--primary-color);
+}
+
+.navBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--danger-color);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboardContainer {
+  padding: 2rem;
+}
+
+.pageHeader {
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.pageSubtitle {
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  border: 1px solid var(--gray-100);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
+}
+
+.statHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.statTitle {
+  color: var(--text-light);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--white);
+}
+
+.statIcon.primary {
+  background: var(--primary-color);
+}
+
+.statIcon.success {
+  background: var(--success-color);
+}
+
+.statIcon.warning {
+  background: var(--warning-color);
+}
+
+.statIcon.danger {
+  background: var(--danger-color);
+}
+
+.statIcon.info {
+  background: var(--info-color);
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.statDescription {
+  font-size: 0.875rem;
+  color: var(--text-light);
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statChange {
+  font-weight: 600;
+}
+
+.statChange.positive {
+  color: var(--success-color);
+}
+
+.statChange.negative {
+  color: var(--danger-color);
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filterSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filterSearch {
+  position: relative;
+  width: 300px;
+}
+
+.filterSearch input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+.filterSearch i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.filterDropdown select {
+  padding: 0.75rem 2.75rem 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px 12px;
+  min-width: 150px;
+}
+
+.filterDate input {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  width: 150px;
+}
+
+.contentTabs {
+  display: flex;
+  border-bottom: 1px solid var(--gray-200);
+  margin-bottom: 2rem;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.contentTab {
+  padding: 0.75rem 1.5rem;
+  color: var(--text-light);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0.5rem 0.5rem 0 0;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.contentTab:hover {
+  color: var(--primary-color);
+}
+
+.contentTab.active {
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+}
+
+.contractCard {
+  background: var(--white);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.contractCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--gray-300);
+}
+
+.contractHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.contractTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.contractStatus {
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.statusActive {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.statusExpiring {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+.statusExpired {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.statusPending {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--info-color);
+}
+
+.contractProperty {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.contractImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.contractImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contractInfo {
+  flex: 1;
+}
+
+.contractPropertyTitle {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.contractAddress {
+  color: var(--text-light);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.contractPrice {
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.contractMeta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.metaLabel {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+}
+
+.metaValue {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.contractTenant {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.tenantAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.tenantInfo {
+  flex: 1;
+}
+
+.tenantName {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.tenantDetails {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--text-light);
+}
+
+.tenantContact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contractProgress {
+  margin-bottom: 1.5rem;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.progressLabel {
+  font-size: 0.875rem;
+  color: var(--text-light);
+}
+
+.progressValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.progressBar {
+  height: 8px;
+  background: var(--gray-200);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--primary-color);
+  border-radius: 1rem;
+  transition: width 0.3s ease;
+}
+
+.progressFill.progressWarning {
+  background: var(--warning-color);
+}
+
+.progressFill.progressDanger {
+  background: var(--danger-color);
+}
+
+.contractActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnSm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
+.btnLg {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+.btnPrimary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btnPrimary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.btnSuccess {
+  background: var(--success-color);
+  color: white;
+}
+
+.btnSuccess:hover {
+  background: var(--success-color);
+  filter: brightness(90%);
+  transform: translateY(-2px);
+}
+
+.btnWarning {
+  background: var(--warning-color);
+  color: white;
+}
+
+.btnWarning:hover {
+  background: var(--warning-color);
+  filter: brightness(90%);
+  transform: translateY(-2px);
+}
+
+.btnDanger {
+  background: var(--danger-color);
+  color: white;
+}
+
+.btnDanger:hover {
+  background: var(--danger-color);
+  filter: brightness(90%);
+  transform: translateY(-2px);
+}
+
+.btnOutline {
+  background: transparent;
+  color: var(--text-dark);
+  border: 1px solid var(--gray-300);
+}
+
+.btnOutline:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.btnOutlinePrimary {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btnOutlinePrimary:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btnOutlineSuccess {
+  background: transparent;
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.btnOutlineSuccess:hover {
+  background: var(--success-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btnOutlineDanger {
+  background: transparent;
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+}
+
+.btnOutlineDanger:hover {
+  background: var(--danger-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.badgeSuccess {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.badgeWarning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+.badgeDanger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
+.badgeInfo {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--info-color);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.pageItem {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pageItem:hover {
+  background: var(--gray-100);
+}
+
+.pageItem.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.pageItem.disabled {
+  color: var(--gray-300);
+  cursor: not-allowed;
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-xl);
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.modalClose {
+  font-size: 1.5rem;
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modalClose:hover {
+  color: var(--danger-color);
+}
+
+.modalBody {
+  padding: 1.5rem;
+}
+
+.modalInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modalFooter {
+  padding: 1.5rem;
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1200px) {
+  .contractMeta {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .filterBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filterSection {
+    width: 100%;
+  }
+
+  .filterSearch {
+    width: 100%;
+  }
+
+  .contractProperty {
+    flex-direction: column;
+  }
+
+  .contractImage {
+    width: 100%;
+    height: 160px;
+  }
+
+  .contractMeta {
+    grid-template-columns: 1fr;
+  }
+
+  .contractTenant {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: center;
+  }
+
+  .tenantAvatar {
+    margin: 0 auto 1rem;
+  }
+
+  .tenantDetails {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .contractActions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

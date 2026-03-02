@@ -73,10 +73,6 @@ export default function Sidebar() {
             <span className={styles.menuText}>Bất động sản</span>
           </NavLink>
           <a href="#" className={styles.menuItem}>
-            <i className="fas fa-plus-circle"></i>
-            <span className={styles.menuText}>Thêm BĐS mới</span>
-          </a>
-          <a href="#" className={styles.menuItem}>
             <i className="fas fa-tools"></i>
             <span className={styles.menuText}>Bảo trì</span>
           </a>
@@ -86,10 +82,15 @@ export default function Sidebar() {
             <i className="fas fa-user-check"></i>
             <span className={styles.menuText}>Yêu cầu thuê</span>
           </a>
-          <a href="#" className={styles.menuItem}>
+          <NavLink
+            to="/owner/contract"
+            className={({ isActive }) =>
+              `${styles.menuItem} ${isActive ? styles.active : ""}`
+            }
+          >
             <i className="fas fa-file-contract"></i>
             <span className={styles.menuText}>Hợp đồng</span>
-          </a>
+          </NavLink>
           <a href="#" className={styles.menuItem}>
             <i className="fas fa-users"></i>
             <span className={styles.menuText}>Người thuê</span>
