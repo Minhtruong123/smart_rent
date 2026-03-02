@@ -19,6 +19,9 @@ import DashboardTenantPage from "./components/tenant/DashboardTenantPage/Dashboa
 import ScrollToTop from "./components/ScrollToTop";
 import Sidebar from "./components/host/Sidebar/Sidebar";
 import OwnerDashboard from "./components/host/OwnerDashboard/OwnerDashboard";
+import RealEstateManagement from "./components/host/RealEstateManagement/RealEstateManagement";
+import OwnerStatistical from "./components/host/OwnerStatistical/OwnerStatistical";
+import OwnerCalendar from "./components/host/OwnerCalendar/OwnerCalendar";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useAuthStore } from "./stores/useAuthStore";
@@ -62,7 +65,7 @@ function App() {
             <Route path="/" element={<TenantIndex />} />
             <Route path="/real-estate-page" element={<RealEstatePage />} />
             <Route
-              path="/detail-real-estate-page"
+              path="/detail-real-estate-page/:id"
               element={<DetailRealEstatePage />}
             />
             <Route path="/about-us-page" element={<AboutUsPage />} />
@@ -81,6 +84,12 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["OWNER"]} />}>
             <Route element={<OwnerLayout />}>
               <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+              <Route
+                path="/owner/real-estate"
+                element={<RealEstateManagement />}
+              />
+              <Route path="/owner/statistical" element={<OwnerStatistical />} />
+              <Route path="/owner/calendar" element={<OwnerCalendar />} />
             </Route>
           </Route>
 

@@ -17,4 +17,5 @@ public class Amenity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
+    String icon;
 }
