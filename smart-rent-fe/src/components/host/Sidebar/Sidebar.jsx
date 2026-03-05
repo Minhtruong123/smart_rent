@@ -102,10 +102,15 @@ export default function Sidebar() {
           </a>
 
           <div className={styles.menuLabel}>Tài chính</div>
-          <a href="#" className={styles.menuItem}>
+          <NavLink
+            to="/owner/invoice"
+            className={({ isActive }) =>
+              `${styles.menuItem} ${isActive ? styles.active : ""}`
+            }
+          >
             <i className="fas fa-file-invoice-dollar"></i>
             <span className={styles.menuText}>Hóa đơn</span>
-          </a>
+          </NavLink>
           <a href="#" className={styles.menuItem}>
             <i className="fas fa-money-bill-wave"></i>
             <span className={styles.menuText}>Giao dịch</span>
@@ -132,9 +137,13 @@ export default function Sidebar() {
 
         <div className={styles.sidebarFooter}>
           <div className={styles.userInfo}>
-            <div className={styles.userAvatar}>NT</div>
+            <div className={styles.userAvatar}>
+              {user?.fullName?.charAt(0).toUpperCase() || "U"}
+            </div>
             <div>
-              <div className={styles.userName}>Nguyễn Thành</div>
+              <div className={styles.userName}>
+                {user?.fullName || "Người dùng"}
+              </div>
               <div className={styles.userRole}>Chủ nhà</div>
             </div>
           </div>

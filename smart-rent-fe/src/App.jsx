@@ -24,6 +24,7 @@ import OwnerStatistical from "./components/host/OwnerStatistical/OwnerStatistica
 import OwnerCalendar from "./components/host/OwnerCalendar/OwnerCalendar";
 import ContractManagement from "./components/host/ContractManagement/ContractManagement";
 import RentRequestManagement from "./components/host/RentRequestManagement/RentRequestManagement";
+import InvoiceManagement from "./components/host/InvoiceManagement/InvoiceManagement";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useAuthStore } from "./stores/useAuthStore";
@@ -97,6 +98,7 @@ function App() {
                 path="/owner/rent-request"
                 element={<RentRequestManagement />}
               />
+              <Route path="/owner/invoice" element={<InvoiceManagement />} />
             </Route>
           </Route>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   X,
   Search,
@@ -28,10 +28,17 @@ import {
   Building,
 } from "lucide-react";
 import styles from "./RealEstateManagement.module.css";
+import usePropertyStore from "../../../stores/usePropertyStore";
 
 export default function RealEstateManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
+
+  const { properties, loading, fetchOwnerProperties } = usePropertyStore();
+
+  useEffect(() => {
+    fetchOwnerProperties(0, 10);
+  }, [fetchOwnerProperties]);
 
   const handleImageUpload = (e) => {
     const files = e.target.files;
@@ -87,21 +94,21 @@ export default function RealEstateManagement() {
       <div className={styles.mainContent}>
         {/* Navbar */}
         <nav className={styles.navbar}>
-          <div className={styles.navTitle}>Quản lý Bất động sản</div>
+          <div className={styles.navTitle}>Bất động sản</div>
           <div className={styles.navActions}>
             <div className={styles.navAction}>
-              <Search size={20} />
+              <i className="fas fa-search"></i>
             </div>
             <div className={styles.navAction}>
-              <Bell size={20} />
+              <i className="fas fa-bell"></i>
               <span className={styles.navBadge}>3</span>
             </div>
             <div className={styles.navAction}>
-              <Mail size={20} />
+              <i className="fas fa-envelope"></i>
               <span className={styles.navBadge}>5</span>
             </div>
             <div className={styles.navAction}>
-              <Grid size={20} />
+              <i className="fas fa-th-large"></i>
             </div>
           </div>
         </nav>
@@ -214,329 +221,85 @@ export default function RealEstateManagement() {
 
           {/* Properties Grid */}
           <div className={styles.propertiesGrid}>
-            {/* Property Card 1 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
-                  alt="Property"
-                />
-                <div className={styles.propertyBadge}>
-                  <Star size={14} /> Nổi bật
-                </div>
-                <div
-                  className={`${styles.propertyStatus} ${styles.statusAvailable}`}
-                >
-                  Còn trống
-                </div>
+            {loading ? (
+              <div
+                style={{ padding: "20px", width: "100%", textAlign: "center" }}
+              >
+                Đang tải dữ liệu bất động sản...
               </div>
-              <div className={styles.propertyContent}>
-                <div className={styles.propertyMeta}>
-                  <div className={styles.propertyPrice}>8.5 triệu/tháng</div>
-                  <div className={styles.propertyId}>BĐS-001</div>
-                </div>
-                <h3 className={styles.propertyTitle}>
-                  Căn hộ cao cấp Vinhomes Central Park
-                </h3>
-                <div className={styles.propertyAddress}>
-                  <MapPin size={16} className={styles.addressIcon} />
-                  <span>
-                    Tòa Park 5, 720A Điện Biên Phủ, Quận Bình Thạnh, TP.HCM
-                  </span>
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <Bed size={16} /> 2 PN
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Bath size={16} /> 2 WC
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Square size={16} /> 75m²
-                  </div>
-                </div>
-                <div className={styles.propertyActions}>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlinePrimary}`}
-                  >
-                    <Edit size={14} /> Sửa
-                  </button>
-                  <button className={`${styles.btnSm} ${styles.btnOutline}`}>
-                    <Eye size={14} /> Xem
-                  </button>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlineDanger}`}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
+            ) : properties.length === 0 ? (
+              <div
+                style={{ padding: "20px", width: "100%", textAlign: "center" }}
+              >
+                Bạn chưa có bất động sản nào.
               </div>
-            </div>
+            ) : (
+              properties.map((property) => (
+                <div className={styles.propertyCard} key={property.id}>
+                  <div className={styles.propertyImage}>
+                    <img src={property.image} alt={property.title} />
 
-            {/* Property Card 2 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80"
-                  alt="Property"
-                />
-                <div
-                  className={`${styles.propertyStatus} ${styles.statusRented}`}
-                >
-                  Đã thuê
-                </div>
-              </div>
-              <div className={styles.propertyContent}>
-                <div className={styles.propertyMeta}>
-                  <div className={styles.propertyPrice}>5.5 triệu/tháng</div>
-                  <div className={styles.propertyId}>BĐS-002</div>
-                </div>
-                <h3 className={styles.propertyTitle}>Căn hộ Sunrise City</h3>
-                <div className={styles.propertyAddress}>
-                  <MapPin size={16} className={styles.addressIcon} />
-                  <span>Tòa W3, 23 Nguyễn Hữu Thọ, Quận 7, TP.HCM</span>
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <Bed size={16} /> 1 PN
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Bath size={16} /> 1 WC
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Square size={16} /> 55m²
-                  </div>
-                </div>
-                <div className={styles.propertyActions}>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlinePrimary}`}
-                  >
-                    <Edit size={14} /> Sửa
-                  </button>
-                  <button className={`${styles.btnSm} ${styles.btnOutline}`}>
-                    <Eye size={14} /> Xem
-                  </button>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlineDanger}`}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            </div>
+                    {property.badge && (
+                      <div className={styles.propertyBadge}>
+                        <Star size={14} /> {property.badge}
+                      </div>
+                    )}
 
-            {/* Property Card 3 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=80"
-                  alt="Property"
-                />
-                <div
-                  className={`${styles.propertyStatus} ${styles.statusMaintenance}`}
-                >
-                  Bảo trì
-                </div>
-              </div>
-              <div className={styles.propertyContent}>
-                <div className={styles.propertyMeta}>
-                  <div className={styles.propertyPrice}>15 triệu/tháng</div>
-                  <div className={styles.propertyId}>BĐS-003</div>
-                </div>
-                <h3 className={styles.propertyTitle}>Biệt thự The Palm</h3>
-                <div className={styles.propertyAddress}>
-                  <MapPin size={16} className={styles.addressIcon} />
-                  <span>Khu biệt thự Palm Residence, Quận 9, TP.HCM</span>
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <Bed size={16} /> 4 PN
+                    <div
+                      className={`${styles.propertyStatus} ${styles.statusAvailable}`}
+                    >
+                      Còn trống
+                    </div>
                   </div>
-                  <div className={styles.propertyFeature}>
-                    <Bath size={16} /> 3 WC
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Square size={16} /> 200m²
-                  </div>
-                </div>
-                <div className={styles.propertyActions}>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlinePrimary}`}
-                  >
-                    <Edit size={14} /> Sửa
-                  </button>
-                  <button className={`${styles.btnSm} ${styles.btnOutline}`}>
-                    <Eye size={14} /> Xem
-                  </button>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlineDanger}`}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            </div>
 
-            {/* Property Card 4 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&q=80"
-                  alt="Property"
-                />
-                <div
-                  className={`${styles.propertyStatus} ${styles.statusAvailable}`}
-                >
-                  Còn trống
-                </div>
-              </div>
-              <div className={styles.propertyContent}>
-                <div className={styles.propertyMeta}>
-                  <div className={styles.propertyPrice}>3.5 triệu/tháng</div>
-                  <div className={styles.propertyId}>BĐS-004</div>
-                </div>
-                <h3 className={styles.propertyTitle}>Studio Lexington</h3>
-                <div className={styles.propertyAddress}>
-                  <MapPin size={16} className={styles.addressIcon} />
-                  <span>67 Mai Chí Thọ, An Phú, Quận 2, TP.HCM</span>
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <Bed size={16} /> Studio
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Bath size={16} /> 1 WC
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Square size={16} /> 35m²
-                  </div>
-                </div>
-                <div className={styles.propertyActions}>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlinePrimary}`}
-                  >
-                    <Edit size={14} /> Sửa
-                  </button>
-                  <button className={`${styles.btnSm} ${styles.btnOutline}`}>
-                    <Eye size={14} /> Xem
-                  </button>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlineDanger}`}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            </div>
+                  <div className={styles.propertyContent}>
+                    <div className={styles.propertyMeta}>
+                      <div className={styles.propertyPrice}>
+                        {property.price}
+                      </div>
+                      <div className={styles.propertyId}>BĐS-{property.id}</div>
+                    </div>
 
-            {/* Property Card 5 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=800&q=80"
-                  alt="Property"
-                />
-                <div className={styles.propertyBadge}>
-                  <Star size={14} /> Hot
-                </div>
-                <div
-                  className={`${styles.propertyStatus} ${styles.statusRented}`}
-                >
-                  Đã thuê
-                </div>
-              </div>
-              <div className={styles.propertyContent}>
-                <div className={styles.propertyMeta}>
-                  <div className={styles.propertyPrice}>12 triệu/tháng</div>
-                  <div className={styles.propertyId}>BĐS-005</div>
-                </div>
-                <h3 className={styles.propertyTitle}>Nhà phố Thảo Điền</h3>
-                <div className={styles.propertyAddress}>
-                  <MapPin size={16} className={styles.addressIcon} />
-                  <span>Đường 64, Thảo Điền, Quận 2, TP.HCM</span>
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <Bed size={16} /> 3 PN
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Bath size={16} /> 3 WC
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Square size={16} /> 150m²
-                  </div>
-                </div>
-                <div className={styles.propertyActions}>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlinePrimary}`}
-                  >
-                    <Edit size={14} /> Sửa
-                  </button>
-                  <button className={`${styles.btnSm} ${styles.btnOutline}`}>
-                    <Eye size={14} /> Xem
-                  </button>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlineDanger}`}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            </div>
+                    <h3 className={styles.propertyTitle}>{property.title}</h3>
 
-            {/* Property Card 6 */}
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <img
-                  src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80"
-                  alt="Property"
-                />
-                <div
-                  className={`${styles.propertyStatus} ${styles.statusAvailable}`}
-                >
-                  Còn trống
-                </div>
-              </div>
-              <div className={styles.propertyContent}>
-                <div className={styles.propertyMeta}>
-                  <div className={styles.propertyPrice}>6.8 triệu/tháng</div>
-                  <div className={styles.propertyId}>BĐS-006</div>
-                </div>
-                <h3 className={styles.propertyTitle}>
-                  Căn hộ Masteri Thảo Điền
-                </h3>
-                <div className={styles.propertyAddress}>
-                  <MapPin size={16} className={styles.addressIcon} />
-                  <span>159 Xa Lộ Hà Nội, Thảo Điền, Quận 2, TP.HCM</span>
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.propertyFeature}>
-                    <Bed size={16} /> 2 PN
+                    <div className={styles.propertyAddress}>
+                      <MapPin size={16} className={styles.addressIcon} />
+                      <span>{property.location}</span>
+                    </div>
+
+                    <div className={styles.propertyFeatures}>
+                      <div className={styles.propertyFeature}>
+                        <Bed size={16} /> {property.bedrooms} PN
+                      </div>
+                      <div className={styles.propertyFeature}>
+                        <Bath size={16} /> {property.bathrooms} WC
+                      </div>
+                      <div className={styles.propertyFeature}>
+                        <Square size={16} /> {property.area}
+                      </div>
+                    </div>
+
+                    <div className={styles.propertyActions}>
+                      <button
+                        className={`${styles.btnSm} ${styles.btnOutlinePrimary}`}
+                      >
+                        <Edit size={14} /> Sửa
+                      </button>
+                      <button
+                        className={`${styles.btnSm} ${styles.btnOutline}`}
+                      >
+                        <Eye size={14} /> Xem
+                      </button>
+                      <button
+                        className={`${styles.btnSm} ${styles.btnOutlineDanger}`}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
-                  <div className={styles.propertyFeature}>
-                    <Bath size={16} /> 2 WC
-                  </div>
-                  <div className={styles.propertyFeature}>
-                    <Square size={16} /> 68m²
-                  </div>
                 </div>
-                <div className={styles.propertyActions}>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlinePrimary}`}
-                  >
-                    <Edit size={14} /> Sửa
-                  </button>
-                  <button className={`${styles.btnSm} ${styles.btnOutline}`}>
-                    <Eye size={14} /> Xem
-                  </button>
-                  <button
-                    className={`${styles.btnSm} ${styles.btnOutlineDanger}`}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </div>
 

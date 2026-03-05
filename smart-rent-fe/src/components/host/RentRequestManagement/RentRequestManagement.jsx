@@ -149,8 +149,9 @@ export default function RentRequestManagement() {
   return (
     <>
       <div className={styles.mainContent}>
+        {/* Navbar */}
         <nav className={styles.navbar}>
-          <div className={styles.navTitle}>Quản lý yêu cầu thuê</div>
+          <div className={styles.navTitle}>Yêu cầu thuê</div>
           <div className={styles.navActions}>
             <div className={styles.navAction}>
               <i className="fas fa-search"></i>

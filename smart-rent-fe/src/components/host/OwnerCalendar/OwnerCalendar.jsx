@@ -185,22 +185,23 @@ export default function OwnerCalendar() {
   return (
     <>
       <div className={styles.mainContent}>
+        {/* Navbar */}
         <nav className={styles.navbar}>
           <div className={styles.navTitle}>Lịch</div>
           <div className={styles.navActions}>
             <div className={styles.navAction}>
-              <Search size={20} />
+              <i className="fas fa-search"></i>
             </div>
             <div className={styles.navAction}>
-              <Bell size={20} />
+              <i className="fas fa-bell"></i>
               <span className={styles.navBadge}>3</span>
             </div>
             <div className={styles.navAction}>
-              <Mail size={20} />
+              <i className="fas fa-envelope"></i>
               <span className={styles.navBadge}>5</span>
             </div>
             <div className={styles.navAction}>
-              <LayoutGrid size={20} />
+              <i className="fas fa-th-large"></i>
             </div>
           </div>
         </nav>

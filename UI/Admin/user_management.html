@@ -1907,13 +1907,10 @@
             paginationNumbers.appendChild(pageButton);
           }
         }
-
-        // Get User Index in List
         function getUserIndexInList(userId) {
           return users.findIndex((user) => user.id === userId) + 1;
         }
 
-        // Initialize the page
         fetchUsers();
       });
     </script>

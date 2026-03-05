@@ -143,15 +143,15 @@ export default function OwnerStatistical() {
           <div className={styles.navTitle}>Thống kê</div>
           <div className={styles.navActions}>
             <div className={styles.navAction}>
-              <Search size={20} />
+              <i className="fas fa-search"></i>
             </div>
             <div className={styles.navAction}>
-              <div className={styles.navBadge}>3</div>
               <i className="fas fa-bell"></i>
+              <span className={styles.navBadge}>3</span>
             </div>
             <div className={styles.navAction}>
-              <div className={styles.navBadge}>5</div>
               <i className="fas fa-envelope"></i>
+              <span className={styles.navBadge}>5</span>
             </div>
             <div className={styles.navAction}>
               <i className="fas fa-th-large"></i>

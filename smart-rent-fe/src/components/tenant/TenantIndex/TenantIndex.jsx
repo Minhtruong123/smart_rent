@@ -8,9 +8,23 @@ export default function TenantIndex() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef(null);
-  const { properties, loading, error, fetchProperties } = usePropertyStore();
+  const { properties, loading, error, fetchProperties, searchProperties } =
+    usePropertyStore();
+  const [searchParams, setSearchParams] = useState({
+    location: "",
+    priceRange: "all",
+    bedrooms: "all",
+  });
 
   const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    searchProperties(searchParams);
+    document
+      .getElementById("properties")
+      .scrollIntoView({ behavior: "smooth" });
+  };
 
   const testimonials = [
     {
@@ -196,13 +210,7 @@ export default function TenantIndex() {
                 <i className="fas fa-home"></i> Căn hộ
               </button>
               <button className={styles.searchTab}>
-                <i className="fas fa-door-open"></i> Phòng trọ
-              </button>
-              <button className={styles.searchTab}>
-                <i className="fas fa-warehouse"></i> Văn phòng
-              </button>
-              <button className={styles.searchTab}>
-                <i className="fas fa-store"></i> Mặt bằng
+                <i className="fas fa-warehouse"></i> Phòng trọ
               </button>
             </div>
             <form className={styles.searchForm}>
@@ -212,6 +220,13 @@ export default function TenantIndex() {
                 </label>
                 <input
                   type="text"
+                  value={searchParams.location}
+                  onChange={(e) =>
+                    setSearchParams({
+                      ...searchParams,
+                      location: e.target.value,
+                    })
+                  }
                   placeholder="Nhập địa điểm bạn muốn tìm..."
                 />
               </div>
@@ -219,7 +234,15 @@ export default function TenantIndex() {
                 <label>
                   <i className="fas fa-dollar-sign"></i> Khoảng giá
                 </label>
-                <select>
+                <select
+                  value={searchParams.priceRange}
+                  onChange={(e) =>
+                    setSearchParams({
+                      ...searchParams,
+                      priceRange: e.target.value,
+                    })
+                  }
+                >
                   <option>Tất cả</option>
                   <option>Dưới 3 triệu</option>
                   <option>3 - 5 triệu</option>
@@ -355,7 +378,13 @@ export default function TenantIndex() {
           ) : (
             <div className={styles.propertiesGrid}>
               {properties.map((property) => (
-                <div key={property.id} className={styles.propertyCard}>
+                <div
+                  key={property.id}
+                  className={styles.propertyCard}
+                  onClick={() =>
+                    navigate(`/detail-real-estate-page/${property.id}`)
+                  }
+                >
                   <div className={styles.propertyImage}>
                     <img src={property.image} alt={property.title} />
                     <div
@@ -435,7 +464,7 @@ export default function TenantIndex() {
               </a>
             </div>
 
-            <div className={`${styles.chatbotDemo} ${styles.animateFloat}`}>
+            <div className={`${styles.chatbotDemo}`}>
               <div className={styles.chatHeader}>
                 <div className={styles.chatAvatar}>
                   <i className="fas fa-robot"></i>

@@ -8,6 +8,7 @@
   min-height: 100vh;
 }
 
+/* Navbar */
 .navbar {
   background: var(--white);
   padding: 0.875rem 2rem;
