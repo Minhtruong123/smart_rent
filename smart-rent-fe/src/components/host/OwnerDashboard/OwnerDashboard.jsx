@@ -1,10 +1,47 @@
 import React, { useState } from "react";
 import styles from "./OwnerDashboard.module.css";
+import { useAuthStore } from "../../../stores/useAuthStore";
+import {
+  FaDollarSign,
+  FaChartPie,
+  FaClock,
+  FaCalendarDay,
+} from "react-icons/fa";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 
 export default function OwnerDashboard() {
   const [activeTab, setActiveTab] = useState("Bất động sản của tôi");
   const [activeIncomeChart, setActiveIncomeChart] = useState("Tháng");
   const [activePropertyChart, setActivePropertyChart] = useState("Tổng quan");
+  const { user } = useAuthStore();
+
+  const incomeData = [
+    { name: "T8", value: 32 },
+    { name: "T9", value: 35 },
+    { name: "T10", value: 38 },
+    { name: "T11", value: 34 },
+    { name: "T12", value: 40 },
+    { name: "T1", value: 42 },
+    { name: "T2", value: 45.2 }, // Tháng hiện tại
+  ];
+
+  const propertyData = [
+    { name: "Đã thuê", value: 85, color: "#22c55e" }, // Màu xanh lá (success)
+    { name: "Còn trống", value: 10, color: "#3b82f6" }, // Màu xanh dương (primary)
+    { name: "Bảo trì", value: 5, color: "#f59e0b" }, // Màu cam (warning)
+  ];
 
   const tabs = [
     "Bất động sản của tôi",
@@ -40,7 +77,9 @@ export default function OwnerDashboard() {
         <div className={styles.dashboardContainer}>
           {/* Page Header */}
           <div className={styles.pageHeader}>
-            <h1 className={styles.pageTitle}>Xin chào, Nguyễn Thành!</h1>
+            <h1 className={styles.pageTitle}>
+              Xin chào, {user?.fullName || "Người dùng"}!
+            </h1>
             <p className={styles.pageSubtitle}>
               Đây là tổng quan hoạt động của bạn trong tháng 02/2026
             </p>
@@ -52,7 +91,7 @@ export default function OwnerDashboard() {
               <div className={styles.statHeader}>
                 <div className={styles.statTitle}>Tổng thu nhập</div>
                 <div className={`${styles.statIcon} ${styles.primary}`}>
-                  <i className="fas fa-dollar-sign"></i>
+                  <FaDollarSign />
                 </div>
               </div>
               <div className={styles.statValue}>45.2 triệu</div>
@@ -68,7 +107,7 @@ export default function OwnerDashboard() {
               <div className={styles.statHeader}>
                 <div className={styles.statTitle}>Tỷ lệ lấp đầy</div>
                 <div className={`${styles.statIcon} ${styles.success}`}>
-                  <i className="fas fa-chart-pie"></i>
+                  <FaChartPie />
                 </div>
               </div>
               <div className={styles.statValue}>85%</div>
@@ -84,7 +123,7 @@ export default function OwnerDashboard() {
               <div className={styles.statHeader}>
                 <div className={styles.statTitle}>Đang chờ duyệt</div>
                 <div className={`${styles.statIcon} ${styles.warning}`}>
-                  <i className="fas fa-clock"></i>
+                  <FaClock />
                 </div>
               </div>
               <div className={styles.statValue}>8</div>
@@ -97,7 +136,7 @@ export default function OwnerDashboard() {
               <div className={styles.statHeader}>
                 <div className={styles.statTitle}>Thanh toán đến hạn</div>
                 <div className={`${styles.statIcon} ${styles.danger}`}>
-                  <i className="fas fa-calendar-day"></i>
+                  <FaCalendarDay />
                 </div>
               </div>
               <div className={styles.statValue}>12</div>
@@ -125,15 +164,51 @@ export default function OwnerDashboard() {
                 </div>
               </div>
               <div className={styles.chartContainer}>
-                <div className={styles.chartPlaceholder}>
-                  <i
-                    className="fas fa-chart-line"
-                    style={{ fontSize: "3rem", color: "#818cf8" }}
-                  ></i>
-                  <p style={{ marginTop: "1rem", color: "#64748b" }}>
-                    Biểu đồ thu nhập theo tháng
-                  </p>
-                </div>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={incomeData}
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#e2e8f0"
+                    />
+                    <XAxis
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 12 }}
+                      dy={10}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 12 }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "8px",
+                        border: "none",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                      }}
+                      formatter={(value) => [`${value} triệu`, "Thu nhập"]}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#818cf8"
+                      strokeWidth={3}
+                      dot={{
+                        r: 4,
+                        fill: "#818cf8",
+                        strokeWidth: 2,
+                        stroke: "#fff",
+                      }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
@@ -153,15 +228,36 @@ export default function OwnerDashboard() {
                 </div>
               </div>
               <div className={styles.chartContainer}>
-                <div className={styles.chartPlaceholder}>
-                  <i
-                    className="fas fa-chart-pie"
-                    style={{ fontSize: "3rem", color: "#818cf8" }}
-                  ></i>
-                  <p style={{ marginTop: "1rem", color: "#64748b" }}>
-                    Biểu đồ phân bổ bất động sản
-                  </p>
-                </div>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={propertyData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={70}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {propertyData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "8px",
+                        border: "none",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                      }}
+                      formatter={(value) => [`${value}%`, "Tỷ lệ"]}
+                    />
+                    <Legend
+                      verticalAlign="bottom"
+                      height={36}
+                      iconType="circle"
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 package com.cots.service.implement;
 
+import com.cots.dto.request.ChangePasswordRequest;
 import com.cots.dto.request.RegisterRequest;
 import com.cots.dto.response.UserResponse;
 import com.cots.enums.Gender;
@@ -27,6 +28,7 @@ public class UserService implements IUserService {
                 .fullName(user.getFullName())
                 .phoneNumber(user.getPhone())
                 .role(user.getRole().name())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
     public User getByEmail(String email) {
@@ -57,6 +59,22 @@ public class UserService implements IUserService {
 
     public void updateLastLogin(User user) {
         user.setLastLoginAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(String email, ChangePasswordRequest request) {
+        User user = userRepository.findByEmailAndActiveTrue(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        if (!passwordEncoder.matches(request.oldPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("Mật khẩu hiện tại không chính xác");
+        }
+
+        if (passwordEncoder.matches(request.newPassword(), user.getPasswordHash())) {
+            throw new RuntimeException("Mật khẩu mới không được trùng với mật khẩu hiện tại");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
 }

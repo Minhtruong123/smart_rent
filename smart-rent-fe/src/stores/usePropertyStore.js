@@ -8,10 +8,10 @@ const usePropertyStore = create((set) => ({
   error: null,
   currentProperty: null,
 
-  fetchProperties: async (page, size) => {
+  fetchProperties: async (page, size, filters = {}) => {
     set({ loading: true, error: null });
     try {
-      const response = await propertyService.listProperty(page, size);
+      const response = await propertyService.listProperty(page, size, filters);
       const data = response.data.content || response.data;
       const total = response.data.totalPages || 0;
       set({ properties: data, totalPages: total, loading: false });
@@ -42,16 +42,6 @@ const usePropertyStore = create((set) => ({
       set({ currentProperty: response.data, loading: false });
     } catch (error) {
       set({ error: "Không thể tải chi tiết nhà", loading: false });
-    }
-  },
-
-  searchProperties: async (searchParams) => {
-    set({ loading: true, error: null });
-    try {
-      const response = await propertyService.searchProperties(searchParams);
-      set({ properties: response.data, loading: false });
-    } catch (error) {
-      set({ error: "Không tìm thấy kết quả phù hợp", loading: false });
     }
   },
 }));

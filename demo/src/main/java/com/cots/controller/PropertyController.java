@@ -16,8 +16,13 @@ public class PropertyController extends AbstractController{
     private final PropertyService propertyService;
     @GetMapping("/list")
     public ResponseEntity<?> getList(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "6") int size){
-        return ResponseEntity.ok(propertyService.getPropertiesForPage(page, size));
+                                     @RequestParam(defaultValue = "6") int size,
+                                     @RequestParam(required = false) String title,
+                                     @RequestParam(required = false) String type,
+                                     @RequestParam(required = false) Double minPrice,
+                                     @RequestParam(required = false) Double maxPrice,
+                                     @RequestParam(required = false) Integer bedrooms){
+        return ResponseEntity.ok(propertyService.getPropertiesForPage(page, size, title, type, minPrice, maxPrice, bedrooms));
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getDetail(@PathVariable Long id) {

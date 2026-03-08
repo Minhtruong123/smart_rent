@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useAuthStore } from "../../../stores/useAuthStore";
 import styles from "./DashboardTenantPage.module.css";
 
 export default function DashboardTenantPage() {
   const [activePage, setActivePage] = useState("dashboard");
+  const { user } = useAuthStore();
   const [chatbotVisible, setChatbotVisible] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     {
@@ -77,7 +79,6 @@ export default function DashboardTenantPage() {
 
   const menuItems = [
     { id: "dashboard", icon: "fas fa-tachometer-alt", label: "Dashboard" },
-    { id: "search", icon: "fas fa-search", label: "Tìm kiếm nhà" },
     { id: "requests", icon: "fas fa-clipboard-list", label: "Yêu cầu thuê" },
     { id: "contracts", icon: "fas fa-file-contract", label: "Hợp đồng thuê" },
     { id: "bills", icon: "fas fa-receipt", label: "Hóa đơn & Chi phí" },
@@ -90,6 +91,25 @@ export default function DashboardTenantPage() {
     { id: "profile", icon: "fas fa-user-edit", label: "Thông tin cá nhân" },
     { id: "notifications", icon: "fas fa-bell", label: "Thông báo" },
   ];
+
+  const getInitials = (name) => {
+    if (!name) return "U";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Chưa cập nhật";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
 
   return (
     <div className={styles.mainLayout}>
@@ -271,180 +291,6 @@ export default function DashboardTenantPage() {
           </div>
         </div>
 
-        {/* Search Page */}
-        <div
-          className={`${styles.page} ${activePage === "search" ? styles.active : ""}`}
-        >
-          <div className={styles.pageHeader}>
-            <div>
-              <h1 className={styles.pageTitle}>Tìm kiếm nhà</h1>
-              <p className={styles.breadcrumb}>
-                <i className="fas fa-home"></i> Trang chủ / Tìm kiếm
-              </p>
-            </div>
-          </div>
-
-          {/* Search Form */}
-          <div className={styles.searchCard}>
-            <div className={styles.searchHeader}>
-              <h3 className={styles.searchTitle}>
-                <i className="fas fa-search"></i> Tìm ngôi nhà mơ ước của bạn
-              </h3>
-              <p className={styles.searchSubtitle}>
-                Khám phá hàng ngàn căn hộ chất lượng cao
-              </p>
-            </div>
-            <form className={styles.searchForm}>
-              <div className={styles.formGroup}>
-                <label>
-                  <i className="fas fa-map-marker-alt"></i> Khu vực
-                </label>
-                <input type="text" placeholder="Nhập địa điểm..." />
-              </div>
-              <div className={styles.formGroup}>
-                <label>
-                  <i className="fas fa-dollar-sign"></i> Giá thuê
-                </label>
-                <select>
-                  <option>Tất cả</option>
-                  <option>Dưới 3 triệu</option>
-                  <option>3-5 triệu</option>
-                  <option>5-10 triệu</option>
-                  <option>Trên 10 triệu</option>
-                </select>
-              </div>
-              <div className={styles.formGroup}>
-                <label>
-                  <i className="fas fa-building"></i> Loại hình
-                </label>
-                <select>
-                  <option>Tất cả</option>
-                  <option>Căn hộ</option>
-                  <option>Nhà phố</option>
-                  <option>Studio</option>
-                </select>
-              </div>
-              <div className={styles.formGroup}>
-                <button type="submit" className={styles.btnPrimary}>
-                  <i className="fas fa-search"></i>
-                  Tìm kiếm
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Search Results */}
-          <div className={styles.resultsHeader}>
-            <h3>
-              <i className="fas fa-list"></i> Kết quả tìm kiếm (2)
-            </h3>
-            <div className={styles.viewToggle}>
-              <button className={styles.active}>
-                <i className="fas fa-th"></i>
-              </button>
-              <button>
-                <i className="fas fa-list"></i>
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.propertiesGrid}>
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <div className={styles.propertyBadge}>
-                  <i className="fas fa-star"></i> Mới
-                </div>
-                <button className={styles.favoriteBtn}>
-                  <i className="far fa-heart"></i>
-                </button>
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>
-                  <span className={styles.priceAmount}>8.5 triệu</span>
-                  <span className={styles.pricePeriod}>/tháng</span>
-                </div>
-                <h4 className={styles.propertyTitle}>
-                  Căn hộ cao cấp Vinhomes Central Park
-                </h4>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i>
-                  Quận Bình Thạnh, TP.HCM
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.feature}>
-                    <i className="fas fa-bed"></i>
-                    <span>2 phòng</span>
-                  </div>
-                  <div className={styles.feature}>
-                    <i className="fas fa-bath"></i>
-                    <span>2 WC</span>
-                  </div>
-                  <div className={styles.feature}>
-                    <i className="fas fa-expand"></i>
-                    <span>75m²</span>
-                  </div>
-                </div>
-                <div className={styles.propertyActions}>
-                  <button className={styles.btnPrimary}>
-                    <i className="fas fa-paper-plane"></i>
-                    Gửi yêu cầu
-                  </button>
-                  <button className={styles.btnOutline}>
-                    <i className="fas fa-eye"></i>
-                    Chi tiết
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.propertyCard}>
-              <div className={styles.propertyImage}>
-                <div className={`${styles.propertyBadge} ${styles.badgeHot}`}>
-                  <i className="fas fa-fire"></i> Hot
-                </div>
-                <button className={styles.favoriteBtn}>
-                  <i className="far fa-heart"></i>
-                </button>
-              </div>
-              <div className={styles.propertyInfo}>
-                <div className={styles.propertyPrice}>
-                  <span className={styles.priceAmount}>5.5 triệu</span>
-                  <span className={styles.pricePeriod}>/tháng</span>
-                </div>
-                <h4 className={styles.propertyTitle}>Căn hộ Sunrise City</h4>
-                <div className={styles.propertyLocation}>
-                  <i className="fas fa-map-marker-alt"></i>
-                  Quận 7, TP.HCM
-                </div>
-                <div className={styles.propertyFeatures}>
-                  <div className={styles.feature}>
-                    <i className="fas fa-bed"></i>
-                    <span>1 phòng</span>
-                  </div>
-                  <div className={styles.feature}>
-                    <i className="fas fa-bath"></i>
-                    <span>1 WC</span>
-                  </div>
-                  <div className={styles.feature}>
-                    <i className="fas fa-expand"></i>
-                    <span>55m²</span>
-                  </div>
-                </div>
-                <div className={styles.propertyActions}>
-                  <button className={styles.btnPrimary}>
-                    <i className="fas fa-paper-plane"></i>
-                    Gửi yêu cầu
-                  </button>
-                  <button className={styles.btnOutline}>
-                    <i className="fas fa-eye"></i>
-                    Chi tiết
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Requests Page */}
         <div
           className={`${styles.page} ${activePage === "requests" ? styles.active : ""}`}
@@ -456,10 +302,6 @@ export default function DashboardTenantPage() {
                 <i className="fas fa-home"></i> Trang chủ / Yêu cầu thuê
               </p>
             </div>
-            <button className={styles.btnPrimary}>
-              <i className="fas fa-plus"></i>
-              Tạo yêu cầu mới
-            </button>
           </div>
 
           <div className={styles.card}>
@@ -1178,17 +1020,19 @@ export default function DashboardTenantPage() {
             <div className={styles.profileSidebar}>
               <div className={styles.profileCard}>
                 <div className={styles.profileAvatarLarge}>
-                  <span>NV</span>
+                  <span>{getInitials(user?.fullName)}</span>
                   <button className={styles.avatarUpload}>
                     <i className="fas fa-camera"></i>
                   </button>
                 </div>
-                <h3>Nguyễn Văn Nam</h3>
-                <p className={styles.profileEmail}>nguyen.van.nam@email.com</p>
+                <h3>{user?.fullName || "Người dùng"}</h3>
+                <p className={styles.profileEmail}>
+                  {user?.email || "Chưa cập nhật email"}
+                </p>
                 <div className={styles.profileStats}>
                   <div className={styles.profileStatItem}>
                     <i className="fas fa-calendar-check"></i>
-                    <span>Tham gia từ 01/06/2025</span>
+                    <span>Tham gia từ {formatDate(user?.createdAt)}</span>
                   </div>
                   <div className={styles.profileStatItem}>
                     <i className="fas fa-file-contract"></i>
@@ -1211,7 +1055,7 @@ export default function DashboardTenantPage() {
                       <label>
                         <i className="fas fa-user"></i> Họ và tên
                       </label>
-                      <input type="text" defaultValue="Nguyễn Văn Nam" />
+                      <input type="text" defaultValue={user?.fullName || ""} />
                     </div>
                     <div className={styles.formGroup}>
                       <label>
@@ -1219,7 +1063,12 @@ export default function DashboardTenantPage() {
                       </label>
                       <input
                         type="email"
-                        defaultValue="nguyen.van.nam@email.com"
+                        defaultValue={user?.email || ""}
+                        readOnly
+                        style={{
+                          backgroundColor: "#f1f5f9",
+                          cursor: "not-allowed",
+                        }}
                       />
                     </div>
                   </div>
@@ -1228,7 +1077,10 @@ export default function DashboardTenantPage() {
                       <label>
                         <i className="fas fa-phone"></i> Số điện thoại
                       </label>
-                      <input type="tel" defaultValue="0901234567" />
+                      <input
+                        type="tel"
+                        defaultValue={user?.phoneNumber || ""}
+                      />
                     </div>
                     <div className={styles.formGroup}>
                       <label>

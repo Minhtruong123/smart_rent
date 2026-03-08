@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IPropertyService {
-    Page<PropertyDTO> getPropertiesForPage(int page, int size);
+    Page<PropertyDTO> getPropertiesForPage(int page, int size, String title, String type, Double minPrice, Double maxPrice, Integer bedrooms);
     PropertyDTO getPropertyDetail(Long id);
     List<AmenityDTO> mapAmenities(Property p);
     PropertyDTO convertToDTO(Property p);

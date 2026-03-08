@@ -38,10 +38,23 @@ public class PropertyService implements IPropertyService {
     }
 
     @Override
-    public Page<PropertyDTO> getPropertiesForPage(int page, int size) {
+    public Page<PropertyDTO> getPropertiesForPage(int page, int size, String title, String type, Double minPrice, Double maxPrice, Integer bedrooms) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return propertyRepository.findAll(pageable)
-                .map(this::convertToDTO);
+        PropertyType propertyType = null;
+        if (type != null && !type.trim().isEmpty() && !type.equalsIgnoreCase("all")) {
+            try {
+                propertyType = PropertyType.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                propertyType = null;
+            }
+        }
+        String searchTitle = (title != null && !title.trim().isEmpty()) ? title.trim() : null;
+
+        Page<Property> propertyPage = propertyRepository.searchProperties(
+                searchTitle, propertyType, minPrice, maxPrice, bedrooms, pageable
+        );
+
+        return propertyPage.map(this::convertToDTO);
     }
 
     @Override

@@ -1,13 +1,15 @@
 package com.cots.controller;
 
+import com.cots.dto.request.ChangePasswordRequest;
 import com.cots.service.implement.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/user")
@@ -21,5 +23,11 @@ public class UserController extends AbstractController{
         var userProfile = userService.getUserProfile(email);
 
         return ok(userProfile);
+    }
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request, Principal principal){
+        // principal.getName() sẽ trả về email của user lấy từ JWT token
+        userService.changePassword(principal.getName(), request);
+        return ok("Đổi mật khẩu thành công");
     }
 }

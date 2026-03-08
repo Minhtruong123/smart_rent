@@ -1,5 +1,6 @@
 package com.cots.controller;
 
+import com.cots.dto.request.ChangePasswordRequest;
 import com.cots.dto.request.LoginRequest;
 import com.cots.dto.request.LogoutRequest;
 import com.cots.dto.request.RegisterRequest;
@@ -11,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/auth")

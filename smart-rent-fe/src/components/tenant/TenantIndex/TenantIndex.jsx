@@ -8,10 +8,10 @@ export default function TenantIndex() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef(null);
-  const { properties, loading, error, fetchProperties, searchProperties } =
-    usePropertyStore();
+  const { properties, loading, error, fetchProperties } = usePropertyStore();
   const [searchParams, setSearchParams] = useState({
-    location: "",
+    title: "",
+    type: "all",
     priceRange: "all",
     bedrooms: "all",
   });
@@ -20,7 +20,43 @@ export default function TenantIndex() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    searchProperties(searchParams);
+    const query = new URLSearchParams();
+
+    if (searchParams.title) {
+      query.append("title", searchParams.title);
+    }
+
+    if (searchParams.type !== "all") {
+      query.append("type", searchParams.type);
+    }
+
+    switch (searchParams.priceRange) {
+      case "Dưới 3 triệu":
+        query.append("maxPrice", 3000000);
+        break;
+      case "3 - 5 triệu":
+        query.append("minPrice", 3000000);
+        query.append("maxPrice", 5000000);
+        break;
+      case "5 - 10 triệu":
+        query.append("minPrice", 5000000);
+        query.append("maxPrice", 10000000);
+        break;
+      case "Trên 10 triệu":
+        query.append("minPrice", 10000000);
+        break;
+      default:
+        break;
+    }
+
+    if (searchParams.bedrooms !== "all") {
+      const bedNum = searchParams.bedrooms.replace(/\D/g, "");
+      if (bedNum) {
+        query.append("bedrooms", bedNum);
+      }
+    }
+
+    navigate(`/real-estate-page?${query.toString()}`);
     document
       .getElementById("properties")
       .scrollIntoView({ behavior: "smooth" });
@@ -155,6 +191,13 @@ export default function TenantIndex() {
   };
 
   const currentTestimonial = testimonials[currentTestimonialIndex];
+
+  const handleTabClick = (type) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      type: prev.type === type ? "all" : type,
+    }));
+  };
   return (
     <>
       <main className={styles.main}>
@@ -203,28 +246,37 @@ export default function TenantIndex() {
         <section className={styles.searchSection} id="search">
           <div className={styles.searchContainer}>
             <div className={styles.searchTabs}>
-              <button className={`${styles.searchTab} ${styles.active}`}>
+              <button
+                className={`${styles.searchTab} ${styles.active} ${searchParams.type === "HOUSE" ? styles.active : ""}`}
+                onClick={() => handleTabClick("HOUSE")}
+              >
                 <i className="fas fa-building"></i> Thuê nhà
               </button>
-              <button className={styles.searchTab}>
+              <button
+                className={`${styles.searchTab} ${searchParams.type === "APARTMENT" ? styles.active : ""}`}
+                onClick={() => handleTabClick("APARTMENT")}
+              >
                 <i className="fas fa-home"></i> Căn hộ
               </button>
-              <button className={styles.searchTab}>
+              <button
+                className={`${styles.searchTab} ${searchParams.type === "ROOM" ? styles.active : ""}`}
+                onClick={() => handleTabClick("ROOM")}
+              >
                 <i className="fas fa-warehouse"></i> Phòng trọ
               </button>
             </div>
-            <form className={styles.searchForm}>
+            <form className={styles.searchForm} onSubmit={handleSearch}>
               <div className={styles.formGroup}>
                 <label>
-                  <i className="fas fa-map-marker-alt"></i> Khu vực
+                  <i className="fas fa-map-marker-alt"></i> Tìm kiếm
                 </label>
                 <input
                   type="text"
-                  value={searchParams.location}
+                  value={searchParams.title}
                   onChange={(e) =>
                     setSearchParams({
                       ...searchParams,
-                      location: e.target.value,
+                      title: e.target.value,
                     })
                   }
                   placeholder="Nhập địa điểm bạn muốn tìm..."
@@ -243,11 +295,11 @@ export default function TenantIndex() {
                     })
                   }
                 >
-                  <option>Tất cả</option>
-                  <option>Dưới 3 triệu</option>
-                  <option>3 - 5 triệu</option>
-                  <option>5 - 10 triệu</option>
-                  <option>Trên 10 triệu</option>
+                  <option value="all">Tất cả</option>
+                  <option value="Dưới 3 triệu">Dưới 3 triệu</option>
+                  <option value="3 - 5 triệu">3 - 5 triệu</option>
+                  <option value="5 - 10 triệu">5 - 10 triệu</option>
+                  <option value="Trên 10 triệu">Trên 10 triệu</option>
                 </select>
               </div>
               <div className={styles.formGroup}>
@@ -255,10 +307,10 @@ export default function TenantIndex() {
                   <i className="fas fa-bed"></i> Phòng ngủ
                 </label>
                 <select>
-                  <option>Tất cả</option>
-                  <option>1 phòng</option>
-                  <option>2 phòng</option>
-                  <option>3+ phòng</option>
+                  <option value="all">Tất cả</option>
+                  <option value="1 phòng">1 phòng</option>
+                  <option value="2 phòng">2 phòng</option>
+                  <option value="3+ phòng">3+ phòng</option>
                 </select>
               </div>
               <div className={styles.formGroup}>
