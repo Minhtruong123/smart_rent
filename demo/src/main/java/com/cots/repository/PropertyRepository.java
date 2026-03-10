@@ -2,6 +2,7 @@ package com.cots.repository;
 
 import com.cots.enums.PropertyType;
 import com.cots.model.Property;
+import com.cots.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

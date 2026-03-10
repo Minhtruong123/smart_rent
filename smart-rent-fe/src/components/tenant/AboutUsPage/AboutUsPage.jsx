@@ -37,28 +37,24 @@ export default function AboutUsPage() {
   };
 
   useEffect(() => {
-    const revealOnScroll = () => {
-      revealRefs.current.forEach((element) => {
-        const windowHeight = window.innerHeight;
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.active);
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
 
-        if (elementTop < windowHeight - elementVisible) {
-          element.classList.add(styles.active);
-        }
-      });
-    };
+    revealRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
 
-    window.addEventListener("scroll", revealOnScroll);
-    window.addEventListener("load", revealOnScroll);
-
-    revealOnScroll();
-
-    return () => {
-      window.removeEventListener("scroll", revealOnScroll);
-      window.removeEventListener("load", revealOnScroll);
-    };
+    return () => observer.disconnect();
   }, []);
+
   return (
     <>
       <main className={styles.aboutContent}>
@@ -639,64 +635,88 @@ export default function AboutUsPage() {
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaBuilding />
-                <span className={styles.partnerLogoName}>VinHomes</span>
+                <img
+                  src="https://iocrealty.com/wp-content/uploads/2025/05/Logo-Vinhomes.jpg"
+                  alt="VinHomes"
+                  className={styles.partnerImg}
+                />
               </div>
 
               <div
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaUniversity />
-                <span className={styles.partnerLogoName}>TPBank</span>
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Logo_TPBank.svg/960px-Logo_TPBank.svg.png"
+                  alt="TPBank"
+                  className={styles.partnerImg}
+                />
               </div>
 
               <div
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaLandmark />
-                <span className={styles.partnerLogoName}>Novaland</span>
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Novaland_Logo.svg/960px-Novaland_Logo.svg.png"
+                  alt="NovaLand"
+                  className={styles.partnerImg}
+                />
               </div>
 
               <div
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaCreditCard />
-                <span className={styles.partnerLogoName}>VNPay</span>
+                <img
+                  src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png"
+                  alt="VNPay"
+                  className={styles.partnerImg}
+                />
               </div>
 
               <div
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaShieldAlt />
-                <span className={styles.partnerLogoName}>Bảo Việt</span>
+                <img
+                  src="https://cdn.haitrieu.com/wp-content/uploads/2022/04/Logo-BaoViet-Life.png"
+                  alt="Bảo Việt"
+                  className={styles.partnerImg}
+                />
               </div>
 
               <div
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaCity />
-                <span className={styles.partnerLogoName}>Masteri</span>
+                <img
+                  src="https://smartland.vn/wp-content/uploads/2021/10/700x700.png"
+                  alt="Masteri"
+                  className={styles.partnerImg}
+                />
               </div>
 
               <div
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaHome />
-                <span className={styles.partnerLogoName}>CenLand</span>
+                <img
+                  src="https://img.cenland.vn/images/news/bigimage/cenland23.png"
+                  alt="CenLand"
+                  className={styles.partnerImg}
+                />
               </div>
 
               <div
                 className={`${styles.partnerLogo} ${styles.reveal}`}
                 ref={addToRefs}
               >
-                <FaLaptopCode />
-                <span className={styles.partnerLogoName}>FPT</span>
+                <img
+                  src="https://i.chungta.vn/2017/12/22/LogoFPT-2017-copy-3042-1513928399_1200x0.jpg"
+                  alt="FPT"
+                  className={styles.partnerImg}
+                />
               </div>
             </div>
           </div>

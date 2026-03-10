@@ -18,4 +18,13 @@ export const propertyService = {
     return api.get(`/property/owner-list?page=${page}&size=${size}`);
   },
   getPropertyDetail: (id) => api.get(`/property/${id}`),
+  getOwnerByPropertyId: (id) => {
+    return api.get(`/user/property/owner/${id}`);
+  },
+  sendRentalRequest: (data) => {
+    return api.post("/rental-requests", data);
+  },
+  checkRentalStatus: (id) => {
+    return api.get(`/rental-requests/check?propertyId=${id}`);
+  },
 };

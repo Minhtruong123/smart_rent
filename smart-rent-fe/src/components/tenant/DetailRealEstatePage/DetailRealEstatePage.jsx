@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import usePropertyStore from "../../../stores/usePropertyStore";
 import styles from "./DetailRealEstatePage.module.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DetailRealEstatePage() {
   const { id } = useParams();
@@ -17,13 +19,26 @@ export default function DetailRealEstatePage() {
     message: "",
   });
 
-  const { currentProperty, loading, error, fetchDetail } = usePropertyStore();
+  const {
+    currentProperty,
+    loading,
+    error,
+    fetchDetail,
+    ownerInfo,
+    fetchOwnerInfo,
+    clearOwnerInfo,
+    sendRentalRequest,
+    isSubmitting,
+    requestStatus,
+    checkRentalStatus,
+  } = usePropertyStore();
 
   useEffect(() => {
     fetchDetail(id);
-  }, [id, fetchDetail]);
+    fetchOwnerInfo(id);
+    checkRentalStatus(id);
+  }, [id, fetchDetail, fetchOwnerInfo, clearOwnerInfo, checkRentalStatus]);
 
-  // Fallback images nếu API không trả về đủ ảnh
   const defaultImages = [
     {
       url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
@@ -141,6 +156,18 @@ export default function DetailRealEstatePage() {
     { icon: "fas fa-tree", text: "Công viên", distance: "300m" },
   ];
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast.success("Đã sao chép số điện thoại: " + text);
+      })
+      .catch((err) => {
+        toast.error("Không thể sao chép số điện thoại!");
+        console.error("Không thể sao chép: ", err);
+      });
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -199,10 +226,22 @@ export default function DetailRealEstatePage() {
     setContactForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    console.log("Contact form submitted:", contactForm);
-    // Xử lý gửi form liên hệ
+
+    const payload = {
+      id: id,
+      message: contactForm.message,
+    };
+
+    const result = await sendRentalRequest(payload);
+
+    if (result.success) {
+      toast.success("Yêu cầu thuê nhà của bạn đã được gửi thành công!");
+      setContactForm({ name: "", email: "", phone: "", message: "" });
+    } else {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+    }
   };
 
   const formatPrice = (price) => {
@@ -348,7 +387,7 @@ export default function DetailRealEstatePage() {
 
                   <div className={styles.propertyFeature}>
                     <div className={styles.featureIcon}>
-                      <i className="fas fa-vector-square"></i>
+                      <i className="fas fa-expand-arrows-alt"></i>
                     </div>
                     <div className={styles.featureText}>Diện tích</div>
                     <div className={styles.featureValue}>
@@ -526,12 +565,17 @@ export default function DetailRealEstatePage() {
               <div className={styles.contactCard}>
                 <div className={styles.contactHeader}>
                   <img
-                    src="https://randomuser.me/api/portraits/men/32.jpg"
+                    src={
+                      ownerInfo?.avatar_url ||
+                      "https://randomuser.me/api/portraits/men/32.jpg"
+                    }
                     alt="Chủ nhà"
                     className={styles.contactAvatar}
                   />
                   <div>
-                    <div className={styles.contactName}>Nguyễn Văn An</div>
+                    <div className={styles.contactName}>
+                      {ownerInfo?.fullName || "Đang tải..."}
+                    </div>
                     <div className={styles.contactRole}>Chủ nhà</div>
                     <div className={styles.contactRating}>
                       {[...Array(4)].map((_, i) => (
@@ -549,71 +593,98 @@ export default function DetailRealEstatePage() {
                   className={styles.contactForm}
                   onSubmit={handleContactSubmit}
                 >
-                  <div className={styles.formGroup}>
-                    <label htmlFor="name">Họ tên *</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={contactForm.name}
-                      onChange={handleContactFormChange}
-                      placeholder="Nhập họ tên của bạn"
-                      required
-                    />
-                  </div>
+                  {requestStatus?.hasHistory &&
+                    requestStatus?.latestStatus === "REJECTED" && (
+                      <div
+                        style={{
+                          padding: "10px",
+                          backgroundColor: "#fee2e2",
+                          color: "#ef4444",
+                          borderRadius: "8px",
+                          marginBottom: "15px",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        <i className="fas fa-info-circle"></i> Yêu cầu trước đó
+                        bị từ chối. Bạn có thể gửi lại yêu cầu mới.
+                      </div>
+                    )}
 
-                  <div className={styles.formGroup}>
-                    <label htmlFor="email">Email *</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={contactForm.email}
-                      onChange={handleContactFormChange}
-                      placeholder="Nhập địa chỉ email"
-                      required
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="phone">Số điện thoại *</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={contactForm.phone}
-                      onChange={handleContactFormChange}
-                      placeholder="Nhập số điện thoại"
-                      required
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="message">Lời nhắn</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={contactForm.message}
-                      onChange={handleContactFormChange}
-                      placeholder={`Tôi quan tâm đến ${currentProperty.title}. Xin vui lòng liên hệ với tôi.`}
-                      rows="4"
-                    ></textarea>
-                  </div>
+                  {(requestStatus?.canRequest ?? true) && (
+                    <div className={styles.formGroup}>
+                      <label htmlFor="message">Lời nhắn</label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={contactForm.message}
+                        onChange={handleContactFormChange}
+                        placeholder={`Tôi quan tâm đến ${currentProperty.title}. Xin vui lòng liên hệ với tôi.`}
+                        rows="4"
+                        required
+                      ></textarea>
+                    </div>
+                  )}
 
                   <div className={styles.contactActions}>
-                    <button
-                      type="submit"
-                      className={`${styles.btn} ${styles.btnPrimary}`}
-                    >
-                      <i className="fas fa-paper-plane"></i>
-                      Gửi yêu cầu xem nhà
-                    </button>
+                    {requestStatus?.canRequest === false ? (
+                      <button
+                        type="button"
+                        disabled
+                        className={`${styles.btn} ${styles.btnSuccess}`}
+                        style={{
+                          width: "100%",
+                          cursor: "not-allowed",
+                          backgroundColor: "#10b981",
+                          color: "white",
+                          borderColor: "#10b981",
+                        }}
+                      >
+                        <i
+                          className={
+                            requestStatus?.latestStatus === "PENDING"
+                              ? "fas fa-clock"
+                              : "fas fa-check-circle"
+                          }
+                        ></i>
+                        {requestStatus?.latestStatus === "PENDING"
+                          ? " Đang chờ chủ nhà duyệt"
+                          : " Đã được phê duyệt"}
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        className={`${styles.btn} ${styles.btnPrimary}`}
+                        disabled={isSubmitting} 
+                        style={{ width: "100%" }}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <i className="fas fa-spinner fa-spin"></i> Đang
+                            gửi...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fas fa-paper-plane"></i> Gửi yêu cầu
+                            thuê nhà
+                          </>
+                        )}
+                      </button>
+                    )}
+
                     <button
                       type="button"
                       className={`${styles.btn} ${styles.btnOutline}`}
+                      onClick={() => {
+                        if (ownerInfo?.phone) {
+                          copyToClipboard(ownerInfo.phone);
+                          window.location.href = `tel:${ownerInfo.phone}`;
+                        } else {
+                          toast.warning("Chưa có số điện thoại của chủ nhà.");
+                        }
+                      }}
+                      style={{ width: "100%", marginTop: "10px" }}
                     >
-                      <i className="fas fa-phone-alt"></i>
-                      Gọi trực tiếp
+                      <i className="fas fa-phone-alt"></i> Gọi trực tiếp
                     </button>
                   </div>
                 </form>
@@ -621,11 +692,15 @@ export default function DetailRealEstatePage() {
                 <div className={styles.contactInfo}>
                   <div className={styles.contactInfoItem}>
                     <i className="fas fa-phone-alt"></i>
-                    <a href="tel:+84901234567">+84 901 234 567</a>
+                    <a href="tel:+84901234567">
+                      {ownerInfo?.phone || "Đang tải..."}
+                    </a>
                   </div>
                   <div className={styles.contactInfoItem}>
                     <i className="fas fa-envelope"></i>
-                    <a href="mailto:contact@example.com">contact@example.com</a>
+                    <a href="mailto:contact@example.com">
+                      {ownerInfo?.email || "Đang tải..."}
+                    </a>
                   </div>
                   <div className={styles.contactInfoItem}>
                     <i className="fas fa-clock"></i>
@@ -693,36 +768,6 @@ export default function DetailRealEstatePage() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Action Bar */}
-      <div
-        className={`${styles.propertyActionBar} ${
-          isActionBarVisible ? styles.visible : ""
-        }`}
-      >
-        <div className={styles.actionBarContent}>
-          <div className={styles.actionBarInfo}>
-            <div className={styles.actionBarPrice}>
-              {formatPrice(currentProperty.price)}
-            </div>
-            <div className={styles.actionBarTitle}>{currentProperty.title}</div>
-          </div>
-          <div className={styles.actionBarButtons}>
-            <button
-              className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`}
-            >
-              <i className="fas fa-phone-alt"></i>
-              <span className={styles.btnTextDesktop}>Gọi ngay</span>
-            </button>
-            <button
-              className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSm}`}
-            >
-              <i className="fas fa-paper-plane"></i>
-              <span className={styles.btnTextDesktop}>Liên hệ</span>
-            </button>
           </div>
         </div>
       </div>
@@ -795,6 +840,18 @@ export default function DetailRealEstatePage() {
           </div>
         </div>
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }

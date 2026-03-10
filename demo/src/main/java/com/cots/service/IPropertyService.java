@@ -2,6 +2,7 @@ package com.cots.service;
 
 import com.cots.dto.request.PropertyRequestDTO;
 import com.cots.dto.response.AmenityDTO;
+import com.cots.dto.response.OwnerDTO;
 import com.cots.dto.response.PropertyDTO;
 import com.cots.model.Property;
 import org.springframework.data.domain.Page;
@@ -17,4 +18,5 @@ public interface IPropertyService {
     PropertyDTO createProperty(String email, PropertyRequestDTO request);
     PropertyDTO updateProperty(Long id, String email, PropertyRequestDTO request);
     void deleteProperty(Long id, String email);
+    OwnerDTO getOwnerByPropertyId(Long propertyId);
 }

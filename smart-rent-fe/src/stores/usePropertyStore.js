@@ -7,6 +7,9 @@ const usePropertyStore = create((set) => ({
   loading: false,
   error: null,
   currentProperty: null,
+  ownerInfo: null,
+  isSubmitting: false,
+  requestStatus: { hasHistory: false, latestStatus: null, canRequest: true },
 
   fetchProperties: async (page, size, filters = {}) => {
     set({ loading: true, error: null });
@@ -42,6 +45,52 @@ const usePropertyStore = create((set) => ({
       set({ currentProperty: response.data, loading: false });
     } catch (error) {
       set({ error: "Không thể tải chi tiết nhà", loading: false });
+    }
+  },
+
+  fetchOwnerInfo: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await propertyService.getOwnerByPropertyId(id);
+      set({ ownerInfo: response.data, loading: false });
+    } catch (error) {
+      set({ error: "Không thể tải thông tin chủ nhà", loading: false });
+    }
+  },
+
+  clearOwnerInfo: () => set({ ownerInfo: null }),
+
+  checkRentalStatus: async (id) => {
+    try {
+      const response = await propertyService.checkRentalStatus(id);
+      set({ requestStatus: response.data });
+    } catch (error) {
+      set({
+        requestStatus: {
+          hasHistory: false,
+          latestStatus: null,
+          canRequest: true,
+        },
+      });
+    }
+  },
+
+  sendRentalRequest: async (data) => {
+    set({ isSubmitting: true });
+    try {
+      await propertyService.sendRentalRequest(data);
+      set({
+        isSubmitting: false,
+        requestStatus: {
+          hasHistory: true,
+          latestStatus: "PENDING",
+          canRequest: false,
+        },
+      });
+      return { success: true };
+    } catch (error) {
+      set({ isSubmitting: false });
+      return { success: false };
     }
   },
 }));

@@ -3,9 +3,11 @@ package com.cots.service.implement;
 import com.cots.dto.request.PropertyRequestDTO;
 import com.cots.dto.response.AmenityDTO;
 import com.cots.dto.response.ImageDTO;
+import com.cots.dto.response.OwnerDTO;
 import com.cots.dto.response.PropertyDTO;
 import com.cots.enums.PropertyStatus;
 import com.cots.enums.PropertyType;
+import com.cots.exception.ResourceNotFoundException;
 import com.cots.model.*;
 import com.cots.repository.PropertyRepository;
 import com.cots.repository.UserRepository;
@@ -169,6 +171,14 @@ public class PropertyService implements IPropertyService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy BĐS hoặc bạn không có quyền xóa"));
 
         propertyRepository.delete(property);
+    }
+
+    @Override
+    public OwnerDTO getOwnerByPropertyId(Long propertyId) {
+        User owner = userRepository.findOwnerByPropertyId(propertyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chủ nhà"));
+
+        return new OwnerDTO(owner.getFullName(), owner.getEmail(), owner.getPhone(), owner.getAvatarUrl());
     }
 
     private void savePropertyDetails(Property property, PropertyRequestDTO request) {

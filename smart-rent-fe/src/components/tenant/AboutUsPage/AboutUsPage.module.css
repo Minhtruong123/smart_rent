@@ -31,7 +31,7 @@
   border-radius: 16px;
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
   bottom: -15%;
-  right: -15%;
+  right: -9%;
   z-index: 3;
   border: 4px solid #ffffff;
 }
@@ -681,10 +681,16 @@
   color: #0f172a;
 }
 
-.partnerLogo:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  border-color: #818cf8;
+.partnerImg {
+  max-height: 40px; /* Giới hạn chiều cao để logo không bị quá to */
+  width: auto; /* Tự động chỉnh chiều rộng theo tỉ lệ */
+  object-fit: contain; /* Đảm bảo logo không bị méo */
+  filter: grayscale(100%); /* Tạo hiệu ứng logo đen trắng nhìn sẽ sang hơn */
+  transition: var(--transition);
+}
+
+.partnerLogo:hover .partnerImg {
+  filter: grayscale(0%); /* Khi di chuột vào logo sẽ hiện màu gốc */
 }
 
 .partnerLogoName {
