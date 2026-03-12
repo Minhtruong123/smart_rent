@@ -47,7 +47,7 @@ public class AuthController extends AbstractController{
     }
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@Valid @RequestBody LogoutRequest request){
-        authService.logout(request.refreshToken());
+        authService.logout(request.accessToken(),request.refreshToken());
         return ok("Logout successful");
     }
 }

@@ -1,5 +1,6 @@
 package com.cots.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
     @Value("${jwt.secret}")
     private String jwtSecret;
+    @Autowired
+    private JwtBlacklistFilter jwtBlacklistFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -41,6 +44,7 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> jwt.decoder(jwtDecoder()))
                 )
+                .addFilterBefore(jwtBlacklistFilter, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter.class)
                 .build();
     }
     @Bean

@@ -1,0 +1,294 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+/* Desktop Sidebar */
+.desktopSidebar {
+  display: none;
+  flex-direction: column;
+  width: 16rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #1a1f36 0%, #0f1419 100%);
+  color: white;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5rem;
+  border-bottom: 1px solid #374151;
+}
+
+.logoIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(to bottom right, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.logoSvg {
+  color: white;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.logoText {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #a5b4fc, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.navContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 0.75rem;
+}
+
+.navLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.sidebarLink::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.sidebarLink:hover::before,
+.sidebarLink.active::before {
+  transform: scaleY(1);
+}
+
+.sidebarLink:hover {
+  background: rgba(102, 126, 234, 0.1);
+  transform: translateX(5px);
+}
+
+.sidebarLink.active {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.navIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+}
+
+.userProfileContainer {
+  padding: 1rem;
+  border-top: 1px solid #374151;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(31, 41, 55, 0.5);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+}
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+}
+
+.userInfo {
+  flex: 1;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.logoutButton {
+  color: #94a3b8;
+  transition: color 0.3s;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoutButton:hover {
+  color: white;
+}
+
+.logoutIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Mobile Header */
+.mobileHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: linear-gradient(180deg, #1a1f36 0%, #0f1419 100%);
+  color: white;
+}
+
+.mobileHeaderInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.mobileLogoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobileLogoIcon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(to bottom right, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileLogoSvg {
+  color: white;
+  width: 1rem;
+  height: 1rem;
+}
+
+.mobileLogoText {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.mobileMenuButton {
+  color: #d1d5db;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.mobileMenuButton:hover {
+  color: white;
+}
+
+.barsIcon,
+.closeIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Mobile Sidebar */
+.mobileSidebarWrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.mobileSidebarBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.mobileSidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  width: 16rem;
+  background: linear-gradient(180deg, #1a1f36 0%, #0f1419 100%);
+  color: white;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-out;
+}
+
+.mobileSidebar.show {
+  transform: translateX(0);
+}
+
+.mobileSidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  border-bottom: 1px solid #374151;
+  padding: 0 1rem;
+}
+
+.closeMobileButton {
+  color: #d1d5db;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.closeMobileButton:hover {
+  color: white;
+}
+
+.mobileNavLinks {
+  flex: 1;
+  padding: 1.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .desktopSidebar {
+    display: flex;
+  }
+
+  .mobileHeader {
+    display: none;
+  }
+}

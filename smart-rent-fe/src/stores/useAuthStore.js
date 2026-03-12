@@ -50,8 +50,9 @@ export const useAuthStore = create((set, get) => ({
 
   signOut: async () => {
     try {
+      const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-      await authService.signOut(refreshToken);
+      await authService.signOut(accessToken, refreshToken);
       toast.success("Đã đăng xuất");
     } catch {
       toast.error("Logout lỗi");

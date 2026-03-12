@@ -14,6 +14,11 @@ export default function DashboardTenantPage() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [requestToCancel, setRequestToCancel] = useState(null);
   const [chatbotVisible, setChatbotVisible] = useState(false);
+
+  const [isSignModalOpen, setIsSignModalOpen] = useState(false);
+  const [requestToSign, setRequestToSign] = useState(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
   const [chatMessages, setChatMessages] = useState([
     {
       sender: "bot",
@@ -28,6 +33,33 @@ export default function DashboardTenantPage() {
 
   const showPage = (pageId) => {
     setActivePage(pageId);
+  };
+
+  const openSignModal = (request) => {
+    setRequestToSign(request);
+    setIsSignModalOpen(true);
+    setAgreedToTerms(false);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeSignModal = () => {
+    setIsSignModalOpen(false);
+    setRequestToSign(null);
+    document.body.style.overflow = "auto";
+  };
+
+  const handleSignContract = async () => {
+    if (!agreedToTerms) {
+      toast.warning("Vui lòng đọc và đồng ý với các điều khoản trước khi ký!");
+      return;
+    }
+
+    toast.info("Đang xử lý chữ ký điện tử...");
+
+    setTimeout(() => {
+      toast.success("Ký hợp đồng thành công! Vui lòng thanh toán tiền cọc.");
+      closeSignModal();
+    }, 1500);
   };
 
   useEffect(() => {
@@ -469,6 +501,7 @@ export default function DashboardTenantPage() {
                               <button
                                 className={`${styles.btnSmall} ${styles.btnSuccess}`}
                                 title="Ký hợp đồng"
+                                onClick={() => openSignModal(request)}
                               >
                                 <i className="fas fa-file-signature"></i>
                               </button>
@@ -1340,7 +1373,6 @@ export default function DashboardTenantPage() {
         </div>
       </main>
 
-      {/* Chatbot */}
       <div className={styles.chatbotContainer}>
         <button className={styles.chatbotToggle} onClick={toggleChatbot}>
           <i className={chatbotVisible ? "fas fa-times" : "fas fa-robot"}></i>
@@ -1531,7 +1563,6 @@ export default function DashboardTenantPage() {
         </div>
       )}
 
-      {/* MODAL 2: XÁC NHẬN HỦY (CUSTOM ALERT) */}
       {requestToCancel && (
         <div
           style={{
@@ -1595,6 +1626,124 @@ export default function DashboardTenantPage() {
                 }}
               >
                 Có, hủy ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isSignModalOpen && requestToSign && (
+        <div className={styles.modalBackdrop}>
+          <div className={`${styles.modal} ${styles.signModal}`}>
+            <div className={styles.modalHeader}>
+              <div className={styles.signHeaderIcon}>
+                <i className="fas fa-file-signature"></i>
+              </div>
+              <div>
+                <h2 className={styles.modalTitle}>Ký Hợp Đồng Điện Tử</h2>
+                <p
+                  style={{
+                    color: "var(--gray-500)",
+                    margin: 0,
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Mã số: HD-{requestToSign.id}-2026
+                </p>
+              </div>
+              <div className={styles.modalClose} onClick={closeSignModal}>
+                <i className="fas fa-times"></i>
+              </div>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.contractSummary}>
+                <div className={styles.summaryGrid}>
+                  <div className={styles.summaryItem}>
+                    <span>Bên cho thuê (Bên A):</span>
+                    <strong>{requestToSign.ownerName}</strong>
+                  </div>
+                  <div className={styles.summaryItem}>
+                    <span>Bên thuê (Bên B):</span>
+                    <strong>{user?.fullName || "Người dùng"}</strong>
+                  </div>
+                  <div className={styles.summaryItem}>
+                    <span>Bất động sản:</span>
+                    <strong>{requestToSign.propertyName}</strong>
+                  </div>
+                  <div className={styles.summaryItem}>
+                    <span>Giá thuê:</span>
+                    <strong className={styles.textPrimary}>
+                      {formatCurrency(requestToSign.price)}/tháng
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.termsContainer}>
+                <h4>Điều khoản chính:</h4>
+                <ol className={styles.termsList}>
+                  <li>
+                    <strong>Mục đích sử dụng:</strong> Bên B thuê bất động sản
+                    nêu trên với mục đích để ở.
+                  </li>
+                  <li>
+                    <strong>Thời hạn thuê:</strong> 12 tháng kể từ ngày ký hợp
+                    đồng.
+                  </li>
+                  <li>
+                    <strong>Tiền cọc:</strong> Bên B đồng ý đặt cọc số tiền
+                    tương đương 2 tháng tiền thuê.
+                  </li>
+                  <li>
+                    <strong>Thanh toán:</strong> Tiền thuê nhà sẽ được thanh
+                    toán từ ngày 01 đến ngày 05 hàng tháng.
+                  </li>
+                  <li>
+                    <strong>Quyền và nghĩa vụ:</strong> Hai bên cam kết thực
+                    hiện đúng các điều khoản đã thỏa thuận trong hợp đồng đính
+                    kèm.
+                  </li>
+                </ol>
+                <div className={styles.viewFullContract}>
+                  <a href="#">
+                    <i className="fas fa-external-link-alt"></i> Xem toàn văn
+                    bản hợp đồng PDF
+                  </a>
+                </div>
+              </div>
+
+              <div className={styles.signatureSection}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  />
+                  <span className={styles.checkmark}></span>
+                  <div className={styles.checkboxText}>
+                    Tôi, <strong>{user?.fullName || "Người dùng"}</strong>, đã
+                    đọc, hiểu rõ và đồng ý với mọi điều khoản trong Hợp đồng
+                    này. Chữ ký điện tử của tôi có giá trị pháp lý tương đương
+                    chữ ký tay.
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                className={`${styles.btn} ${styles.btnOutline}`}
+                onClick={closeSignModal}
+              >
+                Để sau
+              </button>
+              <button
+                className={`${styles.btn} ${styles.btnSuccess} ${styles.signBtn} ${!agreedToTerms ? styles.disabled : ""}`}
+                onClick={handleSignContract}
+                disabled={!agreedToTerms}
+              >
+                <i className="fas fa-pen-nib"></i> Xác nhận & Ký điện tử
               </button>
             </div>
           </div>

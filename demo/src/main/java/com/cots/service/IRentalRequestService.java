@@ -3,7 +3,6 @@ package com.cots.service;
 import com.cots.dto.request.RentalRequestDTO;
 import com.cots.dto.request.RentalRequestStatusDTO;
 import com.cots.dto.response.OwnerRentalRequestDTO;
-import com.cots.dto.response.RentalRequestResponse;
 import com.cots.dto.response.myRentalRequestDTO;
 
 import java.util.List;

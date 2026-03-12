@@ -9,8 +9,8 @@ export const authService = {
     return api.post("/auth/login", { email, password });
   },
 
-  signOut(refreshToken) {
-    return api.post("/auth/logout", { refreshToken });
+  signOut(accessToken, refreshToken) {
+    return api.post("/auth/logout", { accessToken, refreshToken });
   },
 
   fetchMe() {

@@ -2048,3 +2048,311 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+/* =========================================
+   MODAL STYLES (Chung cho các modal)
+   ========================================= */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.7); /* Nền mờ tối màu dark/slate */
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+  background: white;
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: slideUpFade 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalHeader {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gray-50);
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin: 0;
+}
+
+.modalClose {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid var(--gray-200);
+}
+
+.modalClose:hover {
+  background: var(--danger);
+  color: white;
+  border-color: var(--danger);
+  transform: rotate(90deg);
+}
+
+.modalBody {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modalFooter {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--gray-100);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: var(--gray-50);
+}
+
+/* =========================================
+   SIGN CONTRACT MODAL STYLES
+   ========================================= */
+.signModal {
+  max-width: 700px;
+}
+
+.signModal .modalHeader {
+  justify-content: flex-start;
+  gap: 1.5rem;
+  background: linear-gradient(to right, var(--gray-50), white);
+}
+
+.signHeaderIcon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
+
+.signModal .modalClose {
+  margin-left: auto;
+}
+
+.contractSummary {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summaryItem span {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summaryItem strong {
+  font-size: 1.05rem;
+  color: var(--dark);
+}
+
+.termsContainer {
+  margin-bottom: 2rem;
+}
+
+.termsContainer h4 {
+  font-size: 1.1rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--gray-100);
+}
+
+.termsList {
+  padding-left: 1.5rem;
+  color: var(--gray-700);
+  line-height: 1.7;
+}
+
+.termsList li {
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.termsList li::marker {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.viewFullContract {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.viewFullContract a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.viewFullContract a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+.signatureSection {
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+/* Custom Checkbox */
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  gap: 1rem;
+}
+
+.checkboxLabel input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border: 2px solid var(--gray-300);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+  margin-top: 2px;
+}
+
+.checkboxLabel:hover input ~ .checkmark {
+  border-color: var(--primary);
+}
+
+.checkboxLabel input:checked ~ .checkmark {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkmark:after {
+  content: "";
+  display: none;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+.checkboxLabel input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkboxText {
+  color: var(--gray-700);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.checkboxText strong {
+  color: var(--primary);
+}
+
+.signBtn {
+  min-width: 200px;
+}
+
+.signBtn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(1);
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .signModal .modalHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  .signModal .modalClose {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+}

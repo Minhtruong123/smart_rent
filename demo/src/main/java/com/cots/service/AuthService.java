@@ -25,6 +25,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtDecoder jwtDecoder;
     private final RefreshTokenService refreshTokenService;
+    private final TokenBlacklistService tokenBlacklistService;
     public Map<String, String> login(LoginRequest request) {
         User user = userService.getByEmail(request.email());
 
@@ -81,8 +82,24 @@ public class AuthService {
 
         return newAccessToken;
     }
-    public void logout(String refreshToken) {
+    public void logout(String accessToken, String refreshToken) {
         RefreshToken token = refreshTokenService.validate(refreshToken);
         refreshTokenService.revoke(token);
+
+        try {
+            if (accessToken.startsWith("Bearer ")) {
+                accessToken = accessToken.substring(7);
+            }
+
+            Jwt jwt = jwtDecoder.decode(accessToken);
+
+            long expiresAt = jwt.getExpiresAt().toEpochMilli();
+            long timeToLive = expiresAt - System.currentTimeMillis();
+
+            if (timeToLive > 0) {
+                tokenBlacklistService.addToBlacklist(accessToken, timeToLive);
+            }
+        } catch (Exception e) {
+        }
     }
 }
