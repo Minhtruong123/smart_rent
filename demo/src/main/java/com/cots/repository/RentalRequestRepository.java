@@ -18,4 +18,6 @@ public interface RentalRequestRepository extends JpaRepository<RentalRequest, Lo
             @Param("propertyId") Long propertyId,
             @Param("email") String email
     );
+    List<RentalRequest> findByTenant_EmailOrderByCreatedAtDesc(String email);
+    List<RentalRequest> findByProperty_Owner_EmailOrderByCreatedAtDesc(String email);
 }

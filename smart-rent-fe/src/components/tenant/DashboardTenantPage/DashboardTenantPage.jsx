@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuthStore } from "../../../stores/useAuthStore";
+import { useRentalRequestStore } from "../../../stores/useRentalRequestStore";
 import styles from "./DashboardTenantPage.module.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DashboardTenantPage() {
   const [activePage, setActivePage] = useState("dashboard");
   const { user } = useAuthStore();
+  const { myRequests, loadingRequests, fetchMyRequests, cancelRequest } =
+    useRentalRequestStore();
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [requestToCancel, setRequestToCancel] = useState(null);
   const [chatbotVisible, setChatbotVisible] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     {
@@ -14,9 +22,71 @@ export default function DashboardTenantPage() {
   ]);
   const [chatInput, setChatInput] = useState("");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(0);
+  const triggerCancelConfirmation = (id) => {
+    setRequestToCancel(id);
+  };
 
   const showPage = (pageId) => {
     setActivePage(pageId);
+  };
+
+  useEffect(() => {
+    if (activePage === "requests") {
+      fetchMyRequests();
+    }
+  }, [activePage, fetchMyRequests]);
+
+  const handleViewDetail = (request) => {
+    setSelectedRequest(request);
+    setIsDetailModalOpen(true);
+  };
+
+  const executeCancelRequest = async () => {
+    if (!requestToCancel) return;
+
+    const result = await cancelRequest(requestToCancel);
+
+    setRequestToCancel(null);
+    setIsDetailModalOpen(false);
+
+    if (result.success) {
+      toast.success("Hủy yêu cầu thành công!");
+    } else {
+      toast.error(result.message || "Có lỗi xảy ra khi hủy yêu cầu.");
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    if (!amount) return "0 VNĐ";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
+  const renderStatusBadge = (status) => {
+    switch (status) {
+      case "PENDING":
+        return (
+          <span className={`${styles.badge} ${styles.badgeWarning}`}>
+            <i className="fas fa-clock"></i> Đang chờ
+          </span>
+        );
+      case "APPROVED":
+        return (
+          <span className={`${styles.badge} ${styles.badgeSuccess}`}>
+            <i className="fas fa-check"></i> Chấp nhận
+          </span>
+        );
+      case "REJECTED":
+        return (
+          <span className={`${styles.badge} ${styles.badgeDanger}`}>
+            <i className="fas fa-times"></i> Từ chối
+          </span>
+        );
+      default:
+        return <span className={styles.badge}>{status}</span>;
+    }
   };
 
   const toggleChatbot = () => {
@@ -331,92 +401,84 @@ export default function DashboardTenantPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>10/01/2026</td>
-                    <td>Căn hộ Vinhomes Central Park</td>
-                    <td>
-                      <div className={styles.userCell}>
-                        <div className={styles.userAvatar}>N</div>
-                        <span>Nguyễn Văn A</span>
-                      </div>
-                    </td>
-                    <td>
-                      <strong>8.5 triệu/tháng</strong>
-                    </td>
-                    <td>
-                      <span
-                        className={`${styles.badge} ${styles.badgeWarning}`}
+                  {loadingRequests ? (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        style={{ textAlign: "center", padding: "20px" }}
                       >
-                        <i className="fas fa-clock"></i> Đang chờ
-                      </span>
-                    </td>
-                    <td>
-                      <div className={styles.actionGroup}>
-                        <button className={styles.btnSmall}>
-                          <i className="fas fa-eye"></i>
-                        </button>
-                        <button
-                          className={`${styles.btnSmall} ${styles.btnDanger}`}
-                        >
-                          <i className="fas fa-times"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>08/01/2026</td>
-                    <td>Studio Lexington Residence</td>
-                    <td>
-                      <div className={styles.userCell}>
-                        <div className={styles.userAvatar}>T</div>
-                        <span>Trần Thị B</span>
-                      </div>
-                    </td>
-                    <td>
-                      <strong>3.5 triệu/tháng</strong>
-                    </td>
-                    <td>
-                      <span
-                        className={`${styles.badge} ${styles.badgeSuccess}`}
+                        <i className="fas fa-spinner fa-spin"></i> Đang tải dữ
+                        liệu...
+                      </td>
+                    </tr>
+                  ) : myRequests.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        style={{ textAlign: "center", padding: "20px" }}
                       >
-                        <i className="fas fa-check"></i> Chấp nhận
-                      </span>
-                    </td>
-                    <td>
-                      <div className={styles.actionGroup}>
-                        <button
-                          className={`${styles.btnSmall} ${styles.btnSuccess}`}
-                        >
-                          <i className="fas fa-file-signature"></i> Ký hợp đồng
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>05/01/2026</td>
-                    <td>Căn hộ Masteri Thảo Điền</td>
-                    <td>
-                      <div className={styles.userCell}>
-                        <div className={styles.userAvatar}>L</div>
-                        <span>Lê Văn C</span>
-                      </div>
-                    </td>
-                    <td>
-                      <strong>4.2 triệu/tháng</strong>
-                    </td>
-                    <td>
-                      <span className={`${styles.badge} ${styles.badgeDanger}`}>
-                        <i className="fas fa-times"></i> Từ chối
-                      </span>
-                    </td>
-                    <td>
-                      <div className={styles.actionGroup}>
-                        <button className={styles.btnSmall}>
-                          <i className="fas fa-info-circle"></i> Lý do
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                        Bạn chưa gửi yêu cầu thuê nào.
+                      </td>
+                    </tr>
+                  ) : (
+                    myRequests.map((request) => (
+                      <tr key={request.id}>
+                        <td>{formatDate(request.createdAt)}</td>
+                        <td>{request.propertyName}</td>
+                        <td>
+                          <div className={styles.userCell}>
+                            {request.ownerAvatar ? (
+                              <img
+                                src={request.ownerAvatar}
+                                alt="avatar"
+                                className={styles.userAvatar}
+                                style={{ borderRadius: "50%" }}
+                              />
+                            ) : (
+                              <div className={styles.userAvatar}>
+                                {getInitials(request.ownerName)}
+                              </div>
+                            )}
+                            <span>{request.ownerName}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <strong>{formatCurrency(request.price)}/tháng</strong>
+                        </td>
+                        <td>{renderStatusBadge(request.status)}</td>
+                        <td>
+                          <div className={styles.actionGroup}>
+                            <button
+                              className={styles.btnSmall}
+                              title="Xem chi tiết"
+                            >
+                              <i className="fas fa-eye"></i>
+                            </button>
+                            {request.status === "PENDING" && (
+                              <button
+                                className={`${styles.btnSmall} ${styles.btnDanger}`}
+                                title="Hủy yêu cầu"
+                                onClick={() =>
+                                  triggerCancelConfirmation(request.id)
+                                }
+                              >
+                                <i className="fas fa-times"></i>
+                              </button>
+                            )}
+                            {request.status === "APPROVED" && (
+                              <button
+                                className={`${styles.btnSmall} ${styles.btnSuccess}`}
+                                title="Ký hợp đồng"
+                              >
+                                <i className="fas fa-file-signature"></i>
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                  {/* KẾT THÚC ĐỔ DỮ LIỆU */}
                 </tbody>
               </table>
             </div>
@@ -1353,6 +1415,205 @@ export default function DashboardTenantPage() {
           </div>
         </div>
       </div>
+
+      {isDetailModalOpen && selectedRequest && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: 9998,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              width: "500px",
+              maxWidth: "90%",
+              padding: "24px",
+              boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderBottom: "1px solid #eee",
+                paddingBottom: "15px",
+                marginBottom: "15px",
+              }}
+            >
+              <h3 style={{ margin: 0, color: "#333" }}>
+                Chi tiết yêu cầu thuê
+              </h3>
+              <button
+                onClick={() => setIsDetailModalOpen(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "20px",
+                  cursor: "pointer",
+                  color: "#888",
+                }}
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div style={{ lineHeight: "1.8", color: "#555" }}>
+              <p>
+                <strong>
+                  <i className="fas fa-home"></i> Bất động sản:
+                </strong>{" "}
+                {selectedRequest.propertyTitle}
+              </p>
+              <p>
+                <strong>
+                  <i className="fas fa-user"></i> Chủ nhà:
+                </strong>{" "}
+                {selectedRequest.ownerName}
+              </p>
+              <p>
+                <strong>
+                  <i className="fas fa-money-bill-wave"></i> Giá thuê:
+                </strong>{" "}
+                <span style={{ color: "#2563eb", fontWeight: "bold" }}>
+                  {formatCurrency(selectedRequest.price)}/tháng
+                </span>
+              </p>
+              <p>
+                <strong>
+                  <i className="fas fa-calendar-alt"></i> Ngày gửi:
+                </strong>{" "}
+                {formatDate(selectedRequest.createdAt)}
+              </p>
+              <p>
+                <strong>
+                  <i className="fas fa-info-circle"></i> Trạng thái:
+                </strong>{" "}
+                {renderStatusBadge(selectedRequest.status)}
+              </p>
+            </div>
+
+            <div
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+              }}
+            >
+              <button
+                className={styles.btnOutline}
+                onClick={() => setIsDetailModalOpen(false)}
+              >
+                Đóng
+              </button>
+              {selectedRequest.status === "PENDING" && (
+                <button
+                  className={styles.btnPrimary}
+                  style={{ backgroundColor: "#ef4444", borderColor: "#ef4444" }}
+                  onClick={() => triggerCancelConfirmation(selectedRequest.id)} // THAY ĐỔI Ở ĐÂY
+                >
+                  <i className="fas fa-trash-alt"></i> Hủy yêu cầu này
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: XÁC NHẬN HỦY (CUSTOM ALERT) */}
+      {requestToCancel && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.6)",
+            zIndex: 9999, // Z-index cao hơn detail modal
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "12px",
+              width: "400px",
+              maxWidth: "90%",
+              padding: "30px 24px",
+              boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "40px",
+                color: "#ef4444",
+                marginBottom: "15px",
+              }}
+            >
+              <i className="fas fa-exclamation-circle"></i>
+            </div>
+            <h3 style={{ margin: "0 0 10px 0", color: "#333" }}>
+              Xác nhận hủy
+            </h3>
+            <p style={{ color: "#666", marginBottom: "25px" }}>
+              Bạn có chắc chắn muốn hủy yêu cầu thuê này không? Hành động này
+              không thể hoàn tác.
+            </p>
+
+            <div
+              style={{ display: "flex", justifyContent: "center", gap: "15px" }}
+            >
+              <button
+                className={styles.btnOutline}
+                onClick={() => setRequestToCancel(null)}
+                style={{ padding: "8px 20px" }}
+              >
+                Không, quay lại
+              </button>
+              <button
+                className={styles.btnPrimary}
+                onClick={executeCancelRequest}
+                style={{
+                  backgroundColor: "#ef4444",
+                  borderColor: "#ef4444",
+                  padding: "8px 20px",
+                }}
+              >
+                Có, hủy ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 999999 }}
+      />
     </div>
   );
 }

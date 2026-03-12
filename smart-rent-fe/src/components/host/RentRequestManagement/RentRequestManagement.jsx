@@ -1,113 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./RentRequestManagement.module.css";
+import { useRentalRequestStore } from "../../../stores/useRentalRequestStore";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RentRequestManagement() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const requests = [
-    {
-      id: "YC-124",
-      status: "pending",
-      property: {
-        title: "Căn hộ cao cấp Vinhomes Central Park",
-        address: "Tòa Park 5, 720A Điện Biên Phủ, Quận Bình Thạnh, TP.HCM",
-        price: "8.5 triệu/tháng",
-        image:
-          "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80",
-      },
-      moveInDate: "15/02/2026",
-      duration: "12 tháng",
-      deposit: "17 triệu đồng",
-      requestDate: "01/02/2026",
-      tenant: {
-        name: "Trần Quốc Bảo",
-        phone: "0912 345 678",
-        email: "baotq@gmail.com",
-        avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-        idNumber: "079201012345",
-        idIssueDate: "15/06/2021",
-        idIssuePlace: "Cục Cảnh sát",
-        occupation: "Kỹ sư phần mềm",
-      },
-      message:
-        "Tôi rất thích căn hộ này và muốn thuê dài hạn. Tôi làm việc tại khu vực Bình Thạnh nên vị trí này rất thuận tiện. Tôi có thể đến xem nhà vào cuối tuần này không?",
-      numberOfPeople: "2 người",
-      managementFee: "250,000 đồng/tháng",
-      paymentMethod: "3 tháng/lần",
-      endDate: "15/02/2027",
-    },
-    {
-      id: "YC-123",
-      status: "pending",
-      property: {
-        title: "Căn hộ Sunrise City",
-        address: "Tòa W3, 23 Nguyễn Hữu Thọ, Quận 7, TP.HCM",
-        price: "5.5 triệu/tháng",
-        image:
-          "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80",
-      },
-      moveInDate: "10/02/2026",
-      duration: "6 tháng",
-      deposit: "11 triệu đồng",
-      requestDate: "30/01/2026",
-      tenant: {
-        name: "Nguyễn Minh Tâm",
-        phone: "0987 654 321",
-        email: "tamnm@gmail.com",
-        avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-      },
-      message:
-        "Tôi là nhân viên văn phòng làm việc tại Phú Mỹ Hưng. Tôi cần một căn hộ 1 phòng ngủ, sạch sẽ và thoáng mát. Tôi sẽ ở một mình và cam kết giữ gìn căn hộ cẩn thận.",
-    },
-    {
-      id: "YC-122",
-      status: "approved",
-      property: {
-        title: "Căn hộ The Sun Avenue",
-        address: "Tòa 5, 28 Mai Chí Thọ, Quận 2, TP.HCM",
-        price: "7.2 triệu/tháng",
-        image:
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
-      },
-      moveInDate: "05/02/2026",
-      duration: "12 tháng",
-      deposit: "14.4 triệu đồng",
-      requestDate: "25/01/2026",
-      tenant: {
-        name: "Lê Minh Hiếu",
-        phone: "0934 567 890",
-        email: "hieulm@gmail.com",
-        avatar: "https://randomuser.me/api/portraits/men/68.jpg",
-      },
-      message:
-        "Tôi và vợ muốn thuê căn hộ của anh/chị. Chúng tôi cả hai đều làm việc tại khu vực Thủ Thiêm và đang tìm một nơi ở dài hạn. Chúng tôi không nuôi thú cưng và không hút thuốc.",
-    },
-    {
-      id: "YC-121",
-      status: "rejected",
-      property: {
-        title: "Căn hộ cao cấp Vinhomes Central Park",
-        address: "Tòa Park 5, 720A Điện Biên Phủ, Quận Bình Thạnh, TP.HCM",
-        price: "8.5 triệu/tháng",
-        image:
-          "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80",
-      },
-      moveInDate: "20/01/2026",
-      duration: "3 tháng",
-      deposit: "8.5 triệu đồng",
-      requestDate: "15/01/2026",
-      tenant: {
-        name: "Phạm Thị Lan Anh",
-        phone: "0978 123 456",
-        email: "anhptl@gmail.com",
-        avatar: "https://randomuser.me/api/portraits/women/28.jpg",
-      },
-      message:
-        "Tôi đang cần thuê ngắn hạn trong thời gian đi công tác tại TP.HCM. Tôi có thể thanh toán trước toàn bộ tiền thuê. Hy vọng anh/chị xem xét.",
-    },
-  ];
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    actionType: null,
+    requestId: null,
+  });
+
+  const {
+    ownerRequests,
+    loadingOwnerRequests,
+    fetchOwnerRequests,
+    approveRequest,
+    rejectRequest,
+  } = useRentalRequestStore();
+
+  useEffect(() => {
+    fetchOwnerRequests();
+  }, [fetchOwnerRequests]);
+
+  const filteredRequests = ownerRequests.filter((req) => {
+    if (activeTab === "all") return true;
+    return req.status.toLowerCase() === activeTab.toLowerCase();
+  });
+
+  const totalCount = ownerRequests.length;
+  const pendingCount = ownerRequests.filter(
+    (r) => r.status === "PENDING",
+  ).length;
+  const approvedCount = ownerRequests.filter(
+    (r) => r.status === "APPROVED",
+  ).length;
+  const rejectedCount = ownerRequests.filter(
+    (r) => r.status === "REJECTED",
+  ).length;
 
   const openRequestDetail = (request) => {
     setSelectedRequest(request);
@@ -121,13 +55,31 @@ export default function RentRequestManagement() {
     document.body.style.overflow = "auto";
   };
 
+  const formatCurrency = (amount) => {
+    if (!amount) return "0 VNĐ";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString || dateString === "Đang cập nhật") return "Chưa cập nhật";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   const getStatusClass = (status) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return styles.statusPending;
-      case "approved":
+      case "APPROVED":
         return styles.statusApproved;
-      case "rejected":
+      case "REJECTED":
         return styles.statusRejected;
       default:
         return "";
@@ -136,16 +88,54 @@ export default function RentRequestManagement() {
 
   const getStatusText = (status) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return "Chờ duyệt";
-      case "approved":
+      case "APPROVED":
         return "Đã chấp nhận";
-      case "rejected":
+      case "REJECTED":
         return "Đã từ chối";
       default:
-        return "";
+        return status;
     }
   };
+
+  const triggerConfirm = (id, type, e) => {
+    if (e) e.stopPropagation();
+    setConfirmDialog({
+      isOpen: true,
+      actionType: type,
+      requestId: id,
+    });
+  };
+
+  const closeConfirmDialog = () => {
+    setConfirmDialog({ isOpen: false, actionType: null, requestId: null });
+  };
+
+  const executeAction = async () => {
+    const { actionType, requestId } = confirmDialog;
+
+    closeConfirmDialog();
+
+    if (actionType === "approve") {
+      const res = await approveRequest(requestId);
+      if (res.success) {
+        toast.success("Đã duyệt yêu cầu và tạo hợp đồng thành công!");
+        closeRequestDetail();
+      } else {
+        toast.error(res.message);
+      }
+    } else if (actionType === "reject") {
+      const res = await rejectRequest(requestId);
+      if (res.success) {
+        toast.success("Đã từ chối yêu cầu!");
+        closeRequestDetail();
+      } else {
+        toast.error(res.message);
+      }
+    }
+  };
+
   return (
     <>
       <div className={styles.mainContent}>
@@ -158,14 +148,10 @@ export default function RentRequestManagement() {
             </div>
             <div className={styles.navAction}>
               <i className="fas fa-bell"></i>
-              <span className={styles.navBadge}>3</span>
+              <span className={styles.navBadge}>{pendingCount}</span>
             </div>
             <div className={styles.navAction}>
               <i className="fas fa-envelope"></i>
-              <span className={styles.navBadge}>5</span>
-            </div>
-            <div className={styles.navAction}>
-              <i className="fas fa-th-large"></i>
             </div>
           </div>
         </nav>
@@ -178,6 +164,7 @@ export default function RentRequestManagement() {
             </p>
           </div>
 
+          {/* Thống kê động */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statHeader}>
@@ -186,13 +173,7 @@ export default function RentRequestManagement() {
                   <i className="fas fa-user-check"></i>
                 </div>
               </div>
-              <div className={styles.statValue}>24</div>
-              <div className={styles.statDescription}>
-                <span className={`${styles.statChange} ${styles.positive}`}>
-                  +8
-                </span>
-                <span>so với tháng trước</span>
-              </div>
+              <div className={styles.statValue}>{totalCount}</div>
             </div>
 
             <div className={styles.statCard}>
@@ -202,10 +183,7 @@ export default function RentRequestManagement() {
                   <i className="fas fa-clock"></i>
                 </div>
               </div>
-              <div className={styles.statValue}>8</div>
-              <div className={styles.statDescription}>
-                <span>Cần xử lý trong 48 giờ</span>
-              </div>
+              <div className={styles.statValue}>{pendingCount}</div>
             </div>
 
             <div className={styles.statCard}>
@@ -215,13 +193,7 @@ export default function RentRequestManagement() {
                   <i className="fas fa-check-circle"></i>
                 </div>
               </div>
-              <div className={styles.statValue}>12</div>
-              <div className={styles.statDescription}>
-                <span className={`${styles.statChange} ${styles.positive}`}>
-                  +4
-                </span>
-                <span>so với tháng trước</span>
-              </div>
+              <div className={styles.statValue}>{approvedCount}</div>
             </div>
 
             <div className={styles.statCard}>
@@ -231,53 +203,17 @@ export default function RentRequestManagement() {
                   <i className="fas fa-times-circle"></i>
                 </div>
               </div>
-              <div className={styles.statValue}>4</div>
-              <div className={styles.statDescription}>
-                <span className={`${styles.statChange} ${styles.negative}`}>
-                  -2
-                </span>
-                <span>so với tháng trước</span>
-              </div>
+              <div className={styles.statValue}>{rejectedCount}</div>
             </div>
           </div>
 
           <div className={styles.filterBar}>
+            {/* Bộ lọc giữ nguyên giao diện */}
             <div className={styles.filterSection}>
               <div className={styles.filterSearch}>
                 <i className="fas fa-search"></i>
                 <input type="text" placeholder="Tìm kiếm yêu cầu thuê..." />
               </div>
-
-              <div className={styles.filterDropdown}>
-                <select>
-                  <option value="">Tất cả trạng thái</option>
-                  <option value="pending">Chờ duyệt</option>
-                  <option value="approved">Đã chấp nhận</option>
-                  <option value="rejected">Đã từ chối</option>
-                </select>
-              </div>
-            </div>
-
-            <div className={styles.filterSection}>
-              <div className={styles.filterDate}>
-                <input type="date" placeholder="Từ ngày" />
-              </div>
-
-              <div className={styles.filterDate}>
-                <input type="date" placeholder="Đến ngày" />
-              </div>
-
-              <button
-                className={`${styles.btn} ${styles.btnSm} ${styles.btnOutline}`}
-              >
-                <i className="fas fa-filter"></i> Lọc
-              </button>
-
-              <button
-                className={`${styles.btn} ${styles.btnSm} ${styles.btnOutline}`}
-              >
-                <i className="fas fa-redo"></i> Đặt lại
-              </button>
             </div>
           </div>
 
@@ -308,135 +244,137 @@ export default function RentRequestManagement() {
             </div>
           </div>
 
-          {requests.map((request) => (
-            <div
-              key={request.id}
-              className={styles.requestCard}
-              onClick={() => openRequestDetail(request)}
-            >
-              <div className={styles.requestHeader}>
-                <h3 className={styles.requestTitle}>
-                  Yêu cầu thuê #{request.id}
-                </h3>
-                <span
-                  className={`${styles.requestStatus} ${getStatusClass(request.status)}`}
-                >
-                  {getStatusText(request.status)}
-                </span>
-              </div>
-
-              <div className={styles.requestProperty}>
-                <div className={styles.requestImage}>
-                  <img src={request.property.image} alt="Property" />
-                </div>
-                <div className={styles.requestInfo}>
-                  <div className={styles.requestPropertyTitle}>
-                    {request.property.title}
-                  </div>
-                  <div className={styles.requestAddress}>
-                    {request.property.address}
-                  </div>
-                  <div className={styles.requestPrice}>
-                    {request.property.price}
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.requestMeta}>
-                <div className={styles.metaItem}>
-                  <div className={styles.metaLabel}>Ngày nhận phòng</div>
-                  <div className={styles.metaValue}>{request.moveInDate}</div>
-                </div>
-                <div className={styles.metaItem}>
-                  <div className={styles.metaLabel}>Thời hạn thuê</div>
-                  <div className={styles.metaValue}>{request.duration}</div>
-                </div>
-                <div className={styles.metaItem}>
-                  <div className={styles.metaLabel}>Đặt cọc</div>
-                  <div className={styles.metaValue}>{request.deposit}</div>
-                </div>
-                <div className={styles.metaItem}>
-                  <div className={styles.metaLabel}>Ngày yêu cầu</div>
-                  <div className={styles.metaValue}>{request.requestDate}</div>
-                </div>
-              </div>
-
-              <div className={styles.requestTenant}>
-                <img
-                  src={request.tenant.avatar}
-                  alt="Tenant"
-                  className={styles.tenantAvatar}
-                />
-                <div className={styles.tenantInfo}>
-                  <div className={styles.tenantName}>{request.tenant.name}</div>
-                  <div className={styles.tenantDetails}>
-                    <div className={styles.tenantContact}>
-                      <i className="fas fa-phone"></i> {request.tenant.phone}
-                    </div>
-                    <div className={styles.tenantContact}>
-                      <i className="fas fa-envelope"></i> {request.tenant.email}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.requestMessage}>
-                <p>{request.message}</p>
-              </div>
-
-              <div className={styles.requestActions}>
-                {request.status === "pending" && (
-                  <>
-                    <button
-                      className={`${styles.btn} ${styles.btnOutlineDanger}`}
-                    >
-                      <i className="fas fa-times"></i> Từ chối
-                    </button>
-                    <button
-                      className={`${styles.btn} ${styles.btnOutlinePrimary}`}
-                    >
-                      <i className="fas fa-comments"></i> Liên hệ
-                    </button>
-                    <button className={`${styles.btn} ${styles.btnSuccess}`}>
-                      <i className="fas fa-check"></i> Chấp nhận
-                    </button>
-                  </>
-                )}
-                {request.status === "approved" && (
-                  <>
-                    <button
-                      className={`${styles.btn} ${styles.btnOutlinePrimary}`}
-                    >
-                      <i className="fas fa-file-contract"></i> Xem hợp đồng
-                    </button>
-                    <button className={`${styles.btn} ${styles.btnPrimary}`}>
-                      <i className="fas fa-eye"></i> Xem chi tiết
-                    </button>
-                  </>
-                )}
-                {request.status === "rejected" && (
-                  <>
-                    <button className={`${styles.btn} ${styles.btnOutline}`}>
-                      <i className="fas fa-history"></i> Lý do từ chối
-                    </button>
-                    <button className={`${styles.btn} ${styles.btnPrimary}`}>
-                      <i className="fas fa-eye"></i> Xem chi tiết
-                    </button>
-                  </>
-                )}
-              </div>
+          {loadingOwnerRequests ? (
+            <div style={{ textAlign: "center", padding: "50px" }}>
+              <i className="fas fa-spinner fa-spin fa-2x"></i>
+              <p>Đang tải dữ liệu...</p>
             </div>
-          ))}
+          ) : filteredRequests.length === 0 ? (
+            <div
+              style={{ textAlign: "center", padding: "50px", color: "#666" }}
+            >
+              Không có yêu cầu thuê nào trong mục này.
+            </div>
+          ) : (
+            filteredRequests.map((request) => (
+              <div
+                key={request.id}
+                className={styles.requestCard}
+                onClick={() => openRequestDetail(request)}
+              >
+                <div className={styles.requestHeader}>
+                  <h3 className={styles.requestTitle}>
+                    Yêu cầu thuê #{request.id}
+                  </h3>
+                  <span
+                    className={`${styles.requestStatus} ${getStatusClass(request.status)}`}
+                  >
+                    {getStatusText(request.status)}
+                  </span>
+                </div>
+
+                <div className={styles.requestProperty}>
+                  <div className={styles.requestImage}>
+                    <img
+                      src={
+                        request.property.image ||
+                        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                      }
+                      alt="Property"
+                    />
+                  </div>
+                  <div className={styles.requestInfo}>
+                    <div className={styles.requestPropertyTitle}>
+                      {request.property.title}
+                    </div>
+                    <div className={styles.requestAddress}>
+                      {request.property.address}
+                    </div>
+                    <div className={styles.requestPrice}>
+                      {formatCurrency(request.property.price)}/tháng
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.requestMeta}>
+                  <div className={styles.metaItem}>
+                    <div className={styles.metaLabel}>Ngày yêu cầu</div>
+                    <div className={styles.metaValue}>
+                      {formatDate(request.requestDate)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.requestTenant}>
+                  <img
+                    src={
+                      request.tenant.avatar ||
+                      "https://randomuser.me/api/portraits/lego/1.jpg"
+                    }
+                    alt="Tenant"
+                    className={styles.tenantAvatar}
+                  />
+                  <div className={styles.tenantInfo}>
+                    <div className={styles.tenantName}>
+                      {request.tenant.name}
+                    </div>
+                    <div className={styles.tenantDetails}>
+                      <div className={styles.tenantContact}>
+                        <i className="fas fa-phone"></i>{" "}
+                        {request.tenant.phone || "Đang cập nhật"}
+                      </div>
+                      <div className={styles.tenantContact}>
+                        <i className="fas fa-envelope"></i>{" "}
+                        {request.tenant.email}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.requestMessage}>
+                  <p>
+                    {request.message || "Khách hàng không để lại lời nhắn."}
+                  </p>
+                </div>
+
+                <div className={styles.requestActions}>
+                  {request.status === "PENDING" && (
+                    <>
+                      <button
+                        className={`${styles.btn} ${styles.btnOutlineDanger}`}
+                        onClick={(e) => triggerConfirm(request.id, "reject", e)}
+                      >
+                        <i className="fas fa-times"></i> Từ chối
+                      </button>
+                      <button
+                        className={`${styles.btn} ${styles.btnSuccess}`}
+                        onClick={(e) =>
+                          triggerConfirm(request.id, "approve", e)
+                        }
+                      >
+                        <i className="fas fa-check"></i> Chấp nhận
+                      </button>
+                    </>
+                  )}
+                  {request.status === "APPROVED" && (
+                    <>
+                      <button
+                        className={`${styles.btn} ${styles.btnOutlinePrimary}`}
+                      >
+                        <i className="fas fa-file-contract"></i> Xem hợp đồng
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
 
           <div className={styles.pagination}>
             <div className={`${styles.pageItem} ${styles.disabled}`}>
               <i className="fas fa-angle-left"></i>
             </div>
             <div className={`${styles.pageItem} ${styles.active}`}>1</div>
-            <div className={styles.pageItem}>2</div>
-            <div className={styles.pageItem}>3</div>
-            <div className={styles.pageItem}>...</div>
-            <div className={styles.pageItem}>8</div>
             <div className={styles.pageItem}>
               <i className="fas fa-angle-right"></i>
             </div>
@@ -457,7 +395,13 @@ export default function RentRequestManagement() {
               <div className={styles.modalBody}>
                 <div className={styles.requestProperty}>
                   <div className={styles.requestImage}>
-                    <img src={selectedRequest.property.image} alt="Property" />
+                    <img
+                      src={
+                        selectedRequest.property.image ||
+                        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                      }
+                      alt="Property"
+                    />
                   </div>
                   <div className={styles.requestInfo}>
                     <div className={styles.requestPropertyTitle}>
@@ -467,7 +411,7 @@ export default function RentRequestManagement() {
                       {selectedRequest.property.address}
                     </div>
                     <div className={styles.requestPrice}>
-                      {selectedRequest.property.price}
+                      {formatCurrency(selectedRequest.property.price)}/tháng
                     </div>
                   </div>
                 </div>
@@ -495,75 +439,7 @@ export default function RentRequestManagement() {
                   <div className={styles.metaItem}>
                     <div className={styles.metaLabel}>Ngày yêu cầu</div>
                     <div className={styles.metaValue}>
-                      {selectedRequest.requestDate}
-                    </div>
-                  </div>
-                  <div className={styles.metaItem}>
-                    <div className={styles.metaLabel}>Ngày cập nhật</div>
-                    <div className={styles.metaValue}>
-                      {selectedRequest.requestDate}
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ marginTop: "1.5rem" }}>
-                  <h3 style={{ marginBottom: "1rem" }}>Thông tin thuê</h3>
-                  <div className={styles.requestMeta}>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>Ngày bắt đầu</div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.moveInDate}
-                      </div>
-                    </div>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>Thời hạn thuê</div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.duration}
-                      </div>
-                    </div>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>Ngày kết thúc</div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.endDate || "N/A"}
-                      </div>
-                    </div>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>Số người ở</div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.numberOfPeople || "N/A"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ marginTop: "1.5rem" }}>
-                  <h3 style={{ marginBottom: "1rem" }}>Thông tin tài chính</h3>
-                  <div className={styles.requestMeta}>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>Giá thuê</div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.property.price}
-                      </div>
-                    </div>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>Tiền cọc</div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.deposit}
-                      </div>
-                    </div>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>Phí quản lý</div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.managementFee || "N/A"}
-                      </div>
-                    </div>
-                    <div className={styles.metaItem}>
-                      <div className={styles.metaLabel}>
-                        Phương thức thanh toán
-                      </div>
-                      <div className={styles.metaValue}>
-                        {selectedRequest.paymentMethod || "N/A"}
-                      </div>
+                      {formatDate(selectedRequest.requestDate)}
                     </div>
                   </div>
                 </div>
@@ -572,7 +448,10 @@ export default function RentRequestManagement() {
                   <h3 style={{ marginBottom: "1rem" }}>Thông tin người thuê</h3>
                   <div className={styles.requestTenant}>
                     <img
-                      src={selectedRequest.tenant.avatar}
+                      src={
+                        selectedRequest.tenant.avatar ||
+                        "https://randomuser.me/api/portraits/lego/1.jpg"
+                      }
                       alt="Tenant"
                       className={styles.tenantAvatar}
                     />
@@ -586,7 +465,7 @@ export default function RentRequestManagement() {
                       <div className={styles.tenantDetails}>
                         <div className={styles.tenantContact}>
                           <i className="fas fa-phone"></i>{" "}
-                          {selectedRequest.tenant.phone}
+                          {selectedRequest.tenant.phone || "Đang cập nhật"}
                         </div>
                         <div className={styles.tenantContact}>
                           <i className="fas fa-envelope"></i>{" "}
@@ -595,82 +474,12 @@ export default function RentRequestManagement() {
                       </div>
                     </div>
                   </div>
-
-                  {selectedRequest.tenant.idNumber && (
-                    <div style={{ marginTop: "1rem" }}>
-                      <div className={styles.requestMeta}>
-                        <div className={styles.metaItem}>
-                          <div className={styles.metaLabel}>CCCD/CMND</div>
-                          <div className={styles.metaValue}>
-                            {selectedRequest.tenant.idNumber}
-                          </div>
-                        </div>
-                        <div className={styles.metaItem}>
-                          <div className={styles.metaLabel}>Ngày cấp</div>
-                          <div className={styles.metaValue}>
-                            {selectedRequest.tenant.idIssueDate}
-                          </div>
-                        </div>
-                        <div className={styles.metaItem}>
-                          <div className={styles.metaLabel}>Nơi cấp</div>
-                          <div className={styles.metaValue}>
-                            {selectedRequest.tenant.idIssuePlace}
-                          </div>
-                        </div>
-                        <div className={styles.metaItem}>
-                          <div className={styles.metaLabel}>Nghề nghiệp</div>
-                          <div className={styles.metaValue}>
-                            {selectedRequest.tenant.occupation}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 <div style={{ marginTop: "1.5rem" }}>
                   <h3 style={{ marginBottom: "1rem" }}>Tin nhắn</h3>
                   <div className={styles.requestMessage}>
-                    <p>{selectedRequest.message}</p>
-                  </div>
-                </div>
-
-                <div className={styles.responseForm}>
-                  <h3 style={{ marginBottom: "1rem" }}>Phản hồi yêu cầu</h3>
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Quyết định</label>
-                    <select className={styles.formSelect}>
-                      <option value="">-- Chọn quyết định --</option>
-                      <option value="approve">Chấp nhận yêu cầu</option>
-                      <option value="schedule">Hẹn xem nhà</option>
-                      <option value="reject">Từ chối yêu cầu</option>
-                    </select>
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>
-                      Tin nhắn phản hồi
-                    </label>
-                    <textarea
-                      className={`${styles.formControl} ${styles.formTextarea}`}
-                      placeholder="Nhập nội dung phản hồi..."
-                    ></textarea>
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>
-                      Đặt lịch (nếu cần)
-                    </label>
-                    <div style={{ display: "flex", gap: "1rem" }}>
-                      <input
-                        type="date"
-                        className={styles.formControl}
-                        style={{ width: "50%" }}
-                      />
-                      <input
-                        type="time"
-                        className={styles.formControl}
-                        style={{ width: "50%" }}
-                      />
-                    </div>
+                    <p>{selectedRequest.message || "Không có lời nhắn."}</p>
                   </div>
                 </div>
               </div>
@@ -679,22 +488,147 @@ export default function RentRequestManagement() {
                   className={`${styles.btn} ${styles.btnOutline}`}
                   onClick={closeRequestDetail}
                 >
-                  <i className="fas fa-times"></i> Hủy bỏ
+                  <i className="fas fa-times"></i> Đóng
                 </button>
-                <button className={`${styles.btn} ${styles.btnOutlineDanger}`}>
-                  <i className="fas fa-times-circle"></i> Từ chối
+                {selectedRequest.status === "PENDING" && (
+                  <>
+                    <button
+                      className={`${styles.btn} ${styles.btnOutlineDanger}`}
+                      onClick={() =>
+                        triggerConfirm(selectedRequest.id, "reject")
+                      }
+                    >
+                      <i className="fas fa-times-circle"></i> Từ chối
+                    </button>
+                    <button
+                      className={`${styles.btn} ${styles.btnSuccess}`}
+                      onClick={() =>
+                        triggerConfirm(selectedRequest.id, "approve")
+                      }
+                    >
+                      <i className="fas fa-check-circle"></i> Chấp nhận
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 2: ALERT CUSTOM XÁC NHẬN */}
+        {confirmDialog.isOpen && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0,0,0,0.6)",
+              zIndex: 9999,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "white",
+                borderRadius: "12px",
+                width: "400px",
+                maxWidth: "90%",
+                padding: "30px 24px",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                textAlign: "center",
+              }}
+            >
+              {/* Icon và màu sắc thay đổi tùy theo hành động Approve hay Reject */}
+              <div
+                style={{
+                  fontSize: "45px",
+                  color:
+                    confirmDialog.actionType === "approve"
+                      ? "#10b981"
+                      : "#ef4444",
+                  marginBottom: "15px",
+                }}
+              >
+                <i
+                  className={
+                    confirmDialog.actionType === "approve"
+                      ? "fas fa-check-circle"
+                      : "fas fa-exclamation-circle"
+                  }
+                ></i>
+              </div>
+
+              <h3
+                style={{
+                  margin: "0 0 10px 0",
+                  color: "#333",
+                  fontSize: "1.25rem",
+                }}
+              >
+                {confirmDialog.actionType === "approve"
+                  ? "Xác nhận chấp nhận"
+                  : "Xác nhận từ chối"}
+              </h3>
+
+              <p
+                style={{
+                  color: "#666",
+                  marginBottom: "25px",
+                  lineHeight: "1.5",
+                }}
+              >
+                {confirmDialog.actionType === "approve"
+                  ? "Bạn có chắc chắn muốn chấp nhận yêu cầu này? Hệ thống sẽ tự động tạo Hợp đồng cho người thuê."
+                  : "Bạn có chắc chắn muốn từ chối yêu cầu này? Người thuê sẽ nhận được thông báo từ chối."}
+              </p>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "15px",
+                }}
+              >
+                <button
+                  className={styles.btnOutline}
+                  onClick={closeConfirmDialog}
+                  style={{ padding: "10px 20px", fontWeight: "600" }}
+                >
+                  Hủy bỏ
                 </button>
-                <button className={`${styles.btn} ${styles.btnOutlinePrimary}`}>
-                  <i className="fas fa-calendar-alt"></i> Hẹn xem nhà
-                </button>
-                <button className={`${styles.btn} ${styles.btnSuccess}`}>
-                  <i className="fas fa-check-circle"></i> Chấp nhận
+                <button
+                  onClick={executeAction}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    fontWeight: "600",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "white",
+                    backgroundColor:
+                      confirmDialog.actionType === "approve"
+                        ? "#10b981"
+                        : "#ef4444",
+                  }}
+                >
+                  {confirmDialog.actionType === "approve"
+                    ? "Có, chấp nhận ngay"
+                    : "Có, từ chối ngay"}
                 </button>
               </div>
             </div>
           </div>
         )}
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        style={{ zIndex: 99999 }}
+      />
     </>
   );
 }
